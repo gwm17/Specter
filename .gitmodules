@@ -1,0 +1,9 @@
+[submodule "src/vendor/spdlog"]
+	path = src/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "src/vendor/imgui"]
+	path = src/vendor/imgui
+	url = https://github.com/gwm17/imgui.git
+[submodule "src/vendor/glfw"]
+	path = src/vendor/glfw
+	url = https://github.com/gwm17/glfw.git
