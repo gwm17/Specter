@@ -1,0 +1,622 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ROO",
+				"ROOTIncludeDir"
+			],
+			[
+				"R",
+				"ROOTLibDir"
+			],
+			[
+				"fastic",
+				"fasticlabel"
+			],
+			[
+				"fB",
+				"fBField"
+			],
+			[
+				"SetPro",
+				"SetProgressFraction"
+			],
+			[
+				"Pro",
+				"ProgressCallbackFunc"
+			],
+			[
+				"SetPRo",
+				"SetProgressCallbackFunc"
+			],
+			[
+				"ch",
+				"channel_info"
+			],
+			[
+				"ran",
+				"random_device"
+			],
+			[
+				"is",
+				"isoFlag"
+			],
+			[
+				"cost",
+				"costheta_cm"
+			],
+			[
+				"cos",
+				"costheta_cm"
+			],
+			[
+				"avgth",
+				"avg_theta03"
+			],
+			[
+				"avg_theta",
+				"avg_theta03"
+			],
+			[
+				"angdis",
+				"angdist_title"
+			],
+			[
+				"rin",
+				"ringwedgeFlag"
+			],
+			[
+				"b3",
+				"b3b4_kes"
+			],
+			[
+				"b3_with",
+				"b3_withb4_theta"
+			],
+			[
+				"b1b",
+				"b1b3_eff"
+			],
+			[
+				"b1",
+				"b1b3_count"
+			],
+			[
+				"F",
+				"FRACTIONAL_STEP_PRECISION"
+			],
+			[
+				"Is",
+				"IsWedgeTopEdge"
+			],
+			[
+				"i",
+				"i"
+			],
+			[
+				"phi",
+				"phi_flat"
+			],
+			[
+				"m_n",
+				"m_nWedges"
+			],
+			[
+				"wedge",
+				"wedgetop"
+			],
+			[
+				"wed",
+				"wedgebottom"
+			],
+			[
+				"m_",
+				"m_deltaPhi_flat_wedge"
+			],
+			[
+				"m",
+				"m_deltaR_flat"
+			],
+			[
+				"ring",
+				"ringbottom"
+			],
+			[
+				"m_d",
+				"m_deltaPhi_flat_wedge"
+			],
+			[
+				"dleta",
+				"m_deltaR_flat_ring"
+			],
+			[
+				"m_deltaPhi",
+				"m_deltaPhi_flat_wedge"
+			],
+			[
+				"m_del",
+				"m_deltaR_flat_ring"
+			],
+			[
+				"phi_",
+				"phi_comp"
+			],
+			[
+				"r",
+				"r_comp"
+			],
+			[
+				"exp",
+				"expected_flat_p"
+			],
+			[
+				"delt",
+				"deltaPhi_per_wedge"
+			],
+			[
+				"del",
+				"deltaR_per_ring"
+			],
+			[
+				"z",
+				"z"
+			],
+			[
+				"det",
+				"detectors"
+			],
+			[
+				"deltaP",
+				"deltaPhi_per_wedge"
+			],
+			[
+				"delatPh",
+				"deltaPhi_per_wedge"
+			],
+			[
+				"m_we",
+				"m_wedgeCoords_tilt"
+			],
+			[
+				"m_ring",
+				"m_ringCoords_tilt"
+			],
+			[
+				"delta",
+				"deltaPhi_per_wedge"
+			],
+			[
+				"m_ringCoo",
+				"m_ringCoords_flat"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "Packages/Makefile/Make.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/Makefile/Make.sublime-build",
+					""
+				],
+				[
+					"Packages/Makefile/Make.sublime-build",
+					"Clean"
+				]
+			],
+			[
+				"Packages/Makefile/Make.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Makefile/Make.sublime-build",
+					""
+				],
+				[
+					"Packages/Makefile/Make.sublime-build",
+					"Clean"
+				]
+			],
+			[
+				"Packages/Makefile/Make.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Subli",
+				"SublimeLinter: Lint This View"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"Pack",
+				"Package Control: Install Package"
+			],
+			[
+				"SublimeLinter: Lin",
+				"SublimeLinter: Lint This View"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 494.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/gordon/Navigator"
+	],
+	"file_history":
+	[
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/EVBApp.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/.gitignore",
+		"/home/gordon/SPS_SABRE_EventBuilder/premake5.lua",
+		"/home/gordon/SPS_SABRE_EventBuilder/README.md",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/FileViewFrame.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/EVBApp.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/EVBMainFrame.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/CMakeLists.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/FP_kinematics.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/spsdict/CMakeLists.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/CMakeLists.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/gui_main.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/main.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/ChannelMap.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/Logger.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/Logger.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/EventBuilder.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/EventBuilder.make",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/CompassRun.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/EVBMainFrame.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/gui_dict.cxx",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/LinkDef_Gui.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/EventBuilder.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/vendor/spdlog/CMakeLists.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/G__GUIDict.cxx",
+		"/home/gordon/SPS_SABRE_EventBuilder/vendor/spdlog/include/spdlog/spdlog.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/vendor/spdlog/include/spdlog/common.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/OrderChecker.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/MassLookup.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/CompassFile.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/SPSDict.make",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/ChannelMap.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/objs/Debug/EventBuilder/EventBuilder.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/objs/Debug/EventBuilder/EventBuilder.h.d",
+		"/home/gordon/SPS_SABRE_EventBuilder/objs/Debug/EventBuilder/EventBuilder.h.gch",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/spsdict/DataStructs.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/Stopwatch.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/SlowSort.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/ShiftMap.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/SFPPlotter.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/SFPAnalyzer.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/RunCollector.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/FlagHandler.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/FastSort.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/CutHandler.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/spsdict/DataStructs.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/CMakeLists.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/SFPPlotter.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/CompassRun.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/ProgressCallback.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/guidict/FileViewFrame.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/sps-sabre-evb.sublime-project",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/MassLookup.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/FP_kinematics.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/FlagHandler.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/FastSort.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/ShiftMap.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/CompassHit.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/CompassFile.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/SlowSort.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/Stopwatch.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/SFPAnalyzer.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/RunCollector.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/OrderChecker.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/CutHandler.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/evb/EventBuilder.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/spsdict/LinkDef_sps.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/makefile",
+		"/home/gordon/SPS_SABRE_EventBuilder/build/Makefile",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/EVBMainFrame.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/gui/EVBMainFrame.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/EVBApp.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/RunCollector.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/CompassRun.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/EventBuilder.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/CompassHit.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/EventBuilder.h.gch",
+		"/home/gordon/SPS_SABRE_EventBuilder/etc/ChannelMap_Feb2021_SABRE.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/etc/CutList_Feb2021_10B3hea.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/etc/ScalerFile_Feb2021_SABRE.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/src/gui/FileViewFrame.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/ChannelMap.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/SlowSort.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/MassLookup.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/SFPPlotter.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/CutHandler.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/ShiftMap.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/etc/ShiftMap_Feb2021_SABRE.txt",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/DataStructs.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/CompassFile.h",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/GWMEventBuilder.h",
+		"/home/gordon/SabreRecon/src/Histogrammer.cpp",
+		"/home/gordon/SPS_SABRE_EventBuilder/include/FP_kinematics.h",
+		"/home/gordon/Kinematics/include/MaskApp.h",
+		"/home/gordon/Kinematics/src/MaskApp.cpp",
+		"/home/gordon/Kinematics/README.md",
+		"/home/gordon/Kinematics/premake5.lua",
+		"/home/gordon/Kinematics/src/Detectors/DetectorEfficiency.cpp",
+		"/home/gordon/Kinematics/include/DeadChannelMap.h",
+		"/home/gordon/Kinematics/etc/DeadChannels.txt",
+		"/home/gordon/Kinematics/include/Eloss_Tables.h",
+		"/home/gordon/Kinematics/include/LegendrePoly.h",
+		"/home/gordon/Kinematics/include/Vec3.h",
+		"/home/gordon/Kinematics/include/Vec4.h",
+		"/home/gordon/Kinematics/src/Vec3.cpp",
+		"/home/gordon/Kinematics/src/Vec4.cpp",
+		"/home/gordon/Kinematics/src/ThreeStepSystem.cpp",
+		"/home/gordon/Kinematics/src/MaskFile.cpp",
+		"/home/gordon/Kinematics/include/Nucleus.h",
+		"/home/gordon/Kinematics/include/MaskFile.h",
+		"/home/gordon/Kinematics/include/ThreeStepSystem.h",
+		"/home/gordon/Kinematics/src/TwoStepSystem.cpp",
+		"/home/gordon/Kinematics/include/TwoStepSystem.h",
+		"/home/gordon/Kinematics/src/OneStepSystem.cpp",
+		"/home/gordon/Kinematics/include/OneStepSystem.h",
+		"/home/gordon/Kinematics/src/DecaySystem.cpp",
+		"/home/gordon/Kinematics/include/DecaySystem.h",
+		"/home/gordon/Kinematics/include/ReactionSystem.h",
+		"/home/gordon/Kinematics/src/Nucleus.cpp",
+		"/home/gordon/Kinematics/include/KinematicsExceptions.h",
+		"/home/gordon/Kinematics/src/main.cpp",
+		"/home/gordon/Kinematics/input.txt",
+		"/home/gordon/Kinematics/src/Reaction.cpp",
+		"/home/gordon/Kinematics/src/LayeredTarget.cpp",
+		"/home/gordon/Kinematics/src/EnergyLoss.cpp",
+		"/home/gordon/Kinematics/include/EnergyLoss.h",
+		"/home/gordon/Kinematics/src/Target.cpp",
+		"/home/gordon/Kinematics/include/Reaction.h"
+	],
+	"find":
+	{
+		"height": 70.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"FORCE_INCLUDE",
+			"std::endl",
+			"EVBApp::CONVERT",
+			"GWMEventBuilder",
+			"detectorPart",
+			"directory",
+			"runNum",
+			"StartEvent",
+			"&event",
+			"MASS.FindMass",
+			"MASS",
+			"GetElectronicStoppingPower",
+			"GetTotalStoppingPower",
+			"uint64_t",
+			"RxnType",
+			"Mask",
+			"Kinematics",
+			"*generator",
+			"MassLookup",
+			"PI",
+			"G3Vec",
+			"GZRotation",
+			"GYRotation",
+			"G3Vec",
+			"G4Vec",
+			"GYRotation",
+			"GXRotation",
+			"GZRotation",
+			"GYRotation",
+			"GXRotation",
+			"G3Vec",
+			"G4Vec",
+			"G3Vec",
+			"};",
+			";\n",
+			"deltaPhi_per_wedge",
+			"deltaR_per_ring",
+			"IsInside"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"EVBApp::Operation::Convert",
+			"EVBApp",
+			"attribute",
+			"&m_event",
+			"MassLookup::GetInstance->FindMass",
+			"uint32_t",
+			"Mask::RxnType",
+			"MaskApp",
+			"RandomGenerator::GetInstance().GetGenerator()",
+			"M_PI",
+			"Vec3",
+			"ZRotation",
+			"YRotation",
+			"Vec3",
+			"Vec4",
+			"YRotation",
+			"XRotation",
+			"ZRotation",
+			"YRotation",
+			"XRotation",
+			"Vec3",
+			"Vec4",
+			"Vec3",
+			"m_deltaPhi_flat_wedge",
+			"m_deltaR_flat_ring",
+			"GetTrajectoryCoordinates"
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 30.0
+	},
+	"input":
+	{
+		"height": 68.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.SublimeLinter":
+	{
+		"height": 132.0
+	},
+	"output.exec":
+	{
+		"height": 133.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "navigator.sublime-project",
+	"replace":
+	{
+		"height": 56.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/GWM_EventBuilder/eventbuilder.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 290.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
