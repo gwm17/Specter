@@ -1,4 +1,3 @@
-#include <navpch.h>
 #include "Application.h"
 
 namespace Navigator {

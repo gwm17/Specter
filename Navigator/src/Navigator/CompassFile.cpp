@@ -8,7 +8,6 @@
 
 	Written by G.W. McCann Oct. 2020
 */
-#include <navpch.h>
 #include "CompassFile.h"
 
 namespace Navigator {

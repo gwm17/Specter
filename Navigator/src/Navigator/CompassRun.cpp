@@ -9,7 +9,6 @@
 
 	Updated to also handle scaler data. -- GWM Oct. 2020
 */
-#include <navpch.h>
 #include "CompassRun.h"
 
 namespace Navigator {

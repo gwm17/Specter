@@ -1,4 +1,4 @@
-workspace "Nova"
+workspace "Navigator"
 	architecture "x64"
 	configurations {
 		"Debug",
@@ -25,7 +25,26 @@ project "Navigator"
 	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 	pchheader "navpch.h"
-	pchsource "src/navpch.cpp"
+	pchsource "Navigator/src/navpch.cpp"
+
+	filter "system:windows"
+		defines "NAV_WINDOWS"
+		forceincludes {"navpch.h"}
+		includedirs {
+			"%{prj.name}/src/",
+			"%{prj.name}/vendor/spdlog/include/",
+			"%{IncludeDirs.glfw}",
+			"%{IncludeDirs.ImGui}",
+		}
+	filter "system:linux or macosx"
+		defines "NAV_UNIX"
+		defines "NAV_PCH"
+		includedirs {
+			"%{prj.name}/vendor/spdlog/include/",
+			"%{IncludeDirs.glfw}",
+			"%{IncludeDirs.ImGui}",
+		}
+	filter {}
 
 	files {
 		"%{prj.name}/src/**.h",
@@ -34,13 +53,6 @@ project "Navigator"
 
 	defines {
 		"_CRT_SECURE_NO_WARNINGS"
-	}
-
-	includedirs {
-		"%{prj.name}/src/",
-		"%{prj.name}/vendor/spdlog/include/",
-		"%{IncludeDirs.glfw}",
-		"%{IncludeDirs.ImGui}",
 	}
 
 	links {

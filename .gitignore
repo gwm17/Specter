@@ -4,10 +4,13 @@
 *.sublime-workspace
 Makefile
 *.make
+*.user
+
 
 Navigator/Makefile
 NavProject/Makefile
 
+.vs/
 bin-int/
 bin/
 lib/
