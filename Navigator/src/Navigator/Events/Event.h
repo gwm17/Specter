@@ -2,7 +2,6 @@
 #define EVENT_H
 
 #include "NavCore.h"
-#include <sstream>
 
 namespace Navigator {
 

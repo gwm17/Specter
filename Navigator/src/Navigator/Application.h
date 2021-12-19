@@ -4,6 +4,8 @@
 #include "NavCore.h"
 #include "Events/Event.h"
 #include "Events/AppEvent.h"
+#include "LayerStack.h"
+#include "Layer.h"
 
 namespace Navigator {
 
@@ -16,8 +18,8 @@ namespace Navigator {
 		void Run();
 
 		void OnEvent(Event& event);
-		void PushLayer();
-		void PushOverlay();
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
 
 		inline static Application& Get() { return *s_instance; }
 
@@ -26,6 +28,7 @@ namespace Navigator {
 	private:
 		bool OnWindowCloseEvent(WindowCloseEvent& event);
 		
+		LayerStack m_stack;
 		bool m_runFlag;
 		
 		static Application* s_instance;

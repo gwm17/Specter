@@ -8,6 +8,8 @@ namespace Navigator {
 		m_runFlag(true)
 	{
 		s_instance = this;
+
+		PushLayer(new Layer());
 	}
 
 	Application::~Application() {}
@@ -26,15 +28,25 @@ namespace Navigator {
 		return true;
 	}
 
-	void Application::PushLayer() {}
+	void Application::PushLayer(Layer* layer)
+	{
+		m_stack.PushLayer(layer);
+		layer->OnAttach();
+	}
 
-	void Application::PushOverlay() {}
+	void Application::PushOverlay(Layer* layer)
+	{
+		m_stack.PushOverlay(layer);
+		layer->OnAttach();
+	}
 
 	void Application::Run()
 	{
 		while(m_runFlag)
 		{
 			NAV_TRACE("Doing a run.");
+			for(auto layer : m_stack)
+				NAV_TRACE("Layer with name {0} found!", layer->GetName());
 			WindowCloseEvent event;
 			OnEvent(event);
 		}
