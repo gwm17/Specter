@@ -5,6 +5,9 @@
 Makefile
 *.make
 
+Navigator/Makefile
+NavProject/Makefile
+
 bin-int/
 bin/
 lib/

@@ -11,12 +11,13 @@ workspace "Nova"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- External directories to be included
 IncludeDirs ={}
-IncludeDirs["glfw"] = "src/vendor/glfw/include"
-IncludeDirs["ImGui"] = "src/vendor/imgui"
+IncludeDirs["glfw"] = "Navigator/vendor/glfw/include"
+IncludeDirs["ImGui"] = "Navigator/vendor/imgui"
 
-include "src/vendor/glfw"
-include "src/vendor/imgui"
+include "Navigator/vendor/glfw"
+include "Navigator/vendor/imgui"
 project "Navigator"
+	location "Navigator"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
@@ -24,11 +25,11 @@ project "Navigator"
 	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 	pchheader "navpch.h"
-	pchsource "navpch.cpp"
+	pchsource "src/navpch.cpp"
 
 	files {
-		"src/%{prj.name}/**.h",
-		"src/%{prj.name}/**.cpp"
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
 	}
 
 	defines {
@@ -36,9 +37,8 @@ project "Navigator"
 	}
 
 	includedirs {
-		"src/",
-		"src/vendor/spdlog/include/",
-		"src/%{prj.name}/",
+		"%{prj.name}/src/",
+		"%{prj.name}/vendor/spdlog/include/",
 		"%{IncludeDirs.glfw}",
 		"%{IncludeDirs.ImGui}",
 	}
@@ -66,6 +66,7 @@ project "Navigator"
 		optimize "on"
 
 project "NavProject"
+	location "NavProject"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -74,14 +75,14 @@ project "NavProject"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
-		"src/main.cpp"
+		"NavProject/main.cpp"
 	}
 
 
 	includedirs {
-		"src/Navigator",
-		"src/vendor/spdlog/include/",
-		"src/vendor"
+		"Navigator/src",
+		"Navigator/vendor/spdlog/include/",
+		"Navigator/vendor"
 	}
 
 	links {
