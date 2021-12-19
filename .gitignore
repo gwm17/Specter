@@ -2,5 +2,7 @@
 *.so
 *.a
 *.sublime-workspace
+Makefile
+*.make
 
 !.gitignore

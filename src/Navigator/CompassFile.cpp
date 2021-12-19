@@ -74,7 +74,7 @@ namespace Navigator {
 	{
 		if(!IsOpen()) 
 		{
-			EVB_WARN("Unable to get hit size from file {0}, sending invalid value.", m_filename);
+			NAV_WARN("Unable to get hit size from file {0}, sending invalid value.", m_filename);
 			return 0;
 		}
 	

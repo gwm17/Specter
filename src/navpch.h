@@ -17,4 +17,6 @@
 #include <cstdint>
 
 
+#include "Navigator/Logger.h"
+
 #endif
