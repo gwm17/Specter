@@ -5,4 +5,8 @@
 Makefile
 *.make
 
+bin-int/
+bin/
+lib/
+
 !.gitignore
