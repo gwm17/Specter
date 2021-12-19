@@ -7,6 +7,6 @@
 	],
 	"settings":
 	{
-		"SublimeLinter.linters.g++.args": ["-c","-Wall","-fsyntax-only","-std=c++17","-include${folder}/src/navpch.h","-Isrc/", "-Isrc/vendor/spdlog/include"]
+		"SublimeLinter.linters.g++.args": ["-c","-Wall","-fsyntax-only","-std=c++17","-include${folder}/Navigator/src/navpch.h","-INavigator/src/", "-INavigator/src/Navigator/","-INavigator/vendor/spdlog/include"]
 	}
 }

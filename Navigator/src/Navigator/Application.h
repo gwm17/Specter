@@ -1,6 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "NavCore.h"
+#include "Events/Event.h"
+#include "Events/AppEvent.h"
 
 namespace Navigator {
 
@@ -12,7 +15,7 @@ namespace Navigator {
 
 		void Run();
 
-		void OnEvent();
+		void OnEvent(Event& event);
 		void PushLayer();
 		void PushOverlay();
 
@@ -21,7 +24,8 @@ namespace Navigator {
 		inline void GetWindow() { return; }
 
 	private:
-
+		bool OnWindowCloseEvent(WindowCloseEvent& event);
+		
 		bool m_runFlag;
 		
 		static Application* s_instance;

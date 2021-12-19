@@ -13,7 +13,18 @@ namespace Navigator {
 	Application::~Application() {}
 
 
-	void Application::OnEvent() {}
+	void Application::OnEvent(Event& event) 
+	{
+		EventDispatcher dispatch(event);
+		dispatch.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowCloseEvent));
+	}
+
+	bool Application::OnWindowCloseEvent(WindowCloseEvent& event)
+	{
+		m_runFlag = false;
+		NAV_WARN("Closing the window!");
+		return true;
+	}
 
 	void Application::PushLayer() {}
 
@@ -24,7 +35,8 @@ namespace Navigator {
 		while(m_runFlag)
 		{
 			NAV_TRACE("Doing a run.");
-			m_runFlag = false;
+			WindowCloseEvent event;
+			OnEvent(event);
 		}
 	}
 }

@@ -24,23 +24,25 @@ project "Navigator"
 	staticruntime "on"
 	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-	pchheader "navpch.h"
-	pchsource "Navigator/src/navpch.cpp"
 
 	filter "system:windows"
 		defines "NAV_WINDOWS"
+		pchheader "navpch.h"
+		pchsource "Navigator/src/navpch.cpp"
 		forceincludes {"navpch.h"}
 		includedirs {
 			"%{prj.name}/src/",
+			"%{prj.name}/src/%{prj.name}/",
 			"%{prj.name}/vendor/spdlog/include/",
 			"%{IncludeDirs.glfw}",
 			"%{IncludeDirs.ImGui}",
 		}
 	filter "system:linux or macosx"
 		defines "NAV_UNIX"
-		defines "NAV_PCH"
+		pchheader "%{prj.name}/src/navpch.h"
 		includedirs {
 			"%{prj.name}/vendor/spdlog/include/",
+			"%{prj.name}/src/%{prj.name}/",
 			"%{IncludeDirs.glfw}",
 			"%{IncludeDirs.ImGui}",
 		}
@@ -93,6 +95,7 @@ project "NavProject"
 
 	includedirs {
 		"Navigator/src",
+		"Navigator/src/Navigator",
 		"Navigator/vendor/spdlog/include/",
 		"Navigator/vendor"
 	}
