@@ -23,7 +23,6 @@ namespace Navigator {
 
 	void Application::OnEvent(Event& event) 
 	{
-		NAV_TRACE("Found event: {0}", event);
 		EventDispatcher dispatch(event);
 		dispatch.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowCloseEvent));
 		for(auto iter = m_stack.end(); iter != m_stack.begin(); )

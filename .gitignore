@@ -5,7 +5,7 @@
 Makefile
 *.make
 *.user
-
+*.ini
 
 Navigator/Makefile
 NavProject/Makefile
