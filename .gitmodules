@@ -4,6 +4,7 @@
 [submodule "Navigator/vendor/imgui"]
 	path = Navigator/vendor/imgui
 	url = https://github.com/gwm17/imgui.git
+	branch = docking
 [submodule "Navigator/vendor/glfw"]
 	path = Navigator/vendor/glfw
 	url = https://github.com/gwm17/glfw.git
