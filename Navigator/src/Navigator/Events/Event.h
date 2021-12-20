@@ -1,7 +1,7 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "NavCore.h"
+#include "Navigator/NavCore.h"
 
 namespace Navigator {
 

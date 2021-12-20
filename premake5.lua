@@ -13,12 +13,14 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDirs ={}
 IncludeDirs["glfw"] = "Navigator/vendor/glfw/include"
 IncludeDirs["ImGui"] = "Navigator/vendor/imgui"
+IncludeDirs["glad"] = "Navigator/vendor/glad/include"
 
 include "Navigator/vendor/glfw"
 include "Navigator/vendor/imgui"
+include "Navigator/vendor/glad"
 project "Navigator"
 	location "Navigator"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -30,22 +32,18 @@ project "Navigator"
 		pchheader "navpch.h"
 		pchsource "Navigator/src/navpch.cpp"
 		forceincludes {"navpch.h"}
-		includedirs {
-			"%{prj.name}/src/",
-			"%{prj.name}/src/%{prj.name}/",
-			"%{prj.name}/vendor/spdlog/include/",
-			"%{IncludeDirs.glfw}",
-			"%{IncludeDirs.ImGui}",
-		}
+		
 	filter "system:linux or macosx"
-		defines "NAV_UNIX"
 		pchheader "%{prj.name}/src/navpch.h"
-		includedirs {
-			"%{prj.name}/vendor/spdlog/include/",
-			"%{prj.name}/src/%{prj.name}/",
-			"%{IncludeDirs.glfw}",
-			"%{IncludeDirs.ImGui}",
-		}
+
+	includedirs {
+		"%{prj.name}/src/",
+		"%{prj.name}/vendor/spdlog/include/",
+		"%{IncludeDirs.glfw}",
+		"%{IncludeDirs.ImGui}",
+		"%{IncludeDirs.glad}"
+	}
+	
 	filter {}
 
 	files {
@@ -59,15 +57,36 @@ project "Navigator"
 
 	links {
 		"GLFW",
-		"ImGui",
-		"opengl32.lib"
+		"GLAD",
+		"ImGui"
 	}
 
 	systemversion "latest"
-
 	defines {
 		"GLFW_INCLUDE_NONE"
 	}
+
+
+	filter "system:linux"
+		defines "NAV_LINUX"
+		links {
+			"GL",
+			"GLU",
+			"glut",
+			"X11",
+			"dl",
+			"pthread"
+		}
+	filter "system:macosx"
+		defines "NAV_APPLE"
+		links {
+			"GL",
+			"GLU",
+			"glut",
+			"X11",
+			"dl",
+			"pthread"
+		}
 
 	filter "configurations:Debug"
 		defines "NAV_DEBUG"
@@ -106,6 +125,8 @@ project "NavProject"
 
 
 	systemversion "latest"
+
+	
 
 	filter "configurations:Debug"
 		defines "NAV_DEBUG"

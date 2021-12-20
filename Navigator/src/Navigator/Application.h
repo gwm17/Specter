@@ -6,6 +6,7 @@
 #include "Events/AppEvent.h"
 #include "LayerStack.h"
 #include "Layer.h"
+#include "Window.h"
 
 namespace Navigator {
 
@@ -29,6 +30,7 @@ namespace Navigator {
 		bool OnWindowCloseEvent(WindowCloseEvent& event);
 		
 		LayerStack m_stack;
+		std::unique_ptr<Window> m_window;
 		bool m_runFlag;
 		
 		static Application* s_instance;

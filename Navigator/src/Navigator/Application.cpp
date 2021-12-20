@@ -9,6 +9,9 @@ namespace Navigator {
 	{
 		s_instance = this;
 
+		m_window = std::unique_ptr<Window>(Window::Create());
+		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
+
 		PushLayer(new Layer());
 	}
 
@@ -19,6 +22,12 @@ namespace Navigator {
 	{
 		EventDispatcher dispatch(event);
 		dispatch.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowCloseEvent));
+		for(auto iter = m_stack.end(); iter != m_stack.begin(); )
+		{
+			(*(--iter))->OnEvent(event);
+			if(event.handledFlag)
+				break;
+		}
 	}
 
 	bool Application::OnWindowCloseEvent(WindowCloseEvent& event)
@@ -47,8 +56,8 @@ namespace Navigator {
 			NAV_TRACE("Doing a run.");
 			for(auto layer : m_stack)
 				NAV_TRACE("Layer with name {0} found!", layer->GetName());
-			WindowCloseEvent event;
-			OnEvent(event);
+
+			m_window->OnUpdate();
 		}
 	}
 }
