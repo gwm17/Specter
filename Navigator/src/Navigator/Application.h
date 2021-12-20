@@ -34,6 +34,8 @@ namespace Navigator {
 		std::unique_ptr<Window> m_window;
 		ImGuiLayer* m_imgui_layer;
 		bool m_runFlag;
+
+		float m_bckgnd_color[4] = {0.1, 0.1, 0.1, 1.0};
 		
 		static Application* s_instance;
 	};

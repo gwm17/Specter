@@ -7,6 +7,6 @@
 	],
 	"settings":
 	{
-		"SublimeLinter.linters.g++.args": ["-c","-Wall","-fsyntax-only","-std=c++17","-include${folder}/Navigator/src/navpch.h","-INavigator/src/", "-INavigator/src/Navigator/","-INavigator/vendor/spdlog/include", "-INavigator/vendor/glfw/include/","-INavigator/vendor/glad/include","-INavigator/vendor/imgui"]
+		"SublimeLinter.linters.g++.args": ["-c","-Wall","-fsyntax-only","-std=c++17","-include${folder}/Navigator/src/navpch.h","-INavigator/src/", "-INavigator/src/Navigator/","-INavigator/vendor/spdlog/include", "-INavigator/vendor/glfw/include/","-INavigator/vendor/glad/include","-INavigator/vendor/imgui","-INavigator/vendor/implot"]
 	}
 }

@@ -1,4 +1,6 @@
 #include "Application.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/RenderCommand.h"
 
 namespace Navigator {
 
@@ -56,6 +58,9 @@ namespace Navigator {
 	{
 		while(m_runFlag)
 		{
+
+			RenderCommand::SetClearColor(m_bckgnd_color);
+			RenderCommand::Clear();
 
 			for(auto layer : m_stack)
 				layer->OnUpdate();

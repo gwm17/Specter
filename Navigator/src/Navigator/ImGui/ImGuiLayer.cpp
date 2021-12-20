@@ -3,6 +3,7 @@
 #include "Navigator/NavCore.h"
 
 #include "imgui.h"
+#include "implot.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_glfw.h"
 
@@ -23,7 +24,11 @@ namespace Navigator {
 	void ImGuiLayer::OnAttach()
 	{
 		IMGUI_CHECKVERSION();
+
+		NAV_INFO("Creating ImGui Context...");
+
 		ImGui::CreateContext();
+		ImPlot::CreateContext();
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -45,12 +50,15 @@ namespace Navigator {
 
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+		NAV_INFO("ImGui Finished initializing.");
 	}
 
 	void ImGuiLayer::OnDetach()
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
+		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 	}
 
@@ -86,5 +94,6 @@ namespace Navigator {
 	{
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
+		ImPlot::ShowDemoWindow();
 	}
 }
