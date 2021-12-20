@@ -1,12 +1,13 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "NavCore.h"
+#include "Navigator/NavCore.h"
 #include "Events/Event.h"
-#include "Events/AppEvent.h"
-#include "LayerStack.h"
-#include "Layer.h"
-#include "Window.h"
+#include "Navigator/Events/AppEvent.h"
+#include "Navigator/LayerStack.h"
+#include "Navigator/Layer.h"
+#include "Navigator/Window.h"
+#include "Navigator/ImGui/ImGuiLayer.h"
 
 namespace Navigator {
 
@@ -24,13 +25,14 @@ namespace Navigator {
 
 		inline static Application& Get() { return *s_instance; }
 
-		inline void GetWindow() { return; }
+		inline Window& GetWindow() { return *m_window; }
 
 	private:
 		bool OnWindowCloseEvent(WindowCloseEvent& event);
 		
 		LayerStack m_stack;
 		std::unique_ptr<Window> m_window;
+		ImGuiLayer* m_imgui_layer;
 		bool m_runFlag;
 		
 		static Application* s_instance;

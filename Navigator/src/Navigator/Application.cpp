@@ -13,6 +13,9 @@ namespace Navigator {
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
 
 		PushLayer(new Layer());
+
+		m_imgui_layer = new ImGuiLayer();
+		PushOverlay(m_imgui_layer);
 	}
 
 	Application::~Application() {}
@@ -20,6 +23,7 @@ namespace Navigator {
 
 	void Application::OnEvent(Event& event) 
 	{
+		NAV_TRACE("Found event: {0}", event);
 		EventDispatcher dispatch(event);
 		dispatch.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowCloseEvent));
 		for(auto iter = m_stack.end(); iter != m_stack.begin(); )
@@ -53,10 +57,14 @@ namespace Navigator {
 	{
 		while(m_runFlag)
 		{
-			NAV_TRACE("Doing a run.");
-			for(auto layer : m_stack)
-				NAV_TRACE("Layer with name {0} found!", layer->GetName());
 
+			for(auto layer : m_stack)
+				layer->OnUpdate();
+
+			m_imgui_layer->Begin();
+			for(auto layer : m_stack)
+				layer->OnImGuiRender();
+			m_imgui_layer->End();
 			m_window->OnUpdate();
 		}
 	}
