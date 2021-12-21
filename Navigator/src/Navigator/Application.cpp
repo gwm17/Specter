@@ -14,19 +14,39 @@ namespace Navigator {
 		m_window = std::unique_ptr<Window>(Window::Create());
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
 
+		CreatePhysicsEventBuilder();
+
 		PushLayer(new Layer());
 
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);
 	}
 
-	Application::~Application() {}
+	Application::~Application()
+	{
+		if(PhysicsEventBuilder::Get().IsRunning())
+		{
+			NAV_INFO("Detaching PhysicsEventBuilder at shutdown");
+			PhysicsEventBuilder::Get().DetachDataSource();
+			DestroyPhysThread();
+		}
+	}
 
+	void Application::DestroyPhysThread()
+	{
+		if(m_physThread != nullptr && m_physThread->joinable())
+			m_physThread->join();
+
+		if(m_physThread != nullptr)
+			delete m_physThread;
+	}
 
 	void Application::OnEvent(Event& event) 
 	{
 		EventDispatcher dispatch(event);
 		dispatch.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowCloseEvent));
+		dispatch.Dispatch<PhysicsStartEvent>(BIND_EVENT_FUNCTION(Application::OnPhysicsStartEvent));
+		dispatch.Dispatch<PhysicsStopEvent>(BIND_EVENT_FUNCTION(Application::OnPhysicsStopEvent));
 		for(auto iter = m_stack.end(); iter != m_stack.begin(); )
 		{
 			(*(--iter))->OnEvent(event);
@@ -39,6 +59,28 @@ namespace Navigator {
 	{
 		m_runFlag = false;
 		NAV_WARN("Closing the window!");
+		return true;
+	}
+
+	bool Application::OnPhysicsStartEvent(PhysicsStartEvent& event)
+	{
+		if(PhysicsEventBuilder::Get().IsRunning())
+		{
+			PhysicsEventBuilder::Get().DetachDataSource();
+			NAV_INFO("Stopping the event builder...");
+			DestroyPhysThread();
+		}
+		PhysicsEventBuilder::Get().AttachDataSource();
+		NAV_INFO("Starting the event builder...");
+		m_physThread = new std::thread(&PhysicsEventBuilder::Run, std::ref(PhysicsEventBuilder::Get()));
+		return true;
+	}
+
+	bool Application::OnPhysicsStopEvent(PhysicsStopEvent& event)
+	{
+		PhysicsEventBuilder::Get().DetachDataSource();
+		NAV_INFO("Stopping the event builder...");
+		DestroyPhysThread();
 		return true;
 	}
 
@@ -56,6 +98,8 @@ namespace Navigator {
 
 	void Application::Run()
 	{
+		PhysicsStartEvent junk;
+		OnEvent(junk);
 		while(m_runFlag)
 		{
 

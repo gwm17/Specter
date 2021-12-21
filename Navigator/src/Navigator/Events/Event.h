@@ -11,7 +11,8 @@ namespace Navigator {
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseScrolled, MouseMoved,
-		AppUpdate
+		AppUpdate,
+		PhysicsStart, PhysicsStop
 	};
 
 	enum EventCategory
@@ -21,7 +22,8 @@ namespace Navigator {
 		EventCategoryInput=BIT(1),
 		EventCategoryKey=BIT(2),
 		EventCategoryMouse=BIT(3),
-		EventCategoryWindow=BIT(4)
+		EventCategoryWindow=BIT(4),
+		EventCategoryPhysics=BIT(5),
 	};
 
 	//Some function generation automation to reduce code written for all events

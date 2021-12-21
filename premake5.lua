@@ -78,8 +78,10 @@ project "Navigator"
 			"GLU",
 			"glut",
 			"X11",
-			"dl",
-			"pthread"
+			"dl"
+		}
+		linkoptions {
+			"-pthread"
 		}
 	filter "system:macosx"
 		defines "NAV_APPLE"
@@ -89,7 +91,9 @@ project "Navigator"
 			"glut",
 			"X11",
 			"dl",
-			"pthread"
+		}
+		linkoptions{
+			"-pthread"
 		}
 
 	filter "configurations:Debug"

@@ -4,10 +4,13 @@
 #include "Navigator/NavCore.h"
 #include "Events/Event.h"
 #include "Navigator/Events/AppEvent.h"
+#include "Navigator/Events/PhysicsEvent.h"
 #include "Navigator/LayerStack.h"
 #include "Navigator/Layer.h"
 #include "Navigator/Window.h"
 #include "Navigator/ImGui/ImGuiLayer.h"
+#include "Navigator/Physics/PhysicsEventBuilder.h"
+#include <thread>
 
 namespace Navigator {
 
@@ -29,6 +32,12 @@ namespace Navigator {
 
 	private:
 		bool OnWindowCloseEvent(WindowCloseEvent& event);
+		bool OnPhysicsStartEvent(PhysicsStartEvent& event);
+		bool OnPhysicsStopEvent(PhysicsStopEvent& event);
+
+		void DestroyPhysThread();
+
+		std::thread* m_physThread;
 		
 		LayerStack m_stack;
 		std::unique_ptr<Window> m_window;

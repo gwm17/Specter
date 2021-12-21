@@ -1,6 +1,7 @@
 #include "Navigator.h"
 
 Navigator::Application* Navigator::CreateApplication() { return new Application(); }
+Navigator::PhysicsEventBuilder* Navigator::CreatePhysicsEventBuilder() { return new PhysicsEventBuilder(); }
 
 int main(int argc, const char** argv)
 {
@@ -9,7 +10,6 @@ int main(int argc, const char** argv)
 
 	auto app = Navigator::CreateApplication();
 
-	NAV_TRACE("Navigator Application Created!");
 	app->Run();
 
 	delete app;
