@@ -21,6 +21,8 @@ project "GLAD"
 		systemversion "latest"
 	filter "system:linux or macosx"
 		pic "on"
+    filter "system:macosx"
+        sysincludedirs { "include" }
 
 	filter "configurations:Debug"
 		runtime "Debug"
