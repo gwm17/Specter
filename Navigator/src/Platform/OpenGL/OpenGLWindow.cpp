@@ -39,6 +39,13 @@ namespace Navigator {
 			NAV_INFO("Initializing GLFW ... Returned value {0}", passed);
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
+        
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,true);
+#endif
 
 		m_window = glfwCreateWindow((int)m_data.width, (int)m_data.height, m_data.name.c_str(), nullptr, nullptr);
 
