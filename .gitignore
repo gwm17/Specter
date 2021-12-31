@@ -14,5 +14,6 @@ NavProject/Makefile
 bin-int/
 bin/
 lib/
+*.xcworkspace/
 
 !.gitignore
