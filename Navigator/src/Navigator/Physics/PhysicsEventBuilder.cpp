@@ -30,14 +30,9 @@ namespace Navigator {
 		m_runFlag = false;
 	}
 
-	void PhysicsEventBuilder::PushLayer(Layer* layer)
+	void PhysicsEventBuilder::PushStage(AnalysisStage* stage)
 	{
-		m_physStack.PushLayer(layer);
-	}
-
-	void PhysicsEventBuilder::PushOverlay(Layer* layer)
-	{
-		m_physStack.PushOverlay(layer);
+		m_physStack.PushStage(stage);
 	}
 
 	void PhysicsEventBuilder::Run()

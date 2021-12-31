@@ -36,6 +36,16 @@ project "Navigator"
 		
 	filter "system:linux or macosx"
 		pchheader "%{prj.name}/src/navpch.h"
+	filter "system:macosx"
+		pchheader "src/navpch.h"
+		sysincludedirs {
+			"%{prj.name}/vendor/spdlog/include/",
+			"%{IncludeDirs.glfw}",
+			"%{IncludeDirs.ImGui}",
+			"%{IncludeDirs.glad}",
+			"%{IncludeDirs.ImPlot}"
+		}
+	filter {}
 
 	includedirs {
 		"%{prj.name}/src/",
@@ -46,7 +56,6 @@ project "Navigator"
 		"%{IncludeDirs.ImPlot}"
 	}
 	
-	filter {}
 
 	files {
 		"%{prj.name}/src/**.h",
@@ -86,14 +95,16 @@ project "Navigator"
 	filter "system:macosx"
 		defines "NAV_APPLE"
 		links {
-			"GL",
-			"GLU",
-			"glut",
-			"X11",
+			"Cocoa.framework",
+			"CoreVideo.framework",
+			"IOKit.framework",
+			"OpenGL.framework",
+			"Carbon.framework",
 			"dl",
 		}
 		linkoptions{
-			"-pthread"
+			"-pthread",
+			"-undefined dynamic_lookup"
 		}
 
 	filter "configurations:Debug"
@@ -134,6 +145,15 @@ project "NavProject"
 
 
 	systemversion "latest"
+
+	filter "system:macosx"
+		sysincludedirs {
+			"Navigator/vendor/spdlog/include/",
+			"%{IncludeDirs.glfw}",
+			"%{IncludeDirs.ImGui}",
+			"%{IncludeDirs.glad}",
+			"%{IncludeDirs.ImPlot}"
+		}
 
 	
 

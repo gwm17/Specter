@@ -20,8 +20,10 @@ project "GLAD"
 	filter "system:windows"
 		systemversion "latest"
 	filter "system:linux or macosx"
+		systemversion "latest"
 		pic "on"
     filter "system:macosx"
+		systemversion "latest"
         sysincludedirs { "include" }
 
 	filter "configurations:Debug"

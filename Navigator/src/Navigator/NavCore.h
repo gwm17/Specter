@@ -5,9 +5,6 @@
 	#error "Navigator is not compatible with Windows!"
 #endif
 
-#ifdef NAV_APPLE
-	#error "Navigator is not compatible with MacOS!"
-#endif
 
 //Bit field setter
 #define BIT(x) (1<<x)
