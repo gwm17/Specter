@@ -6,6 +6,9 @@ Makefile
 *.make
 *.user
 *.ini
+*.sln
+*.vcxproj
+*.vcxproj.filters
 
 Navigator/Makefile
 NavProject/Makefile
