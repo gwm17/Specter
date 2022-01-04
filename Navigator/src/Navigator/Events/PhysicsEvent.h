@@ -9,12 +9,13 @@ namespace Navigator {
 	class PhysicsStartEvent : public Event
 	{
 	public:
-		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type) :
+		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window) :
 			m_sourceLocation(loc), m_sourceType(type)
 		{}
 
 		inline std::string GetSourceLocation() { return m_sourceLocation; }
 		inline DataSource::SourceType GetSourceType() { return m_sourceType; }
+		inline uint64_t GetCoincidenceWindow() { return m_coincidenceWindow; }
 
 		std::string ToString() const override
 		{
@@ -27,6 +28,7 @@ namespace Navigator {
 	private:
 		std::string m_sourceLocation;
 		DataSource::SourceType m_sourceType;
+		uint64_t m_coincidenceWindow;
 	};
 
 	class PhysicsStopEvent : public Event

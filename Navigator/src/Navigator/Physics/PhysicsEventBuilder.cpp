@@ -67,9 +67,6 @@ namespace Navigator {
 
 		CompassHit hit;
 		
-
-		//temp
-		m_rawSort.SetCoincidenceWindow(2000000);
 		while(m_runFlag)
 		{
 

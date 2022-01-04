@@ -35,7 +35,10 @@ namespace Navigator {
 			m_physThread->join();
 
 		if(m_physThread != nullptr)
+		{
 			delete m_physThread;
+			m_physThread = nullptr;
+		}
 	}
 
 	void Application::OnEvent(Event& event) 
@@ -68,6 +71,7 @@ namespace Navigator {
 			DestroyPhysThread();
 		}
 		PhysicsEventBuilder::Get().AttachDataSource(event.GetSourceLocation(), event.GetSourceType());
+		PhysicsEventBuilder::Get().SetCoincidenceWindow(event.GetCoincidenceWindow());
 		if(PhysicsEventBuilder::Get().IsRunning())
 		{
 			NAV_INFO("Starting the event builder...");
@@ -98,7 +102,7 @@ namespace Navigator {
 
 	void Application::Run()
 	{
-		PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline);
+		PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline, 2000000);
 		OnEvent(junk);
 		while(m_runFlag)
 		{
