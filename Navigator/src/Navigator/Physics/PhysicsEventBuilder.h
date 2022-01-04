@@ -5,6 +5,7 @@
 #include "AnalysisStack.h"
 #include "AnalysisStage.h"
 #include "PhysicsHitSort.h"
+#include "DataSource.h"
 #include <mutex>
 #include <atomic>
 
@@ -18,7 +19,7 @@ namespace Navigator {
 
 		void Run();
 
-		void AttachDataSource();
+		void AttachDataSource(const std::string& loc, DataSource::SourceType type);
 		void DetachDataSource();
 
 		void SetCoincidenceWindow(uint64_t window) { m_rawSort.SetCoincidenceWindow(window); }
@@ -32,6 +33,10 @@ namespace Navigator {
 		std::atomic<bool> m_runFlag; //ensures defined read/write across threads
 		static PhysicsEventBuilder* s_instance;
 		PhysicsHitSort m_rawSort;
+
+		std::mutex m_sourceLock;
+
+		std::unique_ptr<DataSource> m_source;
 
 	};
 

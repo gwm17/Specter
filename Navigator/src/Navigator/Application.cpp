@@ -24,12 +24,9 @@ namespace Navigator {
 
 	Application::~Application()
 	{
-		if(PhysicsEventBuilder::Get().IsRunning())
-		{
-			NAV_INFO("Detaching PhysicsEventBuilder at shutdown");
-			PhysicsEventBuilder::Get().DetachDataSource();
-			DestroyPhysThread();
-		}
+		NAV_INFO("Detaching PhysicsEventBuilder at shutdown");
+		PhysicsEventBuilder::Get().DetachDataSource();
+		DestroyPhysThread();
 	}
 
 	void Application::DestroyPhysThread()
@@ -70,9 +67,12 @@ namespace Navigator {
 			NAV_INFO("Stopping the event builder...");
 			DestroyPhysThread();
 		}
-		PhysicsEventBuilder::Get().AttachDataSource();
-		NAV_INFO("Starting the event builder...");
-		m_physThread = new std::thread(&PhysicsEventBuilder::Run, std::ref(PhysicsEventBuilder::Get()));
+		PhysicsEventBuilder::Get().AttachDataSource(event.GetSourceLocation(), event.GetSourceType());
+		if(PhysicsEventBuilder::Get().IsRunning())
+		{
+			NAV_INFO("Starting the event builder...");
+			m_physThread = new std::thread(&PhysicsEventBuilder::Run, std::ref(PhysicsEventBuilder::Get()));
+		}
 		return true;
 	}
 
@@ -98,7 +98,7 @@ namespace Navigator {
 
 	void Application::Run()
 	{
-		PhysicsStartEvent junk;
+		PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline);
 		OnEvent(junk);
 		while(m_runFlag)
 		{

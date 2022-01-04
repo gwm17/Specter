@@ -10,39 +10,38 @@
 #ifndef COMPASSRUN_H
 #define COMPASSRUN_H
 
+#include "DataSource.h"
 #include "CompassFile.h"
 #include "ShiftMap.h"
+#include <filesystem>
 
 namespace Navigator {
 	
-	class CompassRun 
+	class CompassRun : public DataSource
 	{
 	
 	public:
 		CompassRun();
 		CompassRun(const std::string& dir);
-		~CompassRun();
-		inline void SetDirectory(const std::string& dir) { m_directory = dir; }
-		inline void SetRunNumber(int n) { m_runNum = n; }
+		virtual ~CompassRun();
+		virtual CompassHit GetData() override;
+		inline void SetDirectory(const std::string& dir) { m_directory = dir; CollectFiles(); }
 		inline void SetShiftMap(const std::string& filename) { m_smap.SetFile(filename); }
 	
 	
 	private:
+		void CollectFiles();
 		bool GetHitsFromFiles();
 	
-		std::string m_directory;
+		std::filesystem::path m_directory;
+		const std::string m_extension = ".bin";
 		std::vector<CompassFile> m_datafiles;
 		unsigned int startIndex; //this is the file we start looking at; increases as we finish files.
 		ShiftMap m_smap;
+
+		CompassHit m_hit;
 	
-		//Potential branch variables
-		CompassHit hit;
-	
-		//what run is this
-		int m_runNum;
 		unsigned int m_totalHits;
-	
-		//Scaler switch
 	};
 
 }

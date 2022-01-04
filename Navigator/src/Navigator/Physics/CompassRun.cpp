@@ -14,18 +14,65 @@
 namespace Navigator {
 	
 	CompassRun::CompassRun() :
-		m_directory("")
+		DataSource(), m_directory("")
 	{
 	}
 	
 	CompassRun::CompassRun(const std::string& dir) :
-		m_directory(dir)
+		DataSource(), m_directory(dir)
 	{
-	
+		CollectFiles();
 	}
 	
 	CompassRun::~CompassRun() {}
 	
+	void CompassRun::CollectFiles()
+	{
+		int nfiles=0;
+		for(auto& item : std::filesystem::directory_iterator(m_directory))
+		{
+			if(item.path().extension() == m_extension)
+				nfiles++;
+		}
+
+		m_datafiles.clear();
+		m_datafiles.reserve(nfiles);
+		for(auto& item : std::filesystem::directory_iterator(m_directory))
+		{
+			if(item.path().extension() == m_extension)
+			{
+				m_datafiles.emplace_back(item.path().string());
+			}
+		}
+
+		long total_hits=0;
+		for(auto& file : m_datafiles)
+		{
+			
+			if(!file.IsOpen())
+			{
+				NAV_ERROR("Unable to open file with name {0}", file.GetName());
+				m_validFlag = false;
+				return;
+			}
+
+			if(m_smap.IsValid())
+				file.AttachShiftMap(&m_smap);
+
+			total_hits += file.GetNumberOfHits();
+		}
+
+		if(m_datafiles.size() == 0)
+		{
+			NAV_WARN("Unable to find any files with extension {0} in directory {1}. CompassRun killed.", m_extension, m_directory);
+			m_validFlag = false;
+		}
+		else
+		{
+			NAV_INFO("Succesfully opened {0} files with {1} total hits", nfiles, total_hits);
+			m_validFlag = true;
+		}
+	}
 	/*
 		GetHitsFromFiles() is the function which actually retrieves and sorts the data from the individual
 		files. There are several tricks which allow this to happen. First is that, after sorting, it is impossible
@@ -62,9 +109,26 @@ namespace Navigator {
 	
 		if(earliestHit.second == nullptr) 
 			return false; //Make sure that there actually was a hit
-		hit = earliestHit.first;
+		m_hit = earliestHit.first;
 		*earliestHit.second = true;
 		return true;
+	}
+
+	CompassHit CompassRun::GetData()
+	{
+		if(!IsValid())
+		{
+			NAV_ERROR("Trying to access CompassRun data when invalid, bug detected!");
+			return CompassHit();
+		}
+
+		if(GetHitsFromFiles())
+			return m_hit;
+		else
+		{
+			m_validFlag = false;
+			return m_hit;
+		}
 	}
 
 }
