@@ -18,5 +18,6 @@
 
 #include "Navigator/Logger.h"
 #include "Navigator/Application.h"
+#include "Navigator/Physics/PhysicsEventBuilder.h"
 
 #endif

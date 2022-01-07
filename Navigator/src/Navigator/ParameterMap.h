@@ -1,14 +1,20 @@
 #ifndef PARAMETER_MAP_H
 #define PARAMETER_MAP_H
 
+#include <atomic>
+
 namespace Navigator {
 
 	struct ParameterData
 	{
-		double value = 0;
-		bool validFlag = false;
+		std::atomic<double> value=0.0;
+		std::atomic<bool> validFlag=false;
 	};
 
+    /*
+        For use inside of the physics thread only!!!!!! Do not use elsewhere as complex operations on parameter values are !not!
+        guaranteed to be thread-safe, only the accesing is!
+     */
 	class NavParameter
 	{
 
@@ -16,30 +22,43 @@ namespace Navigator {
 		NavParameter(const std::string& name, const std::string& alias);
 		~NavParameter();
 
-		inline void SetValue(double value) { p.value = value; }
+        inline bool IsValid() const { return m_pdata->validFlag; }
+        inline void Invalidate() { m_pdata->validFlag = false; }
+        inline void SetValue(double value) { m_pdata->validFlag = true; m_pdata->value = value; }
+        inline double GetValue() const { return m_pdata->value; }
 
 	private:
-		std::string name;
-		ParameterData p;
+		std::string m_name;
+		std::shared_ptr<ParameterData> m_pdata;
 
 	};
 
+    /*
+        Global parameter accesing, storage
+     */
 	class ParameterMap
 	{
 
 	public:
+        
+        using Iter = std::unordered_map<std::string, std::shared_ptr<ParameterData>>::iterator;
+        
 		ParameterMap();
 		~ParameterMap();
-		inline void AddParameter(const std::string& name) { m_map[name] = nullptr; }
-		inline void SetParameter(const std::string& name, ParameterData* param) { m_map[name] = param; }
+        inline void AddParameter(const std::string& name) { m_map[name] = std::make_shared<ParameterData>(); }
+		inline void SetParameter(const std::string& name, std::shared_ptr<ParameterData>& param) { param = m_map[name]; }
 		double GetParameterValue(const std::string& name);
+        bool IsParameterValid(const std::string& name);
 		void ResetParameters();
+        inline Iter end() { return m_map.end(); }
+        inline Iter begin() { return m_map.begin(); }
+        inline Iter find(const std::string& name) { return m_map.find(name); }
 
-		inline static ParameterMap& GetParameterMap() { return s_map; }
+		inline static ParameterMap& GetInstance() { return *s_instance; }
 
 	private:
-		std::unordered_map<std::string, ParameterData*> m_map;
-		static ParameterMap s_map;
+		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_map;
+		static ParameterMap* s_instance;
 
 	};
 

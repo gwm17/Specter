@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "ParameterMap.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"
 
@@ -7,14 +8,21 @@ namespace Navigator {
 	Application* Application::s_instance = nullptr;
 
 	Application::Application() :
-		m_runFlag(true)
+		m_runFlag(true), m_physThread(nullptr)
 	{
 		s_instance = this;
 
 		m_window = std::unique_ptr<Window>(Window::Create());
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
 
+        /*order is important, must be pMap then evb*/
+        CreateParameterMap();
 		CreatePhysicsEventBuilder();
+        
+        NavParameter par("joseph","mama");
+        par.SetValue(8);
+        NAV_INFO("Does the par exist? {0}", ParameterMap::GetInstance().IsParameterValid("joseph"));
+        NAV_INFO("What is its value? {0}", ParameterMap::GetInstance().GetParameterValue("joseph"));
 
 		PushLayer(new Layer());
 
