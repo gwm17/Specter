@@ -1,9 +1,6 @@
 [submodule "Navigator/vendor/spdlog"]
 	path = Navigator/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "Navigator/vendor/glfw"]
-	path = Navigator/vendor/glfw
-	url = https://github.com/gwm17/glfw.git
 [submodule "Navigator/vendor/implot"]
 	path = Navigator/vendor/implot
 	url = https://github.com/gwm17/implot.git
@@ -11,3 +8,6 @@
 	path = Navigator/vendor/imgui
 	url = https://github.com/gwm17/imgui.git
 	branch = docking
+[submodule "Navigator/vendor/glfw"]
+	path = Navigator/vendor/glfw
+	url = https://github.com/gwm17/glfw.git
