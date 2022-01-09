@@ -16,6 +16,6 @@
 //Bit field setter
 #define BIT(x) (1<<x)
 
-#define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
+#define BIND_EVENT_FUNCTION(x) [this](auto&&... args) -> decltype(auto) { return this->x(std::forward<decltype(args)>(args)...); }
 
 #endif

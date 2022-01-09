@@ -47,21 +47,18 @@ namespace Navigator {
 
 	class NAV_API EventDispatcher
 	{
-		template<typename T>
-			using EventFunc = std::function<bool(T&)>;
-
 	public:
 		EventDispatcher(Event& e) :
 			m_event(e)
 		{
 		}
 
-		template<typename T>
-		bool Dispatch(EventFunc<T> function)
+		template<typename T, typename  F>
+		bool Dispatch(const F& function)
 		{
 			if(m_event.GetEventType() == T::GetStaticType())
 			{
-				m_event.handledFlag = function(*(T*)&m_event);
+				m_event.handledFlag = function(static_cast<T&>(m_event));
 				return true;
 			}
 			else
