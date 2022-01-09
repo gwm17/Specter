@@ -8,15 +8,19 @@ namespace Navigator {
 	class NAV_API Histogram
 	{
 	public:
+		Histogram() :
+			m_name("None"), m_xParam("None"), m_yParam("None"), m_initFlag(false)
+		{
+		}
 		Histogram(const std::string& name, const std::string& param_x, const std::string& param_y="None") :
 			m_name(name), m_xParam(param_x), m_yParam(param_y), m_initFlag(false)
 		{
 		}
 
 		virtual ~Histogram() {};
-		virtual void FillData(double x, double y=0) = 0;
-		virtual void Draw() = 0;
-		virtual void ClearData() = 0;
+		virtual void FillData(double x, double y = 0) { NAV_WARN("Trying to fill a default histogram!"); }
+		virtual void Draw() {}
+		virtual void ClearData() {}
 		inline const std::string& GetXParam() const { return m_xParam; };
 		inline const std::string& GetYParam() const { return m_yParam; };
 		inline const std::string& GetName() const { return m_name; }

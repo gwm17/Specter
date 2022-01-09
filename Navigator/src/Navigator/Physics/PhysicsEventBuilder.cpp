@@ -1,16 +1,15 @@
 #include "PhysicsEventBuilder.h"
+#include "Navigator/ParameterMap.h"
 
 //temp
 #include "CompassHit.h"
-
-//GWM Jan. 3 2021 -- Make DataSource to unique ptr 
 
 namespace Navigator {
 
 	PhysicsEventBuilder* PhysicsEventBuilder::s_instance = nullptr;
 
 	PhysicsEventBuilder::PhysicsEventBuilder() :
-		m_runFlag(false), m_source(nullptr)
+		m_runFlag(false), m_source(nullptr), m_histMap(nullptr)
 	{
 		if(s_instance != nullptr)
 		{
@@ -18,6 +17,13 @@ namespace Navigator {
 			return;
 		}
 		s_instance = this;
+
+		CreateParameterMap();
+
+		NavParameter par("joseph", "mama");
+		par.SetValue(8);
+		NAV_INFO("Does the par exist? {0}", ParameterMap::GetInstance().IsParameterValid("joseph"));
+		NAV_INFO("What is its value? {0}", ParameterMap::GetInstance().GetParameterValue("joseph"));
 	}
 
 	PhysicsEventBuilder::~PhysicsEventBuilder() 
@@ -64,6 +70,11 @@ namespace Navigator {
 		{
 			NAV_WARN("Trying to Run PhysicsEventBuilder without a Data Source, killing thread!");
 		}
+		else if (m_histMap == nullptr || m_source == nullptr)
+		{
+			NAV_WARN("Internal state of PhysicsEventBuilder not set properly! Either histogram map or data source not initialized!");
+			return;
+		}
 
 		CompassHit hit;
 		
@@ -105,7 +116,15 @@ namespace Navigator {
 				//NAV_INFO("Obtaining built event...");
 				auto event = m_rawSort.GetRawPhysicsEvent();
 				//NAV_INFO("Built event size: {0}", event.size());
+				for (auto& stage : m_physStack)
+					stage->AnalyzeRawPhysicsEvent(event);
+				m_histMap->UpdateHistograms();
+
+				//Cleanup to be ready for next event
+				ParameterMap::GetInstance().InvalidateParameters();
 				m_rawSort.ClearRawPhysicsEvent();
+				//Need to add hit in hand, start new event
+				m_rawSort.AddHit(hit);
 			}
 			
 		}

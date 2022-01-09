@@ -50,7 +50,7 @@ namespace Navigator {
 		inline void SetParameter(const std::string& name, std::shared_ptr<ParameterData>& param) { param = m_map[name]; }
 		double GetParameterValue(const std::string& name);
         bool IsParameterValid(const std::string& name);
-		void ResetParameters();
+		void InvalidateParameters();
         inline Iter end() { return m_map.end(); }
         inline Iter begin() { return m_map.begin(); }
         inline Iter find(const std::string& name) { return m_map.find(name); }

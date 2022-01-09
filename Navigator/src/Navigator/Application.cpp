@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "ParameterMap.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"
 
@@ -15,15 +14,9 @@ namespace Navigator {
 		m_window = std::unique_ptr<Window>(Window::Create());
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
 
-        /*order is important, must be pMap then evb*/
-        CreateParameterMap();
-        
-        NavParameter par("joseph","mama");
-        par.SetValue(8);
-        NAV_INFO("Does the par exist? {0}", ParameterMap::GetInstance().IsParameterValid("joseph"));
-        NAV_INFO("What is its value? {0}", ParameterMap::GetInstance().GetParameterValue("joseph"));
-
 		PushLayer(new Layer());
+
+		m_histMap.AddHistogram("myHisto", "joseph", 100, 0, 10);
 
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);
@@ -111,6 +104,7 @@ namespace Navigator {
 	{
 		//PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline, 2000000);
 		//OnEvent(junk);
+		m_histMap.UpdateHistograms();
 		while(m_runFlag)
 		{
 

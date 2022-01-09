@@ -60,4 +60,13 @@ namespace Navigator {
         else
             return false;
     }
+
+    void ParameterMap::InvalidateParameters()
+    {
+        for(auto& iter : m_map)
+        {
+            iter.second->validFlag = false;
+            iter.second->value = 0.0;
+        }
+    }
 }

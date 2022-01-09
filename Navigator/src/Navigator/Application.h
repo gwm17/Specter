@@ -10,6 +10,7 @@
 #include "Navigator/Window.h"
 #include "Navigator/ImGui/ImGuiLayer.h"
 #include "Navigator/Physics/PhysicsEventBuilder.h"
+#include "Navigator/HistogramMap.h"
 #include <thread>
 
 namespace Navigator {
@@ -26,7 +27,10 @@ namespace Navigator {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 
+		inline void AttachHistogramMap() { PhysicsEventBuilder::Get().AttachHistogramMap(&m_histMap); }
+
 		inline static Application& Get() { return *s_instance; }
+		inline static void LinkHistogramMap() { s_instance->AttachHistogramMap(); }
 
 		inline Window& GetWindow() { return *m_window; }
 
@@ -40,6 +44,7 @@ namespace Navigator {
 		std::thread* m_physThread;
 		
 		LayerStack m_stack;
+		HistogramMap m_histMap;
 		std::unique_ptr<Window> m_window;
 		ImGuiLayer* m_imgui_layer;
 		bool m_runFlag;

@@ -10,7 +10,9 @@ int main(int argc, const char** argv)
 
 	auto app = Navigator::CreateApplication();
 	auto evb = Navigator::CreatePhysicsEventBuilder();
+	Navigator::Application::LinkHistogramMap();
 	app->Run();
 
 	delete app;
+	delete evb;
 }

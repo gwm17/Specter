@@ -2,6 +2,7 @@
 #define ANALYSIS_STAGE_H
 
 #include "Navigator/NavCore.h"
+#include "Navigator/ParameterMap.h"
 #include "CompassHit.h"
 
 namespace Navigator {
@@ -15,8 +16,6 @@ namespace Navigator {
 		virtual ~AnalysisStage();
 
 		virtual void AnalyzeRawPhysicsEvent(const RawPhysicsEvent& event) {};
-
-		void AttachParameterMap() {};
 
 		inline std::string GetName() { return m_name; }
 	private:
