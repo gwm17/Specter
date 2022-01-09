@@ -1,12 +1,12 @@
 #ifndef MOUSE_EVENT_H
 #define MOUSE_EVENT_H
 
-
+#include "Navigator/NavCore.h"
 #include "Event.h"
 
 namespace Navigator {
 
-	class MouseMovedEvent : public Event 
+	class NAV_API MouseMovedEvent : public Event 
 	{
 	public:
 		MouseMovedEvent(float x, float y) :
@@ -30,7 +30,7 @@ namespace Navigator {
 		float m_xPos, m_yPos;
 	};
 
-	class MouseScrolledEvent : public Event 
+	class NAV_API MouseScrolledEvent : public Event 
 	{
 	public:
 		MouseScrolledEvent(float x, float y) :
@@ -54,7 +54,7 @@ namespace Navigator {
 		float m_xOffset, m_yOffset;
 	};
 
-	class MouseButtonPressedEvent : public Event 
+	class NAV_API MouseButtonPressedEvent : public Event 
 	{
 	public:
 		MouseButtonPressedEvent(int code) :
@@ -77,7 +77,7 @@ namespace Navigator {
 		int m_buttonCode;
 	};
 
-	class MouseButtonReleasedEvent : public Event 
+	class NAV_API MouseButtonReleasedEvent : public Event 
 	{
 	public:
 		MouseButtonReleasedEvent(int code) :

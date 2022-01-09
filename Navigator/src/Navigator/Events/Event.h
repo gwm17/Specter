@@ -5,7 +5,7 @@
 
 namespace Navigator {
 
-	enum class EventType
+	enum class NAV_API EventType
 	{
 		None=0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
@@ -15,7 +15,7 @@ namespace Navigator {
 		PhysicsStart, PhysicsStop
 	};
 
-	enum EventCategory
+	enum NAV_API EventCategory
 	{
 		EventCategoryNone=0,
 		EventCategoryApp=BIT(0),
@@ -33,7 +33,7 @@ namespace Navigator {
 								   virtual EventType GetEventType() const override { return GetStaticType(); } \
 								   virtual const char* GetName() const override { return #type; }
 
-	class Event
+	class NAV_API Event
 	{
 		friend class EventDispatcher;
 	public:
@@ -45,7 +45,7 @@ namespace Navigator {
 		bool handledFlag = false;
 	};
 
-	class EventDispatcher
+	class NAV_API EventDispatcher
 	{
 		template<typename T>
 			using EventFunc = std::function<bool(T&)>;
@@ -74,7 +74,7 @@ namespace Navigator {
 		Event& m_event;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	NAV_API inline std::ostream& operator<<(std::ostream& os, const Event& e)
 	{
 		return os << e.ToString();
 	}

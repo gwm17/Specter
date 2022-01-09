@@ -14,7 +14,7 @@
 
 namespace Navigator {
 
-	class Application
+	class NAV_API Application
 	{
 	public:
 		Application();
@@ -49,7 +49,7 @@ namespace Navigator {
 		static Application* s_instance;
 	};
 
-	Application* CreateApplication();
+	NAV_API Application* CreateApplication();
 }
 
 #endif

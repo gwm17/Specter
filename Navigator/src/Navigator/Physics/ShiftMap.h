@@ -12,9 +12,11 @@
 #ifndef SHIFTMAP_H
 #define SHIFTMAP_H
 
+#include "Navigator/NavCore.h"
+
 namespace Navigator {
 
-	class ShiftMap 
+	class NAV_API ShiftMap 
 	{
 	public:
 		ShiftMap();

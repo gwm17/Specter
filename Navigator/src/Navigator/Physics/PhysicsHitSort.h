@@ -1,11 +1,12 @@
 #ifndef PHYSICS_HIT_SORT_H
 #define PHYSICS_HIT_SORT_H
 
+#include "Navigator/NavCore.h"
 #include "CompassHit.h"
 
 namespace Navigator {
 
-	class PhysicsHitSort
+	class NAV_API PhysicsHitSort
 	{
 	public:
 		using RawPhysicsEvent = std::vector<CompassHit>;

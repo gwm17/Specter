@@ -1,13 +1,14 @@
 #ifndef OPENGL_WINDOW_H
 #define OPENGL_WINDOW_H
 
+#include "Navigator/NavCore.h"
 #include "Navigator/Window.h"
 #include "Navigator/GraphicsContext.h"
 #include "GLFW/glfw3.h"
 
 namespace Navigator {
 
-	class OpenGLWindow : public Window
+	class NAV_API OpenGLWindow : public Window
 	{
 
 	public:

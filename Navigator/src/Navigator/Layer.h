@@ -1,11 +1,12 @@
 #ifndef LAYER_H
 #define LAYER_H
 
+#include "NavCore.h"
 #include "Events/Event.h"
 
 namespace Navigator {
 
-	class Layer
+	class NAV_API Layer
 	{
 	public:
 		Layer(const std::string& name="Layer");

@@ -11,12 +11,13 @@
 #ifndef COMPASSFILE_H
 #define COMPASSFILE_H
 
+#include "Navigator/NavCore.h"
 #include "CompassHit.h"
 #include "ShiftMap.h"
 
 namespace Navigator {
 
-	class CompassFile 
+	class NAV_API CompassFile 
 	{
 		
 	public:

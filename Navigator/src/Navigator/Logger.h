@@ -1,12 +1,13 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include "NavCore.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 
 namespace Navigator {
 
-	class Logger
+	class NAV_API Logger
 	{
 
 	public:

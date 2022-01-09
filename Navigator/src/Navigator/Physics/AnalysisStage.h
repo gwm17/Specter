@@ -1,11 +1,12 @@
 #ifndef ANALYSIS_STAGE_H
 #define ANALYSIS_STAGE_H
 
+#include "Navigator/NavCore.h"
 #include "CompassHit.h"
 
 namespace Navigator {
 
-	class AnalysisStage
+	class NAV_API AnalysisStage
 	{
 	public:
 		using RawPhysicsEvent = std::vector<CompassHit>;

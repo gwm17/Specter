@@ -24,7 +24,6 @@ project "Navigator"
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
 	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -84,8 +83,6 @@ project "Navigator"
 		defines "NAV_LINUX"
 		links {
 			"GL",
-			"GLU",
-			"glut",
 			"X11",
 			"dl"
 		}
@@ -105,6 +102,14 @@ project "Navigator"
 		linkoptions{
 			"-pthread",
 			"-undefined dynamic_lookup"
+		}
+	filter "system:windows"
+		defines "NAV_EXPORT"
+		postbuildcommands {
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/NavProject/\"")
+		}
+		links {
+			"opengl32.lib"
 		}
 
 	filter "configurations:Debug"
@@ -147,6 +152,7 @@ project "NavProject"
 	systemversion "latest"
 
 	filter "system:macosx"
+		defines "NAV_APPLE"
 		sysincludedirs {
 			"Navigator/vendor/spdlog/include/",
 			"%{IncludeDirs.glfw}",
@@ -154,6 +160,10 @@ project "NavProject"
 			"%{IncludeDirs.glad}",
 			"%{IncludeDirs.ImPlot}"
 		}
+	filter "system:windows"
+		defines "NAV_WINDOWS"
+	filter "system:linux"
+		defines "NAV_LINUX"
 
 	
 

@@ -6,7 +6,7 @@
 
 namespace Navigator {
 
-	class LayerStack
+	class NAV_API LayerStack
 	{
 	public:
 		LayerStack();

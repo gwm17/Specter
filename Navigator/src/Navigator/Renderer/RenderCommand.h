@@ -1,11 +1,12 @@
 #ifndef RENDER_COMMAND_H
 #define RENDER_COMMAND_H
 
+#include "Navigator/NavCore.h"
 #include "RendererAPI.h"
 
 namespace Navigator {
 
-	class RenderCommand
+	class NAV_API RenderCommand
 	{
 	public:
 		inline static void SetClearColor(const float* color_array) { s_api->SetClearColor(color_array); }

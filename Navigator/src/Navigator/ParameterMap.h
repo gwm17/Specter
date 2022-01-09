@@ -1,11 +1,12 @@
 #ifndef PARAMETER_MAP_H
 #define PARAMETER_MAP_H
 
+#include "NavCore.h"
 #include <atomic>
 
 namespace Navigator {
 
-	struct ParameterData
+	struct NAV_API ParameterData
 	{
 		std::atomic<double> value=0.0;
 		std::atomic<bool> validFlag=false;
@@ -15,7 +16,7 @@ namespace Navigator {
         For use inside of the physics thread only!!!!!! Do not use elsewhere as complex operations on parameter values are !not!
         guaranteed to be thread-safe, only the accesing is!
      */
-	class NavParameter
+	class NAV_API NavParameter
 	{
 
 	public:
@@ -36,7 +37,7 @@ namespace Navigator {
     /*
         Global parameter accesing, storage
      */
-	class ParameterMap
+	class NAV_API ParameterMap
 	{
 
 	public:
@@ -62,7 +63,7 @@ namespace Navigator {
 
 	};
 
-	ParameterMap* CreateParameterMap();
+	NAV_API ParameterMap* CreateParameterMap();
 }
 
 #endif

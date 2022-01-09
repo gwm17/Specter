@@ -9,7 +9,7 @@ int main(int argc, const char** argv)
 	NAV_TRACE("Logger Initialized!");
 
 	auto app = Navigator::CreateApplication();
-
+	auto evb = Navigator::CreatePhysicsEventBuilder();
 	app->Run();
 
 	delete app;

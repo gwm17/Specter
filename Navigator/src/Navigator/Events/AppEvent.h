@@ -1,11 +1,12 @@
 #ifndef APP_EVENT_H
 #define APP_EVENT_H
 
+#include "Navigator/NavCore.h"
 #include "Event.h"
 
 namespace Navigator {
 
-	class WindowCloseEvent : public Event 
+	class NAV_API WindowCloseEvent : public Event 
 	{
 	public:
 		WindowCloseEvent() {};
@@ -14,7 +15,7 @@ namespace Navigator {
 		EVENT_TYPE_SETUP(WindowClose)
 	};
 
-	class WindowResizeEvent : public Event 
+	class NAV_API WindowResizeEvent : public Event 
 	{
 	public:
 		WindowResizeEvent(float x, float y) :
@@ -38,7 +39,7 @@ namespace Navigator {
 		float m_xSize, m_ySize;
 	};
 
-	class AppUpdateEvent : public Event 
+	class NAV_API AppUpdateEvent : public Event 
 	{
 	public:
 		AppUpdateEvent() = default;

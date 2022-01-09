@@ -6,7 +6,7 @@
 
 namespace Navigator {
 
-	class WindowProperties
+	class NAV_API WindowProperties
 	{
 	public:
 		unsigned int width, height;
@@ -19,7 +19,7 @@ namespace Navigator {
 
 	};
 
-	class Window
+	class NAV_API Window
 	{
 	public:
 

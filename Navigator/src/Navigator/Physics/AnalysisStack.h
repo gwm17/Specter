@@ -13,7 +13,7 @@
 
 namespace Navigator {
 
-    class AnalysisStack
+    class NAV_API AnalysisStack
     {
     public:
         AnalysisStack();

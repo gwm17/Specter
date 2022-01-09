@@ -1,13 +1,14 @@
 #ifndef OPEGL_CONTEXT_H
 #define OPEGL_CONTEXT_H
 
+#include "Navigator/NavCore.h"
 #include "Navigator/GraphicsContext.h"
 
 struct GLFWwindow;
 
 namespace Navigator {
 
-	class OpenGLContext : public GraphicsContext
+	class NAV_API OpenGLContext : public GraphicsContext
 	{
 	public:
 		OpenGLContext(GLFWwindow* window);

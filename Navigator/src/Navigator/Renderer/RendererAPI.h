@@ -1,9 +1,11 @@
 #ifndef RENDERER_API_H
 #define RENDERER_API_H
 
+#include "Navigator/NavCore.h"
+
 namespace Navigator {
 
-	class RendererAPI
+	class NAV_API RendererAPI
 	{
 	public:
 		enum class API

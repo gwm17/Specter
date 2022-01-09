@@ -1,12 +1,13 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "Navigator/NavCore.h"
 #include "RendererAPI.h"
 #include "RenderCommand.h"
 
 namespace Navigator {
 
-	class Renderer
+	class NAV_API Renderer
 	{
 	public:
 

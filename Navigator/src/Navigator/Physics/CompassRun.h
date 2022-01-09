@@ -10,6 +10,7 @@
 #ifndef COMPASSRUN_H
 #define COMPASSRUN_H
 
+#include "Navigator/NavCore.h"
 #include "DataSource.h"
 #include "CompassFile.h"
 #include "ShiftMap.h"
@@ -17,7 +18,7 @@
 
 namespace Navigator {
 	
-	class CompassRun : public DataSource
+	class NAV_API CompassRun : public DataSource
 	{
 	
 	public:

@@ -3,7 +3,7 @@
 
 namespace Navigator {
 
-	class GraphicsContext
+	class NAV_API GraphicsContext
 	{
 	public:
 		virtual void Init() = 0;

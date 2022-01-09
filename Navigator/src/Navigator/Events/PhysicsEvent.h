@@ -1,12 +1,13 @@
 #ifndef PHYSICS_EVENT_H
 #define PHYSICS_EVENT_H
 
+#include "Navigator/NavCore.h"
 #include "Event.h"
 #include "Navigator/Physics/DataSource.h"
 
 namespace Navigator {
 
-	class PhysicsStartEvent : public Event
+	class NAV_API PhysicsStartEvent : public Event
 	{
 	public:
 		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window) :
@@ -31,7 +32,7 @@ namespace Navigator {
 		uint64_t m_coincidenceWindow;
 	};
 
-	class PhysicsStopEvent : public Event
+	class NAV_API PhysicsStopEvent : public Event
 	{
 	public:
 		PhysicsStopEvent() {}

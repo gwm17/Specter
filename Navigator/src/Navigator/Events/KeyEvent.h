@@ -1,11 +1,12 @@
 #ifndef KEY_EVENT_H
 #define KEY_EVENT_H
 
+#include "Navigator/NavCore.h"
 #include "Event.h"
 
 namespace Navigator {
 
-	class KeyEvent : public Event
+	class NAV_API KeyEvent : public Event
 	{
 	public:
 		inline int GetKeycode() const { return m_keycode; }
@@ -20,7 +21,7 @@ namespace Navigator {
 
 	};
 
-	class KeyPressedEvent : public KeyEvent
+	class NAV_API KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int code, int count) :
@@ -44,7 +45,7 @@ namespace Navigator {
 		int m_repeatCount;
 	};
 
-	class KeyReleasedEvent : public KeyEvent 
+	class NAV_API KeyReleasedEvent : public KeyEvent 
 	{
 	public:
 		KeyReleasedEvent(int code) :
@@ -63,7 +64,7 @@ namespace Navigator {
 
 	};
 
-	class KeyTypedEvent : public KeyEvent 
+	class NAV_API KeyTypedEvent : public KeyEvent 
 	{
 	public:
 		KeyTypedEvent(int code) :

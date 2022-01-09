@@ -1,8 +1,15 @@
 #ifndef NAVCORE_H
 #define NAVCORE_H
 
+
 #ifdef NAV_WINDOWS
-	#error "Navigator is not compatible with Windows!"
+	#ifdef NAV_EXPORT
+		#define NAV_API __declspec(dllexport)
+	#else
+		#define NAV_API __declspec(dllimport)
+	#endif
+#else
+	#define NAV_API
 #endif
 
 

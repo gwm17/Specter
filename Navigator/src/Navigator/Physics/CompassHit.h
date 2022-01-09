@@ -1,9 +1,11 @@
 #ifndef COMPASS_HIT_H
 #define COMPASS_HIT_H
 
+#include "Navigator/NavCore.h"
+
 namespace Navigator {
 
-	struct CompassHit 
+	struct NAV_API CompassHit 
 	{
 		uint16_t board = 0;
 		uint16_t channel = 0;

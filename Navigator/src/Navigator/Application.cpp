@@ -17,7 +17,6 @@ namespace Navigator {
 
         /*order is important, must be pMap then evb*/
         CreateParameterMap();
-		CreatePhysicsEventBuilder();
         
         NavParameter par("joseph","mama");
         par.SetValue(8);
@@ -110,8 +109,8 @@ namespace Navigator {
 
 	void Application::Run()
 	{
-		PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline, 2000000);
-		OnEvent(junk);
+		//PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline, 2000000);
+		//OnEvent(junk);
 		while(m_runFlag)
 		{
 

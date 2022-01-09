@@ -1,9 +1,11 @@
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
+#include "NavCore.h"
+
 namespace Navigator {
 
-	class Histogram
+	class NAV_API Histogram
 	{
 	public:
 		Histogram(const std::string& name, const std::string& param_x, const std::string& param_y="None") :
@@ -26,7 +28,7 @@ namespace Navigator {
 		bool m_initFlag;
 	};
 
-	class Histogram1D : public Histogram
+	class NAV_API Histogram1D : public Histogram
 	{
 	public:
 		Histogram1D(const std::string& name, const std::string& param, int bins, double min, double max);
@@ -47,7 +49,7 @@ namespace Navigator {
 		double m_xMax;
 	};
 
-	class Histogram2D : public Histogram
+	class NAV_API Histogram2D : public Histogram
 	{
 	public:
 		Histogram2D(const std::string& name, const std::string& param_x, const std::string& param_y, int bins_x, double min_x, double max_x,

@@ -1,11 +1,12 @@
 #ifndef DATA_SOURCE_H
 #define DATA_SOURCE_H
 
+#include "Navigator/NavCore.h"
 #include "CompassHit.h"
 
 namespace Navigator {
 
-	class DataSource
+	class NAV_API DataSource
 	{
 	public:
 		enum class SourceType
@@ -28,9 +29,9 @@ namespace Navigator {
 		bool m_validFlag;
 	};
 
-	DataSource* CreateDataSource(const std::string& loc, DataSource::SourceType type);
+	NAV_API DataSource* CreateDataSource(const std::string& loc, DataSource::SourceType type);
 
-	std::string ConvertDataSourceTypeToString(DataSource::SourceType type);
+	NAV_API std::string ConvertDataSourceTypeToString(DataSource::SourceType type);
 }
 
 #endif

@@ -11,7 +11,7 @@
 
 namespace Navigator {
 
-	class PhysicsEventBuilder
+	class NAV_API PhysicsEventBuilder
 	{
 	public:
 		PhysicsEventBuilder();
@@ -26,7 +26,7 @@ namespace Navigator {
 		void PushStage(AnalysisStage* stage);
 		bool IsRunning() { return m_runFlag; }
 
-		inline static PhysicsEventBuilder& Get() { return *s_instance; }
+		static PhysicsEventBuilder& Get() { return *s_instance; }
 
 	private:
 		AnalysisStack m_physStack;
@@ -40,7 +40,7 @@ namespace Navigator {
 
 	};
 
-	PhysicsEventBuilder* CreatePhysicsEventBuilder();
+	NAV_API PhysicsEventBuilder* CreatePhysicsEventBuilder();
 
 }
 

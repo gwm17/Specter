@@ -1,6 +1,7 @@
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 
+
 #include <iostream>
 #include <fstream>
 #include <memory>
