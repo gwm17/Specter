@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"
+#include "Editor/EditorLayer.h"
 
 namespace Navigator {
 
@@ -14,7 +15,7 @@ namespace Navigator {
 		m_window = std::unique_ptr<Window>(Window::Create());
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
 
-		PushLayer(new Layer());
+		PushLayer(new EditorLayer(&m_histMap));
 
 		m_histMap.AddHistogram("myHisto", "joseph", 100, 0, 10);
 
