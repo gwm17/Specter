@@ -7,6 +7,8 @@ namespace Navigator {
     EditorLayer::EditorLayer(HistogramMap* hmap) :
         Layer("EditorLayer"), m_histMap(hmap)
     {
+        zoomFlag = false;
+        zoomed_gram = "";
     }
     
     EditorLayer::~EditorLayer() {}
@@ -134,53 +136,73 @@ namespace Navigator {
                 static std::vector<std::string> s_selectedGrams;
                 static int sizes[2] = { 1,1 };
                 static int total = 1;
-
-                ImGui::SliderInt2("Rows, Columns", sizes, 1, 3);
-                total = sizes[0] * sizes[1];
-                s_selectedGrams.resize(total);
-                for (auto& gram : s_selectedGrams)
-                    gram = paramList[0].name;
-                if (ImGui::BeginTable("Select Histograms", sizes[1]))
+                
+                if(zoomFlag && zoomed_gram != "")
                 {
-                    std::string label;
-                    int this_gram;
-                    for (int i = 0; i < sizes[0]; i++)
+                    if(ImPlot::BeginPlot(zoomed_gram.c_str(), ImVec2(-1,-1)))
                     {
-                        ImGui::TableNextRow();
-                        for (int j = 0; j < sizes[1]; j++)
+                        m_histMap->DrawHistogram(zoomed_gram);
+                        if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
-                            ImGui::TableNextColumn();
-                            this_gram = i * sizes[1] + j;
-                            label = "Histogram" + std::to_string(this_gram);
-                            if (ImGui::BeginCombo(label.c_str(), paramList[0].name.c_str()))
+                            NAV_INFO("We lost 'em, de-zoom and enhance!");
+                            zoomFlag = false;
+                            zoomed_gram = "";
+                        }
+                        ImPlot::EndPlot();
+                    }
+                }
+                else
+                {
+                    ImGui::SliderInt2("Rows, Columns", sizes, 1, 3);
+                    total = sizes[0] * sizes[1];
+                    s_selectedGrams.resize(total);
+                    for (auto& gram : s_selectedGrams)
+                        gram = paramList[0].name;
+                    if (ImGui::BeginTable("Select Histograms", sizes[1]))
+                    {
+                        std::string label;
+                        int this_gram;
+                        for (int i = 0; i < sizes[0]; i++)
+                        {
+                            ImGui::TableNextRow();
+                            for (int j = 0; j < sizes[1]; j++)
                             {
-                                for (auto& params : paramList)
-                                    if (ImGui::Selectable(params.name.c_str(), params.name == s_selectedGrams[this_gram]))
-                                        s_selectedGrams[this_gram] = params.name;
-                                ImGui::EndCombo();
+                                ImGui::TableNextColumn();
+                                this_gram = i * sizes[1] + j;
+                                label = "Histogram" + std::to_string(this_gram);
+                                if (ImGui::BeginCombo(label.c_str(), paramList[0].name.c_str()))
+                                {
+                                    for (auto& params : paramList)
+                                        if (ImGui::Selectable(params.name.c_str(), params.name == s_selectedGrams[this_gram]))
+                                            s_selectedGrams[this_gram] = params.name;
+                                    ImGui::EndCombo();
+                                }
                             }
                         }
+                        ImGui::EndTable();
                     }
-                    ImGui::EndTable();
-                }
-                
-                if (ImPlot::BeginSubplots("Histograms", sizes[0], sizes[1], ImVec2(-1, -1)))
-                {
-                    int i = 0;
-                    for (auto& spec : s_selectedGrams)
+                    
+                    if (ImPlot::BeginSubplots("Histograms", sizes[0], sizes[1], ImVec2(-1, -1)))
                     {
-                        if (ImPlot::BeginPlot(spec.c_str()))
+                        int i = 0;
+                        for (auto& spec : s_selectedGrams)
                         {
-                            m_histMap->DrawHistogram(spec);
-                            if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                                NAV_INFO("We got'em boys, they're in plot {0}", i);
-                            ImPlot::EndPlot();
+                            if (ImPlot::BeginPlot(spec.c_str()))
+                            {
+                                m_histMap->DrawHistogram(spec);
+                                if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                                {
+                                    NAV_INFO("We got'em boys, they're in plot {0}. Zoom and enhance!", i);
+                                    zoomFlag = true;
+                                    zoomed_gram = spec;
+                                }
+                                ImPlot::EndPlot();
+                            }
+                            i++;
                         }
-                        i++;
+                        ImPlot::EndSubplots();
                     }
-                    ImPlot::EndSubplots();
                 }
-                
             }
             ImGui::End();
         }
@@ -193,11 +215,11 @@ namespace Navigator {
                 if (ImGui::TreeNode(params.name.c_str()))
                 {
                     ImGui::BulletText("X Parameter: %s", params.x_par.c_str());
-                    ImGui::BulletText("X Bins: %d X Min: %d X Max: %d", params.nbins_x, params.min_x, params.max_x);
+                    ImGui::BulletText("X Bins: %d X Min: %f X Max: %f", params.nbins_x, params.min_x, params.max_x);
                     if (params.y_par != "None")
                     {
                         ImGui::BulletText("Y Parameter: %s", params.y_par.c_str());
-                        ImGui::BulletText("Y Bins: %d Y Min: %d Y Max: %d", params.nbins_y, params.min_y, params.max_y);
+                        ImGui::BulletText("Y Bins: %d Y Min: %f Y Max: %f", params.nbins_y, params.min_y, params.max_y);
                     }
 
                     ImGui::TreePop();

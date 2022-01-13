@@ -21,6 +21,10 @@ namespace Navigator {
         
     private:
         HistogramMap* m_histMap; //Not owned by the EditorLayer!!
+        
+        //temp
+        bool zoomFlag;
+        std::string zoomed_gram;
     };
 
 }
