@@ -12,30 +12,33 @@ namespace Navigator {
 		1D Histogram class
 	*/
 	Histogram1D::Histogram1D(const std::string& name, const std::string& param, int bins, double min, double max) :
-		Histogram(name, param), m_nBins(bins), m_xMin(min), m_xMax(max)
+		Histogram(name, param)
 	{
-		InitBins();
+		InitBins(bins, min, max);
 	}
 
 	Histogram1D::~Histogram1D() {}
 
-	void Histogram1D::InitBins()
+	void Histogram1D::InitBins(int bins, double min, double max)
 	{
-		if(m_nBins == 0 || (m_xMin >= m_xMax))
+		m_params.nbins_x = bins;
+		m_params.min_x = min;
+		m_params.max_x = max;
+		if(m_params.nbins_x == 0 || (m_params.min_x >= m_params.max_x))
 		{
-			NAV_WARN("Attempting to create an illegal Histogram1D {0} with {1} bins and a range from {2} to {3}. Historgram not initialized.", m_name, m_nBins, m_xMin, m_xMax);
+			NAV_WARN("Attempting to create an illegal Histogram1D {0} with {1} bins and a range from {2} to {3}. Historgram not initialized.", m_params.name, m_params.nbins_x, m_params.min_x, m_params.max_x);
 			m_initFlag = false;
 			return;
 		}
 
-		m_binWidth = (m_xMax - m_xMin)/m_nBins;
+		m_binWidth = (m_params.max_x - m_params.min_x)/m_params.nbins_x;
 
-		m_binCenters.resize(m_nBins);
-		m_binCounts.resize(m_nBins);
+		m_binCenters.resize(m_params.nbins_x);
+		m_binCounts.resize(m_params.nbins_x);
 
-		for(int i=0; i<m_nBins; i++)
+		for(int i=0; i<m_params.nbins_x; i++)
 		{
-			m_binCenters[i] = m_xMin + i*m_binWidth + m_binWidth*0.5;
+			m_binCenters[i] = m_params.min_x + i*m_binWidth + m_binWidth*0.5;
 			m_binCounts[i] = 0;
 		}
 
@@ -45,10 +48,10 @@ namespace Navigator {
 	//Note: only x is used here, y is simply present to maintain compliance with 2D case and can be ignored
 	void Histogram1D::FillData(double x, double y)
 	{
-		if(x < m_xMin || x >= m_xMax || !m_initFlag)
+		if(x < m_params.min_x || x >= m_params.max_x || !m_initFlag)
 			return;
 
-		int bin = int((x - m_xMin)/(m_binWidth));
+		int bin = int((x - m_params.min_x)/(m_binWidth));
 
 		m_binCounts[bin] += 1.0;
 	}
@@ -56,12 +59,13 @@ namespace Navigator {
 	//Can only be used within an ImGui / ImPlot context!!
 	void Histogram1D::Draw()
 	{
-		ImPlot::PlotBars(m_name.c_str(), &m_binCenters.data()[0], &m_binCounts.data()[0], m_nBins, m_binWidth);
+		ImPlot::SetupAxes(m_params.x_par.c_str(), "Counts",0, ImPlotAxisFlags_LockMin);
+		ImPlot::PlotBars(m_params.name.c_str(), &m_binCenters.data()[0], &m_binCounts.data()[0], m_params.nbins_x, m_binWidth);
 	}
 
 	void Histogram1D::ClearData()
 	{
-		for(int i=0; i<m_nBins; i++)
+		for(int i=0; i<m_params.nbins_x; i++)
 			m_binCounts[i] = 0;
 	}
 
@@ -71,42 +75,49 @@ namespace Navigator {
 	*/
 	Histogram2D::Histogram2D(const std::string& name, const std::string& param_x, const std::string& param_y, int bins_x, double min_x, double max_x,
 							 int bins_y, double min_y, double max_y) :
-		Histogram(name, param_x, param_y), m_nXBins(bins_x), m_nYBins(bins_y), m_xMin(min_x), m_xMax(max_x), m_yMin(min_y), m_yMax(max_y)
+		Histogram(name, param_x, param_y)
 	{
-		InitBins();
+		InitBins(bins_x, min_x, max_x, bins_y, min_y, max_y);
 	}
 
 	Histogram2D::~Histogram2D() {}
 
-	void Histogram2D::InitBins()
+	void Histogram2D::InitBins(int bins_x, double min_x, double max_x, int bins_y, double min_y, double max_y)
 	{
-		if(m_nXBins == 0 || m_nYBins == 0 || m_xMin >= m_xMax || m_yMin >= m_yMax)
+		m_params.nbins_x = bins_x;
+		m_params.min_x = min_x;
+		m_params.max_x = max_x;
+		m_params.nbins_y = bins_y;
+		m_params.min_y = min_y;
+		m_params.max_y = max_y;
+
+		if(m_params.nbins_x <= 0 || m_params.nbins_y <= 0 || m_params.min_x >= m_params.max_x || m_params.min_y >= m_params.max_y)
 		{
-			NAV_WARN("Attempting to create illegal Histogram2D {0} with {1} x bins, {2} y bins, an x range of {3} to {4}, and a y range of {5} to {6}. Not initialized.", m_name, m_nXBins, m_nYBins,
-					 m_xMin, m_xMax, m_yMin, m_yMax);
+			NAV_WARN("Attempting to create illegal Histogram2D {0} with {1} x bins, {2} y bins, an x range of {3} to {4}, and a y range of {5} to {6}. Not initialized.", m_params.name, m_params.nbins_x, m_params.nbins_y,
+					 m_params.min_x, m_params.max_x, m_params.min_y, m_params.max_y);
 			m_initFlag = false;
 			return;
 		}
 
-		m_binWidthX = (m_xMax - m_xMin)/m_nXBins;
-		m_binWidthY = (m_yMax - m_yMin)/m_nYBins;
+		m_binWidthX = (m_params.max_x - m_params.min_x)/m_params.nbins_x;
+		m_binWidthY = (m_params.max_y - m_params.min_y)/m_params.nbins_y;
 
-		m_nBins = m_nXBins*m_nYBins;
+		m_nBinsTotal = m_params.nbins_x*m_params.nbins_y;
 
-		m_binCounts.resize(m_nBins);
-		for(int i=0; i<m_nBins; i++)
+		m_binCounts.resize(m_nBinsTotal);
+		for(int i=0; i<m_nBinsTotal; i++)
 			m_binCounts[i] = 0;
 		m_maxBinContent = 0;
 	}
 
 	void Histogram2D::FillData(double x, double y)
 	{
-		if(x < m_xMin || x >= m_xMax || y < m_yMin || y >= m_yMax || !m_initFlag)
+		if(x < m_params.min_x || x >= m_params.max_x || y < m_params.min_y || y >= m_params.max_y || !m_initFlag)
 			return;
 
-		int bin_x = int((x - m_xMin)/m_binWidthX);
-		int bin_y = int((y - m_yMin)/m_binWidthY);
-		int bin = bin_y*m_nXBins + bin_x;
+		int bin_x = int((x - m_params.min_x)/m_binWidthX);
+		int bin_y = int((y - m_params.min_y)/m_binWidthY);
+		int bin = bin_y*m_params.nbins_x + bin_x;
 
 		m_binCounts[bin] += 1.0;
 
@@ -116,12 +127,14 @@ namespace Navigator {
 	//Can only be used within an ImGui / ImPlot context!!
 	void Histogram2D::Draw()
 	{
-		ImPlot::PlotHeatmap(m_name.c_str(), &m_binCounts.data()[0], m_nYBins, m_nXBins, 0, m_maxBinContent, NULL, ImPlotPoint(m_xMin, m_yMin), ImPlotPoint(m_xMax, m_yMax));
+		ImPlot::SetupAxes(m_params.x_par.c_str(), m_params.y_par.c_str(), 0, 0);
+		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, 0, m_maxBinContent, NULL,
+							ImPlotPoint(m_params.min_x, m_params.min_y), ImPlotPoint(m_params.max_x, m_params.max_y));
 	}
 
 	void Histogram2D::ClearData()
 	{
-		for(int i=0; i<m_nBins; i++)
+		for(int i=0; i<m_nBinsTotal; i++)
 			m_binCounts[i] = 0;
 		m_maxBinContent = 0;
 	}
