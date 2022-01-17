@@ -1,4 +1,5 @@
 #include "Histogram.h"
+#include "CutMap.h"
 #include "implot.h"
 
 /*
@@ -52,6 +53,8 @@ namespace Navigator {
 			return;
 
 		int bin = int((x - m_params.min_x)/(m_binWidth));
+        
+        auto& cutmap = CutMap::GetInstance();
 
 		m_binCounts[bin] += 1.0;
 	}
@@ -61,6 +64,9 @@ namespace Navigator {
 	{
 		ImPlot::SetupAxes(m_params.x_par.c_str(), "Counts",0, ImPlotAxisFlags_LockMin);
 		ImPlot::PlotBars(m_params.name.c_str(), &m_binCenters.data()[0], &m_binCounts.data()[0], m_params.nbins_x, m_binWidth);
+        auto& cutmap = CutMap::GetInstance();
+        for(auto& cut : m_params.cutsDrawnUpon)
+            cutmap.DrawCut(cut);
 	}
 
 	void Histogram1D::ClearData()
@@ -130,6 +136,9 @@ namespace Navigator {
 		ImPlot::SetupAxes(m_params.x_par.c_str(), m_params.y_par.c_str(), 0, 0);
 		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, 0, m_maxBinContent, NULL,
 							ImPlotPoint(m_params.min_x, m_params.min_y), ImPlotPoint(m_params.max_x, m_params.max_y));
+        auto& cutmap = CutMap::GetInstance();
+        for(auto& cut : m_params.cutsDrawnUpon)
+            cutmap.DrawCut(cut);
 	}
 
 	void Histogram2D::ClearData()

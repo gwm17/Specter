@@ -3,6 +3,9 @@
 #include "Renderer/RenderCommand.h"
 #include "Editor/EditorLayer.h"
 
+//temp
+#include "CutMap.h"
+
 namespace Navigator {
 
 	Application* Application::s_instance = nullptr;
@@ -18,6 +21,10 @@ namespace Navigator {
 		PushLayer(new EditorLayer(&m_histMap));
 
 		m_histMap.AddHistogram("myHisto", "joseph", 100, 0, 10);
+        
+        CutMap::GetInstance().AddCut("joe_cut","joseph",0.0, 7.0);
+        
+        m_histMap.AddCutToHistogramDraw("joe_cut", "myHisto");
 
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);

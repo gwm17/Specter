@@ -10,6 +10,22 @@ namespace Navigator {
 	{
 	}
 
+    void HistogramMap::AddCutToHistogramDraw(const std::string &cutname, const std::string &histoname)
+    {
+        std::lock_guard<std::mutex> lock(m_histMutex);
+        auto iter = m_map.find(histoname);
+        if(iter != m_map.end())
+            iter->second->AddCutToBeDrawn(cutname);
+    }
+
+    void HistogramMap::AddCutToHistogramApplied(const std::string &cutname, const std::string &histoname)
+    {
+        std::lock_guard<std::mutex> lock(m_histMutex);
+        auto iter = m_map.find(histoname);
+        if(iter != m_map.end())
+            iter->second->AddCutToBeApplied(cutname);
+    }
+
 	void HistogramMap::UpdateHistograms()
 	{
 		std::lock_guard<std::mutex> guard(m_histMutex);

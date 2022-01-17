@@ -5,6 +5,7 @@
 #include "Navigator/Events/Event.h"
 #include "Navigator/Events/PhysicsEvent.h"
 #include "Navigator/HistogramMap.h"
+#include "Navigator/CutMap.h"
 #include "SpectrumPanel.h"
 #include "FileDialog.h"
 
@@ -25,9 +26,11 @@ namespace Navigator {
         
     private:
         void UpdateHistogramLists();
+        void UpdateCutLists();
         bool OnPhysicsParamEvent(PhysicsParamEvent& event);
         HistogramMap* m_histMap; //Not owned by the EditorLayer!!
         std::vector<HistogramParameters> m_histoList;
+        std::vector<CutParams> m_cutList;
         std::vector<std::string> m_paramList;
         SpectrumPanel m_spectrumPanel;
         FileDialog m_fileDialog;

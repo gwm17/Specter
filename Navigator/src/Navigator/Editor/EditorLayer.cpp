@@ -37,6 +37,11 @@ namespace Navigator {
         m_spectrumPanel.UpdateActiveList(m_histoList);
     }
 
+    void EditorLayer::UpdateCutLists()
+    {
+        m_cutList = CutMap::GetInstance().GetListOfCutParams();
+    }
+
     void EditorLayer::OnImGuiRender()
     {
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
@@ -139,6 +144,7 @@ namespace Navigator {
 
 
         UpdateHistogramLists();
+        UpdateCutLists();
         m_spectrumPanel.OnImGuiRender();
 
         if (ImGui::Begin("Spectra"))
@@ -154,7 +160,33 @@ namespace Navigator {
                         ImGui::BulletText("Y Parameter: %s", params.y_par.c_str());
                         ImGui::BulletText("Y Bins: %d Y Min: %f Y Max: %f", params.nbins_y, params.min_y, params.max_y);
                     }
-
+                    if(params.cutsDrawnUpon.size() != 0 && ImGui::TreeNode("Cuts Drawn"))
+                    {
+                        for(auto& cut : params.cutsDrawnUpon)
+                            ImGui::BulletText("%s", cut.c_str());
+                        ImGui::TreePop();
+                    }
+                    if(params.cutsAppliedTo.size() != 0 && ImGui::TreeNode("Cuts Applied"))
+                    {
+                        for(auto& cut : params.cutsAppliedTo)
+                            ImGui::BulletText("%s", cut.c_str());
+                        ImGui::TreePop();
+                    }
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::End();
+        }
+        
+        if(ImGui::Begin("Cuts"))
+        {
+            for(auto& params : m_cutList)
+            {
+                if(ImGui::TreeNode(params.name.c_str()))
+                {
+                    ImGui::BulletText("X Parameter: %s", params.x_par.c_str());
+                    if(params.y_par != "None")
+                        ImGui::BulletText("Y Parameter: %s", params.y_par.c_str());
                     ImGui::TreePop();
                 }
             }

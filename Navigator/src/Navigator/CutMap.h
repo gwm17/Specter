@@ -2,6 +2,7 @@
 #define CUT_MAP_H
 
 #include "NavCore.h"
+#include "imgui.h"
 #include <thread>
 
 namespace Navigator {
@@ -42,7 +43,7 @@ namespace Navigator {
 		inline const std::string& GetName() const { return m_params.name; }
 		inline const std::string& GetXParameter() const { return m_params.x_par; }
 		inline const std::string& GetYParameter() const { return m_params.y_par;  }
-		inline const CutParams& GetCutParams() const { return m_params };
+        inline const CutParams& GetCutParams() const { return m_params; }
 	protected:
 		CutParams m_params;
 	};
@@ -73,6 +74,7 @@ namespace Navigator {
 
 	private:
 		std::vector<Point> m_points;
+        const ImVec4 colorVec = {1.0, 0.0, 0.0, 0.5};
 	};
 
 	class NAV_API CutMap
@@ -96,7 +98,7 @@ namespace Navigator {
 
 		void DrawCut(const std::string& name);
 		bool IsInsideCut(const std::string& name, double xval, double yval = 0);
-		std::vector<CutParams> GetListOfCutParams() const;
+		std::vector<CutParams> GetListOfCutParams();
 
 	private:
 		std::unordered_map<std::string, std::unique_ptr<Cut>> m_map;

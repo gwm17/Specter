@@ -14,6 +14,8 @@ namespace Navigator {
 		std::string name;
 		std::string x_par;
 		std::string y_par;
+        std::vector<std::string> cutsDrawnUpon;
+        std::vector<std::string> cutsAppliedTo;
 		int nbins_x = 0;
 		double min_x = 0;
 		double max_x = 0;
@@ -44,6 +46,8 @@ namespace Navigator {
 		inline const std::string& GetXParam() const { return m_params.x_par; };
 		inline const std::string& GetYParam() const { return m_params.y_par; };
 		inline const std::string& GetName() const { return m_params.name; }
+        inline void AddCutToBeDrawn(const std::string& name) { m_params.cutsDrawnUpon.push_back(name); }
+        inline void AddCutToBeApplied(const std::string& name) { m_params.cutsAppliedTo.push_back(name); }
 
 	protected:
 		HistogramParameters m_params;

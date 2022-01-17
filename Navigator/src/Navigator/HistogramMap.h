@@ -28,6 +28,8 @@ namespace Navigator {
 			m_map[name].reset(new Histogram2D(name, paramx, paramy, bins_x, min_x, max_x, bins_y, min_y, max_y));
 		}
 
+        void AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname);
+        void AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname);
 		void UpdateHistograms();
 
 		void DrawHistograms();
