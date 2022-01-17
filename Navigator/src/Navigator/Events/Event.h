@@ -12,7 +12,7 @@ namespace Navigator {
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseScrolled, MouseMoved,
 		AppUpdate,
-		PhysicsStart, PhysicsStop
+		PhysicsStart, PhysicsStop, PhysicsParam
 	};
 
 	enum NAV_API EventCategory

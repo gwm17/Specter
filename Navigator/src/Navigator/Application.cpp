@@ -42,6 +42,13 @@ namespace Navigator {
 		}
 	}
 
+	void Application::SetParameterList()
+	{
+		m_parameterList = ParameterMap::GetInstance().GetListOfParameters();
+		PhysicsParamEvent event;
+		OnEvent(event);
+	}
+
 	void Application::OnEvent(Event& event) 
 	{
 		EventDispatcher dispatch(event);

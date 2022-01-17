@@ -11,7 +11,7 @@ namespace Navigator {
 	{
 	public:
 		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window) :
-			m_sourceLocation(loc), m_sourceType(type)
+			m_sourceLocation(loc), m_sourceType(type), m_coincidenceWindow(window)
 		{}
 
 		inline std::string GetSourceLocation() { return m_sourceLocation; }
@@ -46,6 +46,19 @@ namespace Navigator {
 		EVENT_TYPE_SETUP(PhysicsStop);
 	};
 
+	class NAV_API PhysicsParamEvent : public Event
+	{
+	public:
+		PhysicsParamEvent() {}
+
+		std::string ToString() const override
+		{
+			return "Updating Parameter lists!";
+		}
+
+		EVENT_CATEGORY_SETUP(EventCategoryPhysics);
+		EVENT_TYPE_SETUP(PhysicsParam);
+	};
 }
 
 #endif

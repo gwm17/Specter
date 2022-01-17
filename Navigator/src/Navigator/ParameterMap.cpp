@@ -69,4 +69,16 @@ namespace Navigator {
             iter.second->value = 0.0;
         }
     }
+
+    std::vector<std::string> ParameterMap::GetListOfParameters()
+    {
+        std::vector<std::string> list;
+        list.reserve(m_map.size());
+        for (auto iter : m_map)
+        {
+            list.push_back(iter.first);
+        }
+
+        return list;
+    }
 }

@@ -26,11 +26,14 @@ namespace Navigator {
 		void OnEvent(Event& event);
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
+		void SetParameterList();  
 
 		inline void AttachHistogramMap() { PhysicsEventBuilder::Get().AttachHistogramMap(&m_histMap); }
+		inline const std::vector<std::string>& GetParameterList() { return m_parameterList; } //Thread-safe way to access a list of the available parameters (i.e. for the editor)
 
 		inline static Application& Get() { return *s_instance; }
-		inline static void LinkHistogramMap() { s_instance->AttachHistogramMap(); }
+		inline static void LinkHistogramMap() { s_instance->AttachHistogramMap(); } //IMPORTANT: Only use BEFORE calling Run(). NO guarantee of thread safety.
+		inline static void LinkParameterList() { s_instance->SetParameterList(); } //IMPORTANT: Only use BEFORE calling Run(). NO guarantee of thread safety.
 
 		inline Window& GetWindow() { return *m_window; }
 
@@ -47,6 +50,7 @@ namespace Navigator {
 		HistogramMap m_histMap;
 		std::unique_ptr<Window> m_window;
 		ImGuiLayer* m_imgui_layer;
+		std::vector<std::string> m_parameterList;
 		bool m_runFlag;
 
 		float m_bckgnd_color[4] = {0.1, 0.1, 0.1, 1.0};

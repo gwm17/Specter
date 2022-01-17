@@ -1,14 +1,14 @@
 #include "EditorLayer.h"
 #include "imgui.h"
 #include "implot.h"
+#include "FileDialog.h"
+#include "Navigator/Application.h"
 
 namespace Navigator {
     
     EditorLayer::EditorLayer(HistogramMap* hmap) :
-        Layer("EditorLayer"), m_histMap(hmap)
+        Layer("EditorLayer"), m_histMap(hmap), m_spectrumPanel(hmap)
     {
-        zoomFlag = false;
-        zoomed_gram = "";
     }
     
     EditorLayer::~EditorLayer() {}
@@ -27,18 +27,20 @@ namespace Navigator {
 
     void EditorLayer::OnEvent(Event& e)
     {
+        EventDispatcher dispatch(e);
+        dispatch.Dispatch<PhysicsParamEvent>(BIND_EVENT_FUNCTION(EditorLayer::OnPhysicsParamEvent));
+    }
+
+    void EditorLayer::UpdateHistogramLists()
+    {
+        m_histoList = m_histMap->GetListOfHistogramParams();
+        m_spectrumPanel.UpdateActiveList(m_histoList);
     }
 
     void EditorLayer::OnImGuiRender()
     {
-        static bool dockspaceOpen = true;
-        static bool opt_fullscreen_persistant = true;
-        bool opt_fullscreen = opt_fullscreen_persistant;
-        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
         // because it would be confusing to have two docking targets within each others.
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         if (opt_fullscreen)
         {
             ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -86,12 +88,14 @@ namespace Navigator {
             {
                 if(ImGui::MenuItem("Open"))
                 {
+                    m_fileDialog.SetOpenFileDialog(true);
                 }
                 if(ImGui::MenuItem("Exit"))
                 {
                 }
                 if(ImGui::MenuItem("Save"))
                 {
+                    m_fileDialog.SetSaveFileDialog(true);
                 }
                 ImGui::EndMenu();
             }
@@ -110,9 +114,6 @@ namespace Navigator {
                 if (ImGui::MenuItem("Spectrum"))
                 {
                 }
-                if (ImGui::MenuItem("Cut"))
-                {
-                }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Remove"))
@@ -128,89 +129,21 @@ namespace Navigator {
             ImGui::EndMenuBar();
         }
 
-        static std::vector<HistogramParameters> paramList = m_histMap->GetListOfHistogramParams();
-        if (ImGui::Begin("Active View"))
-        {
-            if (paramList.size() > 0)
-            {
-                static std::vector<std::string> s_selectedGrams;
-                static int sizes[2] = { 1,1 };
-                static int total = 1;
-                
-                if(zoomFlag && zoomed_gram != "")
-                {
-                    if(ImPlot::BeginPlot(zoomed_gram.c_str(), ImVec2(-1,-1)))
-                    {
-                        m_histMap->DrawHistogram(zoomed_gram);
-                        if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                        {
-                            NAV_INFO("We lost 'em, de-zoom and enhance!");
-                            zoomFlag = false;
-                            zoomed_gram = "";
-                        }
-                        ImPlot::EndPlot();
-                    }
-                }
-                else
-                {
-                    ImGui::SliderInt2("Rows, Columns", sizes, 1, 3);
-                    total = sizes[0] * sizes[1];
-                    s_selectedGrams.resize(total);
-                    for (auto& gram : s_selectedGrams)
-                        gram = paramList[0].name;
-                    if (ImGui::BeginTable("Select Histograms", sizes[1]))
-                    {
-                        std::string label;
-                        int this_gram;
-                        for (int i = 0; i < sizes[0]; i++)
-                        {
-                            ImGui::TableNextRow();
-                            for (int j = 0; j < sizes[1]; j++)
-                            {
-                                ImGui::TableNextColumn();
-                                this_gram = i * sizes[1] + j;
-                                label = "Histogram" + std::to_string(this_gram);
-                                if (ImGui::BeginCombo(label.c_str(), paramList[0].name.c_str()))
-                                {
-                                    for (auto& params : paramList)
-                                        if (ImGui::Selectable(params.name.c_str(), params.name == s_selectedGrams[this_gram]))
-                                            s_selectedGrams[this_gram] = params.name;
-                                    ImGui::EndCombo();
-                                }
-                            }
-                        }
-                        ImGui::EndTable();
-                    }
-                    
-                    if (ImPlot::BeginSubplots("Histograms", sizes[0], sizes[1], ImVec2(-1, -1)))
-                    {
-                        int i = 0;
-                        for (auto& spec : s_selectedGrams)
-                        {
-                            if (ImPlot::BeginPlot(spec.c_str()))
-                            {
-                                m_histMap->DrawHistogram(spec);
-                                if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                                {
-                                    NAV_INFO("We got'em boys, they're in plot {0}. Zoom and enhance!", i);
-                                    zoomFlag = true;
-                                    zoomed_gram = spec;
-                                }
-                                ImPlot::EndPlot();
-                            }
-                            i++;
-                        }
-                        ImPlot::EndSubplots();
-                    }
-                }
-            }
-            ImGui::End();
-        }
-        
+
+        std::string open_file_result = m_fileDialog.ImGuiRenderOpenFile(".nav");
+        std::string save_file_result = m_fileDialog.ImGuiRenderSaveFile(".nav");
+        if (!open_file_result.empty())
+            NAV_INFO("Found a Open File!");
+        else if (!save_file_result.empty())
+            NAV_INFO("Found a Save File!");
+
+
+        UpdateHistogramLists();
+        m_spectrumPanel.OnImGuiRender();
 
         if (ImGui::Begin("Spectra"))
         {
-            for (auto& params : paramList)
+            for (auto& params : m_histoList)
             {
                 if (ImGui::TreeNode(params.name.c_str()))
                 {
@@ -229,8 +162,12 @@ namespace Navigator {
         }
 
         ImGui::End();
+    }
 
-       
-        
+    bool EditorLayer::OnPhysicsParamEvent(PhysicsParamEvent& event)
+    {
+        NAV_INFO("{0}", event.ToString());
+        m_paramList = Application::Get().GetParameterList();
+        return true;
     }
 }
