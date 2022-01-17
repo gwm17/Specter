@@ -11,6 +11,8 @@ int main(int argc, const char** argv)
 	auto app = Navigator::CreateApplication();
 	auto evb = Navigator::CreatePhysicsEventBuilder();
 	Navigator::Application::LinkHistogramMap();
+	Navigator::Application::LinkParameterList();
+
 	app->Run();
 
 	delete app;
