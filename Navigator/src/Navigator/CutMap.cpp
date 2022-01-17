@@ -24,59 +24,44 @@ namespace Navigator {
 	}
 
 	/*2D Cuts -- Can only be made on 2D histogram, but applied to either 1D or 2D histograms*/
-	Cut2D::Cut2D(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<Point>& points) :
-		Cut(name, xpar, ypar), m_points(points)
+    Cut2D::Cut2D(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<double>& xpoints, const std::vector<double>& ypoints) :
+        Cut(name, xpar, ypar), m_xpoints(xpoints), m_ypoints(ypoints)
 	{
 	}
 
 	Cut2D::~Cut2D() {}
 
 	/*
-     Even-odd point in polygon algorithm (see Wikipedia)
-     Walk around the sides of the polygon and check intersection with each of  the sides.
-     Cast a ray from the point to infinity in any direction and check the number of intersections.
-     If odd number of intersections, point is inside. Even, point is outside.
-     Edge cases of point is a vertex or on a side considered.
+        Even-odd point in polygon algorithm (see Wikipedia)
+        Walk around the sides of the polygon and check intersection with each of  the sides.
+        Cast a ray from the point to infinity in any direction and check the number of intersections.
+        If odd number of intersections, point is inside. Even, point is outside.
+        Edge cases of point is a vertex or on a side considered.
 	*/
 	bool Cut2D::IsInside(double x, double y) const
 	{
         bool result = false;
-        size_t j = m_points.size() -1;
         double slope;
-        for(size_t i=0; i<m_points.size(); i++)
+        for(size_t i=0; i<(m_xpoints.size()-1); i++)
         {
-            if(x == m_points[i].x && y == m_points[i].y)
+            if(x == m_xpoints[i+1] && y == m_ypoints[i+1])
                 return true;
-            else if((m_points[i].y > y) !=  (m_points[j].y > y))
+            else if((m_ypoints[i+1] > y) !=  (m_ypoints[i] > y))
             {
-                slope = (x - m_points[i].x)*(m_points[j].y - m_points[i].y) - (m_points[j].x - m_points[i].x)*(y - m_points[i].y);
+                slope = (x - m_xpoints[i+1])*(m_ypoints[i] - m_ypoints[i+1]) - (m_xpoints[i] - m_xpoints[i+1])*(y - m_ypoints[i+1]);
                 if(slope == 0.0)
                     return true;
-                else if ((slope < 0.0) != (m_points[j].y < m_points[i].y))
+                else if ((slope < 0.0) != (m_ypoints[i] < m_ypoints[i+1]))
                     result = !result;
             }
-            j=i;
         }
 		return result;
 	}
 
     //Only in ImPlot/ImGui context!!!!
-    /*
-      Again, more complicated. Want to draw the polygon that makes up the 2D-cut. To perform this,
-      first need to convert plot coordinates into global window coords (pixels). Then tell ImGui to add
-      a polyline to the draw list, make it red and closed. For this to work, this must be called within the
-      BeignPlot()/EndPlot() combo for which it was  created (why histos own the draw commands).
-     */
     void Cut2D::Draw() const
     {
-        std::vector<ImVec2> draw_points;
-        draw_points.reserve(m_points.size());
-        auto draw_list = ImGui::GetWindowDrawList();
-        
-        for(auto& point : m_points)
-            draw_points.push_back(ImPlot::PlotToPixels(point.x, point.y));
-        
-        draw_list->AddPolyline(draw_points.data(), static_cast<int>(draw_points.size()), ImGui::ColorConvertFloat4ToU32(colorVec), ImDrawFlags_Closed, 0.1);
+        ImPlot::PlotLine(m_params.name.c_str(), m_xpoints.data(), m_ypoints.data(), m_xpoints.size());
     }
 
     /* CutMap */

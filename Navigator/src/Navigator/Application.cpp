@@ -21,10 +21,13 @@ namespace Navigator {
 		PushLayer(new EditorLayer(&m_histMap));
 
 		m_histMap.AddHistogram("myHisto", "joseph", 100, 0, 10);
+		m_histMap.AddHistogram("myHisto2D", "joseph", "joseph", 100, 0, 10, 100, 0, 10);
         
         CutMap::GetInstance().AddCut("joe_cut","joseph",0.0, 7.0);
+		CutMap::GetInstance().AddCut("joe2D_cut", "joseph", "joseph", { 1.0, 3.0, 3.0, 1.0, 1.0}, { 1.0, 1.0, 3.0, 3.0, 1.0});
         
         m_histMap.AddCutToHistogramDraw("joe_cut", "myHisto");
+		m_histMap.AddCutToHistogramDraw("joe2D_cut", "myHisto2D");
 
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);

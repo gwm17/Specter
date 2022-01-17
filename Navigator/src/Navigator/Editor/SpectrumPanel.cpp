@@ -36,8 +36,6 @@ namespace Navigator {
                     ImGui::SliderInt2("Rows, Columns", m_tableSizes, 1, 3);
                     m_totalSlots = m_tableSizes[0] * m_tableSizes[1];
                     m_selectedGrams.resize(m_totalSlots);
-                    for (auto& gram : m_selectedGrams)
-                        gram = m_activeList[0].name;
                     if (ImGui::BeginTable("Select Histograms", m_tableSizes[1]))
                     {
                         std::string label;
@@ -50,7 +48,7 @@ namespace Navigator {
                                 ImGui::TableNextColumn();
                                 this_gram = i * m_tableSizes[1] + j;
                                 label = "Histogram" + std::to_string(this_gram);
-                                if (ImGui::BeginCombo(label.c_str(), m_activeList[0].name.c_str()))
+                                if (ImGui::BeginCombo(label.c_str(), m_selectedGrams[this_gram].c_str()))
                                 {
                                     for (auto& params : m_activeList)
                                         if (ImGui::Selectable(params.name.c_str(), params.name == m_selectedGrams[this_gram]))

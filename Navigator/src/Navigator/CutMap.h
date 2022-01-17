@@ -19,12 +19,6 @@ namespace Navigator {
 		std::string y_par;
 	};
 
-	struct NAV_API Point
-	{
-		double x = 0;
-		double y = 0;
-	};
-
 	class NAV_API Cut
 	{
 	public:
@@ -65,7 +59,7 @@ namespace Navigator {
 	class NAV_API Cut2D : public Cut
 	{
 	public:
-		Cut2D(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<Point>& points);
+		Cut2D(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
 		virtual ~Cut2D();
 		virtual bool IsInside(double x, double y = 0) const override;
 		virtual void Draw() const override;
@@ -73,7 +67,8 @@ namespace Navigator {
 		virtual bool Is2D() const override { return true; }
 
 	private:
-		std::vector<Point> m_points;
+		std::vector<double> m_xpoints;
+		std::vector<double> m_ypoints;
         const ImVec4 colorVec = {1.0, 0.0, 0.0, 0.5};
 	};
 
@@ -90,10 +85,10 @@ namespace Navigator {
 			std::lock_guard<std::mutex> guard(m_cutMutex);
 			m_map[name].reset(new Cut1D(name, xpar, min, max));
 		}
-		inline void AddCut(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<Point>& points)
+		inline void AddCut(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
 		{
 			std::lock_guard<std::mutex> guard(m_cutMutex);
-			m_map[name].reset(new Cut2D(name, xpar, ypar, points));
+			m_map[name].reset(new Cut2D(name, xpar, ypar, xpoints, ypoints));
 		}
 
 		void DrawCut(const std::string& name);

@@ -114,6 +114,8 @@ namespace Navigator {
 		for(int i=0; i<m_nBinsTotal; i++)
 			m_binCounts[i] = 0;
 		m_maxBinContent = 0;
+
+		m_initFlag = true;
 	}
 
 	void Histogram2D::FillData(double x, double y)
@@ -122,20 +124,22 @@ namespace Navigator {
 			return;
 
 		int bin_x = int((x - m_params.min_x)/m_binWidthX);
-		int bin_y = int((y - m_params.min_y)/m_binWidthY);
+		int bin_y = int((m_params.max_y - y)/m_binWidthY);
 		int bin = bin_y*m_params.nbins_x + bin_x;
 
 		m_binCounts[bin] += 1.0;
 
-		m_maxBinContent = m_binCounts[bin] > m_maxBinContent ? m_binCounts[bin] : m_maxBinContent;
+		m_maxBinContent = m_binCounts[bin] > m_maxBinContent ? (m_binCounts[bin]*2) : m_maxBinContent;
 	}
 
 	//Can only be used within an ImGui / ImPlot context!!
 	void Histogram2D::Draw()
 	{
-		ImPlot::SetupAxes(m_params.x_par.c_str(), m_params.y_par.c_str(), 0, 0);
-		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, 0, m_maxBinContent, NULL,
+		ImPlot::SetupAxes(m_params.x_par.c_str(), m_params.y_par.c_str());
+		ImPlot::PushColormap(ImPlotColormap_Viridis);
+		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, 0.0, m_maxBinContent, NULL,
 							ImPlotPoint(m_params.min_x, m_params.min_y), ImPlotPoint(m_params.max_x, m_params.max_y));
+		ImPlot::PopColormap();
         auto& cutmap = CutMap::GetInstance();
         for(auto& cut : m_params.cutsDrawnUpon)
             cutmap.DrawCut(cut);

@@ -33,6 +33,7 @@ namespace Navigator {
 		ParameterMap& pmap = ParameterMap::GetInstance();
 		for (auto& pair : m_map)
 		{
+
 			xpar = pair.second->GetXParam();
 			ypar = pair.second->GetYParam();
 
@@ -53,7 +54,9 @@ namespace Navigator {
 				auto iterx = pmap.find(xpar);
 				auto itery = pmap.find(ypar);
 				if (iterx == pmap.end() || itery == pmap.end() || !iterx->second->validFlag || !itery->second->validFlag)
+				{
 					continue;
+				}
 				else
 				{
 					pair.second->FillData(iterx->second->value, itery->second->value);

@@ -36,6 +36,7 @@ namespace Navigator {
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		ImGui::StyleColorsDark();
+		ImPlot::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();
 
