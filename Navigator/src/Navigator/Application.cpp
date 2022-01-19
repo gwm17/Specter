@@ -11,45 +11,33 @@ namespace Navigator {
 	Application* Application::s_instance = nullptr;
 
 	Application::Application() :
-		m_runFlag(true), m_physThread(nullptr)
+		m_runFlag(true)
 	{
 		s_instance = this;
 
 		m_window = std::unique_ptr<Window>(Window::Create());
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
 
-		PushLayer(new EditorLayer(&m_histMap));
-
-		m_histMap.AddHistogram("myHisto", "joseph", 100, 0, 10);
-		m_histMap.AddHistogram("myHisto2D", "joseph", "joseph", 100, 0, 10, 100, 0, 10);
+		m_physicsLayer = new PhysicsLayer();
+		PushLayer(m_physicsLayer);
+		PushLayer(new EditorLayer());
+		m_imgui_layer = new ImGuiLayer();
+		PushOverlay(m_imgui_layer);
+		HistogramMap& histMap = HistogramMap::GetInstance();
+		histMap.AddHistogram("myHisto", "joseph", 100, 0, 10);
+		histMap.AddHistogram("myHisto2D", "joseph", "joseph", 100, 0, 10, 100, 0, 10);
         
         CutMap::GetInstance().AddCut("joe_cut","joseph",0.0, 7.0);
 		CutMap::GetInstance().AddCut("joe2D_cut", "joseph", "joseph", { 1.0, 3.0, 3.0, 1.0, 1.0}, { 1.0, 1.0, 3.0, 3.0, 1.0});
         
-        m_histMap.AddCutToHistogramDraw("joe_cut", "myHisto");
-		m_histMap.AddCutToHistogramDraw("joe2D_cut", "myHisto2D");
+        histMap.AddCutToHistogramDraw("joe_cut", "myHisto");
+		histMap.AddCutToHistogramDraw("joe2D_cut", "myHisto2D");
 
-		m_imgui_layer = new ImGuiLayer();
-		PushOverlay(m_imgui_layer);
+		
 	}
 
 	Application::~Application()
 	{
-		NAV_INFO("Detaching PhysicsEventBuilder at shutdown");
-		PhysicsEventBuilder::Get().DetachDataSource();
-		DestroyPhysThread();
-	}
-
-	void Application::DestroyPhysThread()
-	{
-		if(m_physThread != nullptr && m_physThread->joinable())
-			m_physThread->join();
-
-		if(m_physThread != nullptr)
-		{
-			delete m_physThread;
-			m_physThread = nullptr;
-		}
 	}
 
 	void Application::SetParameterList()
@@ -63,8 +51,6 @@ namespace Navigator {
 	{
 		EventDispatcher dispatch(event);
 		dispatch.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowCloseEvent));
-		dispatch.Dispatch<PhysicsStartEvent>(BIND_EVENT_FUNCTION(Application::OnPhysicsStartEvent));
-		dispatch.Dispatch<PhysicsStopEvent>(BIND_EVENT_FUNCTION(Application::OnPhysicsStopEvent));
 		for(auto iter = m_stack.end(); iter != m_stack.begin(); )
 		{
 			(*(--iter))->OnEvent(event);
@@ -77,32 +63,6 @@ namespace Navigator {
 	{
 		m_runFlag = false;
 		NAV_WARN("Closing the window!");
-		return true;
-	}
-
-	bool Application::OnPhysicsStartEvent(PhysicsStartEvent& event)
-	{
-		if(PhysicsEventBuilder::Get().IsRunning())
-		{
-			PhysicsEventBuilder::Get().DetachDataSource();
-			NAV_INFO("Stopping the event builder...");
-			DestroyPhysThread();
-		}
-		PhysicsEventBuilder::Get().AttachDataSource(event.GetSourceLocation(), event.GetSourceType());
-		PhysicsEventBuilder::Get().SetCoincidenceWindow(event.GetCoincidenceWindow());
-		if(PhysicsEventBuilder::Get().IsRunning())
-		{
-			NAV_INFO("Starting the event builder...");
-			m_physThread = new std::thread(&PhysicsEventBuilder::Run, std::ref(PhysicsEventBuilder::Get()));
-		}
-		return true;
-	}
-
-	bool Application::OnPhysicsStopEvent(PhysicsStopEvent& event)
-	{
-		PhysicsEventBuilder::Get().DetachDataSource();
-		NAV_INFO("Stopping the event builder...");
-		DestroyPhysThread();
 		return true;
 	}
 
@@ -122,7 +82,7 @@ namespace Navigator {
 	{
 		//PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline, 2000000);
 		//OnEvent(junk);
-		m_histMap.UpdateHistograms();
+		HistogramMap::GetInstance().UpdateHistograms();
 		while(m_runFlag)
 		{
 

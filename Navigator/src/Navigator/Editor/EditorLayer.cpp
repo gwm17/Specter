@@ -6,8 +6,8 @@
 
 namespace Navigator {
     
-    EditorLayer::EditorLayer(HistogramMap* hmap) :
-        Layer("EditorLayer"), m_histMap(hmap), m_spectrumPanel(hmap)
+    EditorLayer::EditorLayer() :
+        Layer("EditorLayer"), m_spectrumPanel()
     {
     }
     
@@ -33,7 +33,7 @@ namespace Navigator {
 
     void EditorLayer::UpdateHistogramLists()
     {
-        m_histoList = m_histMap->GetListOfHistogramParams();
+        m_histoList = HistogramMap::GetInstance().GetListOfHistogramParams();
         m_spectrumPanel.UpdateActiveList(m_histoList);
     }
 

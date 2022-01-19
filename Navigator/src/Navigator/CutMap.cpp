@@ -73,7 +73,6 @@ namespace Navigator {
 
     void CutMap::DrawCut(const std::string& name)
     {
-        std::lock_guard<std::mutex> lock(m_cutMutex);
         auto iter = m_map.find(name);
         if(iter != m_map.end())
             iter->second->Draw();
@@ -81,7 +80,6 @@ namespace Navigator {
 
     bool CutMap::IsInsideCut(const std::string& name, double xval, double yval)
     {
-        std::lock_guard<std::mutex> lock(m_cutMutex);
         bool result = false;
         auto iter = m_map.find(name);
         if(iter != m_map.end())
@@ -91,7 +89,6 @@ namespace Navigator {
 
     std::vector<CutParams> CutMap::GetListOfCutParams()
     {
-        std::lock_guard<std::mutex> lock(m_cutMutex);
         std::vector<CutParams> list;
         list.reserve(m_map.size());
         for(auto& entry : m_map)

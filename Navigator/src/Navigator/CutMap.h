@@ -3,7 +3,6 @@
 
 #include "NavCore.h"
 #include "imgui.h"
-#include <thread>
 
 namespace Navigator {
 
@@ -82,12 +81,10 @@ namespace Navigator {
 
 		inline void AddCut(const std::string& name, const std::string& xpar, double min, double max)
 		{
-			std::lock_guard<std::mutex> guard(m_cutMutex);
 			m_map[name].reset(new Cut1D(name, xpar, min, max));
 		}
 		inline void AddCut(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
 		{
-			std::lock_guard<std::mutex> guard(m_cutMutex);
 			m_map[name].reset(new Cut2D(name, xpar, ypar, xpoints, ypoints));
 		}
 

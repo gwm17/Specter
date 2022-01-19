@@ -14,7 +14,7 @@ namespace Navigator {
     class EditorLayer : public Layer
     {
     public:
-        EditorLayer(HistogramMap* hmap);
+        EditorLayer();
         ~EditorLayer();
 
         virtual void OnAttach() override;
@@ -28,7 +28,6 @@ namespace Navigator {
         void UpdateHistogramLists();
         void UpdateCutLists();
         bool OnPhysicsParamEvent(PhysicsParamEvent& event);
-        HistogramMap* m_histMap; //Not owned by the EditorLayer!!
         std::vector<HistogramParameters> m_histoList;
         std::vector<CutParams> m_cutList;
         std::vector<std::string> m_paramList;

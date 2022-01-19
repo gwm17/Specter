@@ -28,17 +28,10 @@ namespace Navigator {
 
     NavParameter::~NavParameter() {}
 
-    ParameterMap* ParameterMap::s_instance = nullptr;
-
-    ParameterMap* CreateParameterMap() { return new ParameterMap(); }
+    ParameterMap* ParameterMap::s_instance = new ParameterMap();
 
     ParameterMap::ParameterMap()
     {
-        NAV_INFO("Created ParameterMap");
-        if(s_instance != nullptr)
-            NAV_ERROR("Cannot have multiple instances of ParameterMap!!!");
-        
-        s_instance = this;
     }
 
     ParameterMap::~ParameterMap() {}

@@ -2,14 +2,13 @@
 #define PARAMETER_MAP_H
 
 #include "NavCore.h"
-#include <atomic>
 
 namespace Navigator {
 
 	struct NAV_API ParameterData
 	{
-		std::atomic<double> value=0.0;
-		std::atomic<bool> validFlag=false;
+		double value=0.0;
+		bool validFlag=false;
 	};
 
     /*
@@ -64,7 +63,6 @@ namespace Navigator {
 
 	};
 
-	NAV_API ParameterMap* CreateParameterMap();
 }
 
 #endif

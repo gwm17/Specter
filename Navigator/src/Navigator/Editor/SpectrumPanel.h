@@ -9,17 +9,15 @@ namespace Navigator {
 	class NAV_API SpectrumPanel
 	{
 	public:
-		SpectrumPanel(HistogramMap* map);
+		SpectrumPanel();
 		~SpectrumPanel();
 	
-		inline void AttachHistogramMap(HistogramMap* map) { m_histMap = map;  }
 		void OnImGuiRender();
 		inline const std::string& GetZoomedOnHistogram() { return m_zoomedGram;  }
 		inline const bool IsZoomed() { return m_zoomedFlag;  }
 		inline void UpdateActiveList(const std::vector<HistogramParameters>& list) { m_activeList = list;  }
 
 	private:
-		HistogramMap* m_histMap; //Not owned by SpectrumPanel
 		std::vector<HistogramParameters> m_activeList; //This is where we get our info from. Reduces thread crossings
 		std::vector<std::string> m_selectedGrams;
 		bool m_zoomedFlag;

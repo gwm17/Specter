@@ -3,8 +3,8 @@
 
 namespace Navigator {
 
-	SpectrumPanel::SpectrumPanel(HistogramMap* map) :
-        m_histMap(map), m_zoomedFlag(false), m_zoomedGram(""), m_totalSlots(1)
+	SpectrumPanel::SpectrumPanel() :
+        m_zoomedFlag(false), m_zoomedGram(""), m_totalSlots(1)
 	{
         m_tableSizes[0] = 1; m_tableSizes[1] = 1;
 	}
@@ -13,6 +13,7 @@ namespace Navigator {
 
 	void SpectrumPanel::OnImGuiRender()
 	{
+        HistogramMap& histMap = HistogramMap::GetInstance();
         if (ImGui::Begin("Active View"))
         {
             if (m_activeList.size() > 0)
@@ -21,7 +22,7 @@ namespace Navigator {
                 {
                     if (ImPlot::BeginPlot(m_zoomedGram.c_str(), ImVec2(-1, -1)))
                     {
-                        m_histMap->DrawHistogram(m_zoomedGram);
+                        histMap.DrawHistogram(m_zoomedGram);
                         if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
                             NAV_INFO("We lost 'em, de-zoom and enhance!");
@@ -67,7 +68,7 @@ namespace Navigator {
                         {
                             if (ImPlot::BeginPlot(spec.c_str()))
                             {
-                                m_histMap->DrawHistogram(spec);
+                                histMap.DrawHistogram(spec);
                                 if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                                 {
                                     NAV_INFO("We got'em boys, they're in plot {0}. Zoom and enhance!", i);

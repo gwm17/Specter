@@ -2,6 +2,9 @@
 #include "ParameterMap.h"
 
 namespace Navigator {
+
+	HistogramMap* HistogramMap::s_instance = new HistogramMap();
+
 	HistogramMap::HistogramMap()
 	{
 	}
@@ -12,7 +15,6 @@ namespace Navigator {
 
     void HistogramMap::AddCutToHistogramDraw(const std::string &cutname, const std::string &histoname)
     {
-        std::lock_guard<std::mutex> lock(m_histMutex);
         auto iter = m_map.find(histoname);
         if(iter != m_map.end())
             iter->second->AddCutToBeDrawn(cutname);
@@ -20,7 +22,6 @@ namespace Navigator {
 
     void HistogramMap::AddCutToHistogramApplied(const std::string &cutname, const std::string &histoname)
     {
-        std::lock_guard<std::mutex> lock(m_histMutex);
         auto iter = m_map.find(histoname);
         if(iter != m_map.end())
             iter->second->AddCutToBeApplied(cutname);
@@ -28,7 +29,6 @@ namespace Navigator {
 
 	void HistogramMap::UpdateHistograms()
 	{
-		std::lock_guard<std::mutex> guard(m_histMutex);
 		std::string xpar, ypar;
 		ParameterMap& pmap = ParameterMap::GetInstance();
 		for (auto& pair : m_map)
@@ -68,7 +68,6 @@ namespace Navigator {
 
 	std::vector<HistogramParameters> HistogramMap::GetListOfHistogramParams()
 	{
-		std::lock_guard<std::mutex> guard(m_histMutex);
 		std::vector<HistogramParameters> params;
 		params.reserve(m_map.size());
 		for (auto& pair : m_map)
@@ -79,7 +78,6 @@ namespace Navigator {
 	//Only to be used within ImGui context!!
 	void Navigator::HistogramMap::DrawHistograms()
 	{
-		std::lock_guard<std::mutex> guard(m_histMutex);
 		for (auto& pair : m_map)
 			pair.second->Draw();
 	}
@@ -87,7 +85,6 @@ namespace Navigator {
 	//Only to be used within ImGui context!!
 	void Navigator::HistogramMap::DrawHistogram(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_histMutex);
 		auto iter = m_map.find(name);
 		if (iter != m_map.end())
 			iter->second->Draw();
