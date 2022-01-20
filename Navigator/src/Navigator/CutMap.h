@@ -8,21 +8,23 @@ namespace Navigator {
 
 	struct NAV_API CutParams
 	{
-		CutParams(const std::string& n, const std::string& x, const std::string& y) :
+        CutParams() {}
+		CutParams(const std::string& n, const std::string& x, const std::string& y = "None") :
 			name(n), x_par(x), y_par(y)
 		{
 		}
 
-		std::string name;
-		std::string x_par;
-		std::string y_par;
+		std::string name = "None";
+		std::string x_par = "None";
+		std::string y_par = "None";
 	};
 
 	class NAV_API Cut
 	{
 	public:
-		Cut(const std::string& name, const std::string& xpar, const std::string& ypar="None") :
-			m_params(name, xpar, ypar)
+        
+		Cut(const CutParams& params) :
+			m_params(params)
 		{
 		}
 
@@ -44,7 +46,7 @@ namespace Navigator {
 	class NAV_API Cut1D : public Cut
 	{
 	public:
-		Cut1D(const std::string& name, const std::string& xpar, double min, double max);
+		Cut1D(const CutParams& params, double min, double max);
 		virtual ~Cut1D();
 		virtual bool IsInside(double x, double y = 0) const override;
 		virtual void Draw() const override;
@@ -58,7 +60,7 @@ namespace Navigator {
 	class NAV_API Cut2D : public Cut
 	{
 	public:
-		Cut2D(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
+		Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
 		virtual ~Cut2D();
 		virtual bool IsInside(double x, double y = 0) const override;
 		virtual void Draw() const override;
@@ -81,13 +83,13 @@ namespace Navigator {
 
 		inline static CutMap& GetInstance() { return *s_instance; }
 
-		inline void AddCut(const std::string& name, const std::string& xpar, double min, double max)
+		inline void AddCut(const CutParams& params, double min, double max)
 		{
-			m_map[name].reset(new Cut1D(name, xpar, min, max));
+			m_map[params.name].reset(new Cut1D(params, min, max));
 		}
-		inline void AddCut(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
+		inline void AddCut(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
 		{
-			m_map[name].reset(new Cut2D(name, xpar, ypar, xpoints, ypoints));
+			m_map[params.name].reset(new Cut2D(params, xpoints, ypoints));
 		}
 
 		void DrawCut(const std::string& name);
@@ -99,7 +101,6 @@ namespace Navigator {
 
 	private:
 		std::unordered_map<std::string, std::unique_ptr<Cut>> m_map;
-		std::mutex m_cutMutex;
 
 		static CutMap* s_instance;
 	};

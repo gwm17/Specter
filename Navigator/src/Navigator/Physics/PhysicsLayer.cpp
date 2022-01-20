@@ -9,7 +9,6 @@ namespace Navigator {
 	PhysicsLayer::PhysicsLayer() :
 		m_activeFlag(false), m_source(nullptr)
 	{
-		
 	}
 
 	PhysicsLayer::~PhysicsLayer() 
@@ -18,7 +17,7 @@ namespace Navigator {
 
 	void PhysicsLayer::OnAttach()
 	{
-		NavParameter par("joseph", "mama");
+		NavParameter par("joseph");
 		par.SetValue(8);
 		NAV_INFO("Does the par exist? {0}", ParameterMap::GetInstance().IsParameterValid("joseph"));
 		NAV_INFO("What is its value? {0}", ParameterMap::GetInstance().GetParameterValue("joseph"));

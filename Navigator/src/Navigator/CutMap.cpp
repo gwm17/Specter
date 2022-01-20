@@ -4,8 +4,8 @@
 namespace Navigator {
 
 	/*1D Cuts -- Can be made on and applied to either 1D or 2D histograms*/
-	Cut1D::Cut1D(const std::string& name, const std::string& xpar, double min, double max) :
-		Cut(name, xpar), m_minVal(min), m_maxVal(max)
+	Cut1D::Cut1D(const CutParams& params, double min, double max) :
+		Cut(params), m_minVal(min), m_maxVal(max)
 	{
 	}
 
@@ -24,8 +24,8 @@ namespace Navigator {
 	}
 
 	/*2D Cuts -- Can only be made on 2D histogram, but applied to either 1D or 2D histograms*/
-    Cut2D::Cut2D(const std::string& name, const std::string& xpar, const std::string& ypar, const std::vector<double>& xpoints, const std::vector<double>& ypoints) :
-        Cut(name, xpar, ypar), m_xpoints(xpoints), m_ypoints(ypoints)
+    Cut2D::Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints) :
+        Cut(params), m_xpoints(xpoints), m_ypoints(ypoints)
 	{
 	}
 

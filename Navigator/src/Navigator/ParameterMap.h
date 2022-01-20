@@ -15,13 +15,17 @@ namespace Navigator {
 	{
 
 	public:
-		NavParameter(const std::string& name, const std::string& alias);
+        NavParameter();
+		NavParameter(const std::string& name);
 		~NavParameter();
+        
+        void SetParameter(const std::string& name);
 
         inline bool IsValid() const { return m_pdata->validFlag; }
         inline void Invalidate() { m_pdata->validFlag = false; }
         inline void SetValue(double value) { m_pdata->validFlag = true; m_pdata->value = value; }
         inline double GetValue() const { return m_pdata->value; }
+        inline const std::string& GetName() const { return m_name; }
 
 	private:
 		std::string m_name;

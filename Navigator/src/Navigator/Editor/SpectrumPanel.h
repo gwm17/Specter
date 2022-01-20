@@ -2,6 +2,8 @@
 #define SPECTRUM_PANEL_H
 
 #include "Navigator/HistogramMap.h"
+#include "Navigator/ParameterMap.h"
+#include "Navigator/CutMap.h"
 #include "imgui.h"
 
 namespace Navigator {
@@ -19,6 +21,7 @@ namespace Navigator {
 	private:
 		std::vector<std::string> m_selectedGrams;
 		bool m_zoomedFlag;
+        bool m_cutModeFlag;
 		std::string m_zoomedGram;
 		int m_tableSizes[2];
 		int m_totalSlots;

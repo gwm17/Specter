@@ -4,7 +4,7 @@
 namespace Navigator {
 
 	SpectrumPanel::SpectrumPanel() :
-        m_zoomedFlag(false), m_zoomedGram(""), m_totalSlots(1)
+        m_zoomedFlag(false), m_cutModeFlag("false"), m_zoomedGram(""), m_totalSlots(1)
 	{
         m_tableSizes[0] = 1; m_tableSizes[1] = 1;
 	}
@@ -14,12 +14,31 @@ namespace Navigator {
 	void SpectrumPanel::OnImGuiRender()
 	{
         HistogramMap& histMap = HistogramMap::GetInstance();
+        ParameterMap& paramMap = ParameterMap::GetInstance();
+        CutMap& cutMap = CutMap::GetInstance();
         if (ImGui::Begin("Active View"))
         {
             if (histMap.size() > 0)
             {
                 if (m_zoomedFlag && m_zoomedGram != "")
                 {
+                    if(ImGui::Button("Draw Cut"))
+                    {
+                        ImGui::OpenPopup("New Cut Dialog");
+                    }
+                    if(ImGui::BeginPopupModal("New Cut Dialog"))
+                    {
+                        if(ImGui::Button("Accept"))
+                        {
+                            ImGui::CloseCurrentPopup();
+                        }
+                        if(ImGui::Button("Cancel"))
+                        {
+                            ImGui::CloseCurrentPopup();
+                        }
+                        ImGui::EndPopup();
+                    }
+                    
                     if (ImPlot::BeginPlot(m_zoomedGram.c_str(), ImVec2(-1, -1)))
                     {
                         histMap.DrawHistogram(m_zoomedGram);

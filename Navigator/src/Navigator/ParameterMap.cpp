@@ -9,7 +9,12 @@
 
 namespace Navigator {
 
-    NavParameter::NavParameter(const std::string& name, const std::string& alias) :
+    NavParameter::NavParameter() :
+        m_name(""), m_pdata(nullptr)
+    {
+    }
+
+    NavParameter::NavParameter(const std::string& name) :
         m_name(name)
     {
         NAV_INFO("Making a new parameter named {0}...",name);
@@ -27,6 +32,15 @@ namespace Navigator {
     }
 
     NavParameter::~NavParameter() {}
+
+    void NavParameter::SetParameter(const std::string& name)
+    {
+        ParameterMap& map = ParameterMap::GetInstance();
+        auto iter = map.find(name);
+        if(iter == map.end())
+            map.AddParameter(name);
+        map.SetParameter(name, m_pdata);
+    }
 
     ParameterMap* ParameterMap::s_instance = new ParameterMap();
 

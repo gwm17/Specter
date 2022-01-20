@@ -27,8 +27,8 @@ namespace Navigator {
 		histMap.AddHistogram(HistogramParameters("myHisto", "joseph", 100, 0, 10));
 		histMap.AddHistogram(HistogramParameters("myHisto2D", "joseph", "joseph", 100, 0, 10, 100, 0, 10));
         
-        CutMap::GetInstance().AddCut("joe_cut","joseph",0.0, 7.0);
-		CutMap::GetInstance().AddCut("joe2D_cut", "joseph", "joseph", { 1.0, 3.0, 3.0, 1.0, 1.0}, { 1.0, 1.0, 3.0, 3.0, 1.0});
+        CutMap::GetInstance().AddCut(CutParams("joe_cut","joseph"),0.0, 7.0);
+		CutMap::GetInstance().AddCut(CutParams("joe2D_cut", "joseph", "joseph"), { 1.0, 3.0, 3.0, 1.0, 1.0}, { 1.0, 1.0, 3.0, 3.0, 1.0});
         
         histMap.AddCutToHistogramDraw("joe_cut", "myHisto");
 		histMap.AddCutToHistogramDraw("joe2D_cut", "myHisto2D");
