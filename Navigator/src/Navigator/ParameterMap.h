@@ -11,10 +11,6 @@ namespace Navigator {
 		bool validFlag=false;
 	};
 
-    /*
-        For use inside of the physics thread only!!!!!! Do not use elsewhere as complex operations on parameter values are !not!
-        guaranteed to be thread-safe, only the accesing is!
-     */
 	class NAV_API NavParameter
 	{
 
@@ -50,7 +46,8 @@ namespace Navigator {
 		double GetParameterValue(const std::string& name);
         bool IsParameterValid(const std::string& name);
 		void InvalidateParameters();
-		std::vector<std::string> GetListOfParameters(); //Dangerous! Should only be used when GUARANTEED no phys thread is running.
+		std::vector<std::string> GetListOfParameters();
+
         inline Iter end() { return m_map.end(); }
         inline Iter begin() { return m_map.begin(); }
         inline Iter find(const std::string& name) { return m_map.find(name); }

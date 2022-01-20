@@ -12,19 +12,16 @@ namespace Navigator {
 	/*
 		1D Histogram class
 	*/
-	Histogram1D::Histogram1D(const std::string& name, const std::string& param, int bins, double min, double max) :
-		Histogram(name, param)
+	Histogram1D::Histogram1D(const HistogramParameters& params) :
+		Histogram(params)
 	{
-		InitBins(bins, min, max);
+		InitBins();
 	}
 
 	Histogram1D::~Histogram1D() {}
 
-	void Histogram1D::InitBins(int bins, double min, double max)
+	void Histogram1D::InitBins()
 	{
-		m_params.nbins_x = bins;
-		m_params.min_x = min;
-		m_params.max_x = max;
 		if(m_params.nbins_x == 0 || (m_params.min_x >= m_params.max_x))
 		{
 			NAV_WARN("Attempting to create an illegal Histogram1D {0} with {1} bins and a range from {2} to {3}. Historgram not initialized.", m_params.name, m_params.nbins_x, m_params.min_x, m_params.max_x);
@@ -79,24 +76,16 @@ namespace Navigator {
 	/*
 		2D Histogram class
 	*/
-	Histogram2D::Histogram2D(const std::string& name, const std::string& param_x, const std::string& param_y, int bins_x, double min_x, double max_x,
-							 int bins_y, double min_y, double max_y) :
-		Histogram(name, param_x, param_y)
+	Histogram2D::Histogram2D(const HistogramParameters& params) :
+		Histogram(params)
 	{
-		InitBins(bins_x, min_x, max_x, bins_y, min_y, max_y);
+		InitBins();
 	}
 
 	Histogram2D::~Histogram2D() {}
 
-	void Histogram2D::InitBins(int bins_x, double min_x, double max_x, int bins_y, double min_y, double max_y)
+	void Histogram2D::InitBins()
 	{
-		m_params.nbins_x = bins_x;
-		m_params.min_x = min_x;
-		m_params.max_x = max_x;
-		m_params.nbins_y = bins_y;
-		m_params.min_y = min_y;
-		m_params.max_y = max_y;
-
 		if(m_params.nbins_x <= 0 || m_params.nbins_y <= 0 || m_params.min_x >= m_params.max_x || m_params.min_y >= m_params.max_y)
 		{
 			NAV_WARN("Attempting to create illegal Histogram2D {0} with {1} x bins, {2} y bins, an x range of {3} to {4}, and a y range of {5} to {6}. Not initialized.", m_params.name, m_params.nbins_x, m_params.nbins_y,

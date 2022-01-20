@@ -74,6 +74,8 @@ namespace Navigator {
 	class NAV_API CutMap
 	{
 	public:
+		using Iter = std::unordered_map<std::string, std::unique_ptr<Cut>>::iterator;
+
 		CutMap();
 		~CutMap();
 
@@ -91,6 +93,9 @@ namespace Navigator {
 		void DrawCut(const std::string& name);
 		bool IsInsideCut(const std::string& name, double xval, double yval = 0);
 		std::vector<CutParams> GetListOfCutParams();
+
+		inline Iter begin() { return m_map.begin(); }
+		inline Iter end() { return m_map.end(); }
 
 	private:
 		std::unordered_map<std::string, std::unique_ptr<Cut>> m_map;

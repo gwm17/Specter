@@ -7,13 +7,21 @@ namespace Navigator {
 
 	struct NAV_API HistogramParameters
 	{
-		HistogramParameters(const std::string& n, const std::string& x, const std::string& y) :
-			name(n), x_par(x), y_par(y)
+		HistogramParameters() {}
+
+		HistogramParameters(const std::string& n, const std::string& x, int bins, double min, double max) :
+			name(n), x_par(x), nbins_x(bins), min_x(min), max_x(max)
 		{
 		}
-		std::string name;
-		std::string x_par;
-		std::string y_par;
+
+		HistogramParameters(const std::string& n, const std::string& x, const std::string& y, int binsx, double minx, double maxx, int binsy, double miny, double maxy) :
+			name(n), x_par(x), y_par(y), nbins_x(binsx), min_x(minx), max_x(maxx), nbins_y(binsy), min_y(miny), max_y(maxy)
+		{
+		}
+
+		std::string name = "None";
+		std::string x_par = "None";
+		std::string y_par = "None";
         std::vector<std::string> cutsDrawnUpon;
         std::vector<std::string> cutsAppliedTo;
 		int nbins_x = 0;
@@ -28,11 +36,11 @@ namespace Navigator {
 	{
 	public:
 		Histogram() :
-			m_params("None", "None", "None"), m_initFlag(false)
+			m_initFlag(false)
 		{
 		}
-		Histogram(const std::string& name, const std::string& param_x, const std::string& param_y="None") :
-			m_params(name, param_x, param_y), m_initFlag(false)
+		Histogram(const HistogramParameters& params) :
+			m_params(params), m_initFlag(false)
 		{
 		}
 
@@ -57,7 +65,7 @@ namespace Navigator {
 	class NAV_API Histogram1D : public Histogram
 	{
 	public:
-		Histogram1D(const std::string& name, const std::string& param, int bins, double min, double max);
+		Histogram1D(const HistogramParameters& params);
 		virtual ~Histogram1D();
 		virtual void FillData(double x, double y=0) override;
 		virtual void Draw() override;
@@ -66,7 +74,7 @@ namespace Navigator {
 		inline virtual bool Is2D() const override { return false; }
 
 	private:
-		void InitBins(int bins, double min, double max);
+		void InitBins();
 
 		std::vector<double> m_binCenters;
 		std::vector<double> m_binCounts;
@@ -77,8 +85,7 @@ namespace Navigator {
 	class NAV_API Histogram2D : public Histogram
 	{
 	public:
-		Histogram2D(const std::string& name, const std::string& param_x, const std::string& param_y, int bins_x, double min_x, double max_x,
-					int bins_y, double min_y, double max_y);
+		Histogram2D(const HistogramParameters& params);
 		virtual ~Histogram2D();
 		virtual void FillData(double x, double y=0) override;
 		virtual void Draw() override;
@@ -87,7 +94,7 @@ namespace Navigator {
 		inline virtual bool Is2D() const override { return true; }
 
 	private:
-		void InitBins(int bins_x, double min_x, double max_x, int bins_y, double min_y, double max_y);
+		void InitBins();
 
 		std::vector<double> m_binCounts;
 		int m_nBinsTotal;

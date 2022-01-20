@@ -24,8 +24,8 @@ namespace Navigator {
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);
 		HistogramMap& histMap = HistogramMap::GetInstance();
-		histMap.AddHistogram("myHisto", "joseph", 100, 0, 10);
-		histMap.AddHistogram("myHisto2D", "joseph", "joseph", 100, 0, 10, 100, 0, 10);
+		histMap.AddHistogram(HistogramParameters("myHisto", "joseph", 100, 0, 10));
+		histMap.AddHistogram(HistogramParameters("myHisto2D", "joseph", "joseph", 100, 0, 10, 100, 0, 10));
         
         CutMap::GetInstance().AddCut("joe_cut","joseph",0.0, 7.0);
 		CutMap::GetInstance().AddCut("joe2D_cut", "joseph", "joseph", { 1.0, 3.0, 3.0, 1.0, 1.0}, { 1.0, 1.0, 3.0, 3.0, 1.0});
@@ -38,13 +38,6 @@ namespace Navigator {
 
 	Application::~Application()
 	{
-	}
-
-	void Application::SetParameterList()
-	{
-		m_parameterList = ParameterMap::GetInstance().GetListOfParameters();
-		PhysicsParamEvent event;
-		OnEvent(event);
 	}
 
 	void Application::OnEvent(Event& event) 

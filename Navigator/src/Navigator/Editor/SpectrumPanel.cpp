@@ -16,7 +16,7 @@ namespace Navigator {
         HistogramMap& histMap = HistogramMap::GetInstance();
         if (ImGui::Begin("Active View"))
         {
-            if (m_activeList.size() > 0)
+            if (histMap.size() > 0)
             {
                 if (m_zoomedFlag && m_zoomedGram != "")
                 {
@@ -51,9 +51,12 @@ namespace Navigator {
                                 label = "Histogram" + std::to_string(this_gram);
                                 if (ImGui::BeginCombo(label.c_str(), m_selectedGrams[this_gram].c_str()))
                                 {
-                                    for (auto& params : m_activeList)
+                                    for (auto& gram : histMap)
+                                    {
+                                        auto& params = gram.second->GetParameters();
                                         if (ImGui::Selectable(params.name.c_str(), params.name == m_selectedGrams[this_gram]))
                                             m_selectedGrams[this_gram] = params.name;
+                                    }
                                     ImGui::EndCombo();
                                 }
                             }

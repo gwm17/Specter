@@ -26,12 +26,8 @@ namespace Navigator {
 		void PushLayer(Layer* layer);
 		inline void PushAnalysisStage(AnalysisStage* stage) { m_physicsLayer->PushStage(stage); }
 		void PushOverlay(Layer* layer);
-		void SetParameterList();  
-
-		inline const std::vector<std::string>& GetParameterList() { return m_parameterList; }
 
 		inline static Application& Get() { return *s_instance; }
-		inline static void LinkParameterList() { s_instance->SetParameterList(); }
 
 		inline Window& GetWindow() { return *m_window; }
 
@@ -42,7 +38,6 @@ namespace Navigator {
 		std::unique_ptr<Window> m_window;
 		ImGuiLayer* m_imgui_layer;
 		PhysicsLayer* m_physicsLayer;
-		std::vector<std::string> m_parameterList;
 		bool m_runFlag;
 
 		float m_bckgnd_color[4] = {0.1, 0.1, 0.1, 1.0};

@@ -8,6 +8,7 @@
 #include "Navigator/CutMap.h"
 #include "SpectrumPanel.h"
 #include "FileDialog.h"
+#include "SpectrumDialog.h"
 
 namespace Navigator {
 
@@ -25,14 +26,9 @@ namespace Navigator {
 
         
     private:
-        void UpdateHistogramLists();
-        void UpdateCutLists();
-        bool OnPhysicsParamEvent(PhysicsParamEvent& event);
-        std::vector<HistogramParameters> m_histoList;
-        std::vector<CutParams> m_cutList;
-        std::vector<std::string> m_paramList;
         SpectrumPanel m_spectrumPanel;
         FileDialog m_fileDialog;
+        SpectrumDialog m_spectrumDialog;
 
         //ImGui Settings
         bool dockspaceOpen = true;

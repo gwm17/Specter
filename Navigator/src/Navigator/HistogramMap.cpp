@@ -13,6 +13,14 @@ namespace Navigator {
 	{
 	}
 
+	void HistogramMap::AddHistogram(const HistogramParameters& params)
+	{
+		if (params.y_par == "None")
+			m_map[params.name].reset(new Histogram1D(params));
+		else
+			m_map[params.name].reset(new Histogram2D(params));
+	}
+
     void HistogramMap::AddCutToHistogramDraw(const std::string &cutname, const std::string &histoname)
     {
         auto iter = m_map.find(histoname);

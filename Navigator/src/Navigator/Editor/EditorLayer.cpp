@@ -27,25 +27,14 @@ namespace Navigator {
 
     void EditorLayer::OnEvent(Event& e)
     {
-        EventDispatcher dispatch(e);
-        dispatch.Dispatch<PhysicsParamEvent>(BIND_EVENT_FUNCTION(EditorLayer::OnPhysicsParamEvent));
-    }
-
-    void EditorLayer::UpdateHistogramLists()
-    {
-        m_histoList = HistogramMap::GetInstance().GetListOfHistogramParams();
-        m_spectrumPanel.UpdateActiveList(m_histoList);
-    }
-
-    void EditorLayer::UpdateCutLists()
-    {
-        m_cutList = CutMap::GetInstance().GetListOfCutParams();
     }
 
     void EditorLayer::OnImGuiRender()
     {
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
         // because it would be confusing to have two docking targets within each others.
+        HistogramMap& histoMap = HistogramMap::GetInstance();
+        CutMap& cutMap = CutMap::GetInstance();
         if (opt_fullscreen)
         {
             ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -118,6 +107,7 @@ namespace Navigator {
             {
                 if (ImGui::MenuItem("Spectrum"))
                 {
+                    m_spectrumDialog.SetSpectrumDialog();
                 }
                 ImGui::EndMenu();
             }
@@ -141,16 +131,16 @@ namespace Navigator {
             NAV_INFO("Found a Open File!");
         else if (!save_file_result.empty())
             NAV_INFO("Found a Save File!");
+        
+        m_spectrumDialog.ImGuiRenderSpectrumDialog();
 
-
-        UpdateHistogramLists();
-        UpdateCutLists();
         m_spectrumPanel.OnImGuiRender();
 
         if (ImGui::Begin("Spectra"))
         {
-            for (auto& params : m_histoList)
+            for (auto& gram : histoMap)
             {
+                auto& params = gram.second->GetParameters();
                 if (ImGui::TreeNode(params.name.c_str()))
                 {
                     ImGui::BulletText("X Parameter: %s", params.x_par.c_str());
@@ -180,8 +170,9 @@ namespace Navigator {
         
         if(ImGui::Begin("Cuts"))
         {
-            for(auto& params : m_cutList)
+            for(auto& cut : cutMap)
             {
+                auto& params = cut.second->GetCutParams();
                 if(ImGui::TreeNode(params.name.c_str()))
                 {
                     ImGui::BulletText("X Parameter: %s", params.x_par.c_str());
@@ -194,12 +185,5 @@ namespace Navigator {
         }
 
         ImGui::End();
-    }
-
-    bool EditorLayer::OnPhysicsParamEvent(PhysicsParamEvent& event)
-    {
-        NAV_INFO("{0}", event.ToString());
-        m_paramList = Application::Get().GetParameterList();
-        return true;
     }
 }

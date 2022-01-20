@@ -1,5 +1,5 @@
 #include "FileDialog.h"
-#include "misc/cpp/imgui_stdlib.cpp"
+#include "misc/cpp/imgui_stdlib.h"
 
 namespace Navigator {
 
