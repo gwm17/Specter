@@ -23,7 +23,7 @@ namespace Navigator {
 		void DrawHistograms();
 		void DrawHistogram(const std::string& name);
 
-		std::vector<HistogramParameters> GetListOfHistogramParams(); //thread safe access for GUI to the underlying parameters. Only needs to be called when a gram is added/removed
+		const HistogramParameters& GetHistogramParams(const std::string& name); //thread safe access for GUI to the underlying parameters. Only needs to be called when a gram is added/removed
 
 		static HistogramMap& GetInstance() { return *s_instance; }
 

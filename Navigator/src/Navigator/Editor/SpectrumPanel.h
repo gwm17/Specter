@@ -25,6 +25,9 @@ namespace Navigator {
 		std::string m_zoomedGram;
 		int m_tableSizes[2];
 		int m_totalSlots;
+		CutParams m_newCutParams;
+		std::vector<double> m_newCutX;
+		std::vector<double> m_newCutY;
 	};
 
 }

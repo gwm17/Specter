@@ -74,13 +74,16 @@ namespace Navigator {
 		}
 	}
 
-	std::vector<HistogramParameters> HistogramMap::GetListOfHistogramParams()
+	const HistogramParameters& HistogramMap::GetHistogramParams(const std::string& name)
 	{
-		std::vector<HistogramParameters> params;
-		params.reserve(m_map.size());
-		for (auto& pair : m_map)
-			params.push_back(pair.second->GetParameters());
-		return params;
+		
+		auto iter = m_map.find(name);
+		if (iter != m_map.end())
+			return iter->second->GetParameters();
+		else
+		{
+			return HistogramParameters();
+		}
 	}
 
 	//Only to be used within ImGui context!!

@@ -76,7 +76,7 @@ namespace Navigator {
 	class NAV_API CutMap
 	{
 	public:
-		using Iter = std::unordered_map<std::string, std::unique_ptr<Cut>>::iterator;
+		using Iter = std::unordered_map<std::string, std::shared_ptr<Cut>>::iterator;
 
 		CutMap();
 		~CutMap();
@@ -100,7 +100,7 @@ namespace Navigator {
 		inline Iter end() { return m_map.end(); }
 
 	private:
-		std::unordered_map<std::string, std::unique_ptr<Cut>> m_map;
+		std::unordered_map<std::string, std::shared_ptr<Cut>> m_map;
 
 		static CutMap* s_instance;
 	};
