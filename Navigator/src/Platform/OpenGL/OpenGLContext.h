@@ -2,7 +2,7 @@
 #define OPEGL_CONTEXT_H
 
 #include "Navigator/NavCore.h"
-#include "Navigator/GraphicsContext.h"
+#include "Navigator/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;
 

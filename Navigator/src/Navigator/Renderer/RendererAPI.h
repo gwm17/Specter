@@ -2,6 +2,8 @@
 #define RENDERER_API_H
 
 #include "Navigator/NavCore.h"
+#include "VertexArray.h"
+#include "glm/vec4.hpp"
 
 namespace Navigator {
 
@@ -15,7 +17,8 @@ namespace Navigator {
 		};
 
 		virtual void Clear() = 0;
-		virtual void SetClearColor(const float* color_array) = 0;
+		virtual void SetClearColor(const glm::vec4& color) = 0;
+		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& array) = 0;
 
 		inline static API GetAPI() { return s_api; }
 

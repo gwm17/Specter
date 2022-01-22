@@ -15,6 +15,7 @@ IncludeDirs["glfw"] = "Navigator/vendor/glfw/include"
 IncludeDirs["ImGui"] = "Navigator/vendor/imgui"
 IncludeDirs["glad"] = "Navigator/vendor/glad/include"
 IncludeDirs["ImPlot"] = "Navigator/vendor/implot"
+IncludeDirs["glm"] = "Navigator/vendor/glm"
 
 include "Navigator/vendor/glfw"
 include "Navigator/vendor/imgui"
@@ -42,7 +43,8 @@ project "Navigator"
 			"%{IncludeDirs.glfw}",
 			"%{IncludeDirs.ImGui}",
 			"%{IncludeDirs.glad}",
-			"%{IncludeDirs.ImPlot}"
+			"%{IncludeDirs.ImPlot}",
+			"%{IncludeDirs.glm}"
 		}
 	filter {}
 
@@ -52,7 +54,8 @@ project "Navigator"
 		"%{IncludeDirs.glfw}",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.glad}",
-		"%{IncludeDirs.ImPlot}"
+		"%{IncludeDirs.ImPlot}",
+		"%{IncludeDirs.glm}"
 	}
 	
 
@@ -141,7 +144,9 @@ project "NavProject"
 		"Navigator/src/Navigator",
 		"Navigator/vendor/spdlog/include/",
 		"Navigator/vendor/implot/",
-		"Navigator/vendor"
+		"Navigator/vendor",
+		"%{IncludeDirs.glm}"
+
 	}
 
 	links {
@@ -158,7 +163,8 @@ project "NavProject"
 			"%{IncludeDirs.glfw}",
 			"%{IncludeDirs.ImGui}",
 			"%{IncludeDirs.glad}",
-			"%{IncludeDirs.ImPlot}"
+			"%{IncludeDirs.ImPlot}",
+			"%{IncludeDirs.glm}"
 		}
 	filter "system:windows"
 		defines "NAV_WINDOWS"

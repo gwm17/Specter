@@ -3,7 +3,7 @@
 
 #include "Navigator/NavCore.h"
 #include "Navigator/Window.h"
-#include "Navigator/GraphicsContext.h"
+#include "Navigator/Renderer/GraphicsContext.h"
 #include "GLFW/glfw3.h"
 
 namespace Navigator {

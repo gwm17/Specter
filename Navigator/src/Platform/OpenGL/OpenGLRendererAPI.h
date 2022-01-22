@@ -10,7 +10,8 @@ namespace Navigator {
 	{
 	public:
 		virtual void Clear() override;
-		virtual void SetClearColor(const float* color_array) override;
+		virtual void SetClearColor(const glm::vec4& color_array) override;
+		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& array) override;
 	};
 
 }

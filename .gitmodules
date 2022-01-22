@@ -11,3 +11,6 @@
 [submodule "Navigator/vendor/glfw"]
 	path = Navigator/vendor/glfw
 	url = https://github.com/gwm17/glfw.git
+[submodule "Navigator/vendor/glm"]
+	path = Navigator/vendor/glm
+	url = https://github.com/g-truc/glm.git

@@ -11,6 +11,7 @@
 #include "Navigator/ImGui/ImGuiLayer.h"
 #include "Navigator/Physics/PhysicsLayer.h"
 #include "Navigator/HistogramMap.h"
+#include "glm/vec4.hpp"
 
 namespace Navigator {
 
@@ -40,7 +41,7 @@ namespace Navigator {
 		PhysicsLayer* m_physicsLayer;
 		bool m_runFlag;
 
-		float m_bckgnd_color[4] = {0.1, 0.1, 0.1, 1.0};
+		glm::vec4 m_bckgnd_color = {0.1f, 0.1f, 0.1f, 1.0f};
 		
 		static Application* s_instance;
 	};
