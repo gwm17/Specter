@@ -14,3 +14,6 @@
 [submodule "Navigator/vendor/glm"]
 	path = Navigator/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "Navigator/vendor/asio"]
+	path = Navigator/vendor/asio
+	url = https://github.com/chriskohlhoff/asio.git
