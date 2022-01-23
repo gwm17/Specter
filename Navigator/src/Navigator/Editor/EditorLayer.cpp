@@ -98,9 +98,12 @@ namespace Navigator {
             {
                 if (ImGui::MenuItem("Attach Source"))
                 {
+                    m_sourceDialog.OpenSourceDialog();
                 }
                 if (ImGui::MenuItem("Detach Source"))
                 {
+                    PhysicsStopEvent event;
+                    m_callbackFunc(event);
                 }
                 ImGui::EndMenu();
             }
@@ -141,6 +144,8 @@ namespace Navigator {
         }
         
         m_spectrumDialog.ImGuiRenderSpectrumDialog();
+
+        m_sourceDialog.ImGuiRenderSourceDialog();
 
         m_spectrumPanel.OnImGuiRender();
 

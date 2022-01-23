@@ -9,14 +9,19 @@
 #include "SpectrumPanel.h"
 #include "FileDialog.h"
 #include "SpectrumDialog.h"
+#include "SourceDialog.h"
 
 namespace Navigator {
 
     class EditorLayer : public Layer
     {
     public:
+        using EventCallbackFunc = std::function<void(Event&)>;
+
         EditorLayer();
         ~EditorLayer();
+
+        void SetEventCallbackFunc(const EventCallbackFunc& f) { m_callbackFunc = f; }
 
         virtual void OnAttach() override;
         virtual void OnDetach() override;
@@ -26,9 +31,12 @@ namespace Navigator {
 
         
     private:
+        EventCallbackFunc m_callbackFunc;
+
         SpectrumPanel m_spectrumPanel;
         FileDialog m_fileDialog;
         SpectrumDialog m_spectrumDialog;
+        SourceDialog m_sourceDialog;
 
         //ImGui Settings
         bool dockspaceOpen = true;

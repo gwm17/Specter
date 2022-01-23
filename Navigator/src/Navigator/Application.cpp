@@ -20,7 +20,9 @@ namespace Navigator {
 
 		m_physicsLayer = new PhysicsLayer();
 		PushLayer(m_physicsLayer);
-		PushLayer(new EditorLayer());
+		EditorLayer* editor = new EditorLayer(); //memory handled by layer stack
+		editor->SetEventCallbackFunc(BIND_EVENT_FUNCTION(Application::OnEvent));
+		PushLayer(editor);
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);
 	}
