@@ -22,7 +22,7 @@ namespace Navigator {
 		}
 
 		virtual ~DataSource() {};
-		virtual CompassHit GetData() = 0;
+		virtual const CompassHit& GetData() = 0;
 		inline bool IsValid() { return m_validFlag; }
 
 	protected:

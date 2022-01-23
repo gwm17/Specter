@@ -114,12 +114,13 @@ namespace Navigator {
 		return true;
 	}
 
-	CompassHit CompassRun::GetData()
+	const CompassHit& CompassRun::GetData()
 	{
 		if(!IsValid())
 		{
 			NAV_ERROR("Trying to access CompassRun data when invalid, bug detected!");
-			return CompassHit();
+			m_hit = CompassHit();
+			return m_hit;
 		}
 
 		if(GetHitsFromFiles())

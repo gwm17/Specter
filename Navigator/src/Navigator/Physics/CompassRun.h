@@ -25,7 +25,7 @@ namespace Navigator {
 		CompassRun();
 		CompassRun(const std::string& dir);
 		virtual ~CompassRun();
-		virtual CompassHit GetData() override;
+		virtual const CompassHit& GetData() override;
 		inline void SetDirectory(const std::string& dir) { m_directory = dir; CollectFiles(); }
 		inline void SetShiftMap(const std::string& filename) { m_smap.SetFile(filename); }
 	

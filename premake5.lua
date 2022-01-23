@@ -16,6 +16,7 @@ IncludeDirs["ImGui"] = "Navigator/vendor/imgui"
 IncludeDirs["glad"] = "Navigator/vendor/glad/include"
 IncludeDirs["ImPlot"] = "Navigator/vendor/implot"
 IncludeDirs["glm"] = "Navigator/vendor/glm"
+IncludeDirs["asio"] = "Navigator/vendor/asio"
 
 include "Navigator/vendor/glfw"
 include "Navigator/vendor/imgui"
@@ -44,7 +45,8 @@ project "Navigator"
 			"%{IncludeDirs.ImGui}",
 			"%{IncludeDirs.glad}",
 			"%{IncludeDirs.ImPlot}",
-			"%{IncludeDirs.glm}"
+			"%{IncludeDirs.glm}",
+			"%{IncludeDirs.asio}"
 		}
 	filter {}
 
@@ -55,7 +57,8 @@ project "Navigator"
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.glad}",
 		"%{IncludeDirs.ImPlot}",
-		"%{IncludeDirs.glm}"
+		"%{IncludeDirs.glm}",
+		"%{IncludeDirs.asio}"
 	}
 	
 
@@ -145,8 +148,8 @@ project "NavProject"
 		"Navigator/vendor/spdlog/include/",
 		"Navigator/vendor/implot/",
 		"Navigator/vendor",
-		"%{IncludeDirs.glm}"
-
+		"%{IncludeDirs.glm}",
+		"%{IncludeDirs.asio}"
 	}
 
 	links {
