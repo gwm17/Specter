@@ -42,7 +42,8 @@ namespace Navigator {
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
-				result = m_currentPath.string() + m_selectedItem;
+				std::filesystem::path filepath = m_currentPath / m_selectedItem;
+				result = filepath.string();
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -117,7 +118,8 @@ namespace Navigator {
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
-				result = m_currentPath.string() + m_selectedItem;
+				std::filesystem::path filepath = m_currentPath / m_selectedItem;
+				result = filepath.string();
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();

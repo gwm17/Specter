@@ -34,6 +34,8 @@ namespace Navigator {
 		virtual void Draw() const = 0;
 		virtual bool Is1D() const = 0;
 		virtual bool Is2D() const = 0;
+		virtual std::vector<double> GetXValues() const = 0;
+		virtual std::vector<double> GetYValues() const = 0;
 
 		inline const std::string& GetName() const { return m_params.name; }
 		inline const std::string& GetXParameter() const { return m_params.x_par; }
@@ -52,6 +54,8 @@ namespace Navigator {
 		virtual void Draw() const override;
 		virtual bool Is1D() const override { return true; }
 		virtual bool Is2D() const override { return false; }
+		virtual std::vector<double> GetXValues() const override { return std::vector<double>({ m_minVal, m_maxVal }); }
+		virtual std::vector<double> GetYValues() const override { return std::vector<double>(); }
 
 	private:
 		double m_minVal, m_maxVal;
@@ -66,6 +70,8 @@ namespace Navigator {
 		virtual void Draw() const override;
 		virtual bool Is1D() const override { return false; }
 		virtual bool Is2D() const override { return true; }
+		virtual std::vector<double> GetXValues() const override { return m_xpoints; }
+		virtual std::vector<double> GetYValues() const override { return m_ypoints; }
 
 	private:
 		std::vector<double> m_xpoints;

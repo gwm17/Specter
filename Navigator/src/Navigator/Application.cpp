@@ -23,6 +23,8 @@ namespace Navigator {
 		PushLayer(new EditorLayer());
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);
+		
+		/*
 		HistogramMap& histMap = HistogramMap::GetInstance();
 		histMap.AddHistogram(HistogramParameters("myHisto", "joseph", 100, 0, 10));
 		histMap.AddHistogram(HistogramParameters("myHisto2D", "joseph", "joseph", 100, 0, 10, 100, 0, 10));
@@ -32,8 +34,8 @@ namespace Navigator {
         
         histMap.AddCutToHistogramDraw("joe_cut", "myHisto");
 		histMap.AddCutToHistogramDraw("joe2D_cut", "myHisto2D");
-
 		
+		*/
 	}
 
 	Application::~Application()

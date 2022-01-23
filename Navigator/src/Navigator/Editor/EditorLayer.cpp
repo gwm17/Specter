@@ -3,6 +3,7 @@
 #include "implot.h"
 #include "FileDialog.h"
 #include "Navigator/Application.h"
+#include "Navigator/SpectrumSerializer.h"
 
 namespace Navigator {
     
@@ -128,9 +129,16 @@ namespace Navigator {
         std::string open_file_result = m_fileDialog.ImGuiRenderOpenFile(".nav");
         std::string save_file_result = m_fileDialog.ImGuiRenderSaveFile(".nav");
         if (!open_file_result.empty())
-            NAV_INFO("Found a Open File!");
+        {
+            SpectrumSerializer serializer(open_file_result);
+            serializer.DeserializeData();
+        }
         else if (!save_file_result.empty())
-            NAV_INFO("Found a Save File!");
+        {
+            NAV_INFO("Found a Save File! {0}", save_file_result);
+            SpectrumSerializer serializer(save_file_result);
+            serializer.SerializeData();
+        }
         
         m_spectrumDialog.ImGuiRenderSpectrumDialog();
 
