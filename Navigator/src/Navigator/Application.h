@@ -22,6 +22,7 @@ namespace Navigator {
 		virtual ~Application();
 
 		void Run();
+		inline void Close() { m_runFlag = false; }
 
 		void OnEvent(Event& event);
 		void PushLayer(Layer* layer);

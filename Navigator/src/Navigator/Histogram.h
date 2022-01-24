@@ -50,7 +50,7 @@ namespace Navigator {
 		virtual void ClearData() {}
 		inline virtual bool Is1D() const { return false; }
 		inline virtual bool Is2D() const { return false; }
-		inline const HistogramParameters& GetParameters() const { return m_params; }
+		inline HistogramParameters& GetParameters() { return m_params; }
 		inline const std::string& GetXParam() const { return m_params.x_par; };
 		inline const std::string& GetYParam() const { return m_params.y_par; };
 		inline const std::string& GetName() const { return m_params.name; }

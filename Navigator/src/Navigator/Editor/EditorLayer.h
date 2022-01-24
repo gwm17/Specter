@@ -31,6 +31,9 @@ namespace Navigator {
 
         
     private:
+        void RemoveCutDialog();
+        void RemoveHistogramDialog();
+
         EventCallbackFunc m_callbackFunc;
 
         SpectrumPanel m_spectrumPanel;
@@ -45,7 +48,8 @@ namespace Navigator {
         ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 
-
+        bool m_removeHistogram;
+        bool m_removeCut;
     };
 
 }

@@ -15,15 +15,20 @@ namespace Navigator {
 		~HistogramMap();
 
 		void AddHistogram(const HistogramParameters& params);
+
+		void RemoveHistogram(const std::string& name);
+
 		
         void AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname);
         void AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname);
+		void RemoveCutFromHistograms(const std::string& cutname);
+
 		void UpdateHistograms();
 
 		void DrawHistograms();
 		void DrawHistogram(const std::string& name);
 
-		const HistogramParameters& GetHistogramParams(const std::string& name); //thread safe access for GUI to the underlying parameters. Only needs to be called when a gram is added/removed
+		const HistogramParameters& GetHistogramParams(const std::string& name);
 
 		static HistogramMap& GetInstance() { return *s_instance; }
 

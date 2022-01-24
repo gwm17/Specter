@@ -97,6 +97,10 @@ namespace Navigator {
 		{
 			m_map[params.name].reset(new Cut2D(params, xpoints, ypoints));
 		}
+		inline void RemoveCut(const std::string& name)
+		{
+			m_map.erase(name);
+		}
 
 		void DrawCut(const std::string& name);
 		bool IsInsideCut(const std::string& name, double xval, double yval = 0);

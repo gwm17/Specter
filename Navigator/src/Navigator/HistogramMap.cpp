@@ -21,19 +21,46 @@ namespace Navigator {
 			m_map[params.name].reset(new Histogram2D(params));
 	}
 
-    void HistogramMap::AddCutToHistogramDraw(const std::string &cutname, const std::string &histoname)
+	void HistogramMap::RemoveHistogram(const std::string& name)
+	{
+		m_map.erase(name);
+	}
+
+    void HistogramMap::AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname)
     {
         auto iter = m_map.find(histoname);
         if(iter != m_map.end())
             iter->second->AddCutToBeDrawn(cutname);
     }
 
-    void HistogramMap::AddCutToHistogramApplied(const std::string &cutname, const std::string &histoname)
+    void HistogramMap::AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname)
     {
         auto iter = m_map.find(histoname);
         if(iter != m_map.end())
             iter->second->AddCutToBeApplied(cutname);
     }
+
+	void HistogramMap::RemoveCutFromHistograms(const std::string& cutname)
+	{
+		for (auto& gram : m_map)
+		{
+			auto& params = gram.second->GetParameters();
+			for (size_t i = 0; i < params.cutsDrawnUpon.size(); ++i)
+			{
+				if (params.cutsDrawnUpon[i] == cutname)
+				{
+					params.cutsDrawnUpon.erase(params.cutsDrawnUpon.begin() + i);
+				}
+			}
+			for (size_t i = 0; i < params.cutsAppliedTo.size(); ++i)
+			{
+				if (params.cutsAppliedTo[i] == cutname)
+				{
+					params.cutsAppliedTo.erase(params.cutsAppliedTo.begin() + i);
+				}
+			}
+		}
+	}
 
 	void HistogramMap::UpdateHistograms()
 	{

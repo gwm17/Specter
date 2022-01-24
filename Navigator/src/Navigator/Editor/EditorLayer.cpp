@@ -8,7 +8,7 @@
 namespace Navigator {
     
     EditorLayer::EditorLayer() :
-        Layer("EditorLayer"), m_spectrumPanel()
+        Layer("EditorLayer"), m_removeHistogram(false), m_removeCut(false)
     {
     }
     
@@ -85,12 +85,13 @@ namespace Navigator {
                 {
                     m_fileDialog.SetOpenFileDialog(true);
                 }
-                if(ImGui::MenuItem("Exit"))
-                {
-                }
                 if(ImGui::MenuItem("Save"))
                 {
                     m_fileDialog.SetSaveFileDialog(true);
+                }
+                if (ImGui::MenuItem("Exit"))
+                {
+                    Application::Get().Close();
                 }
                 ImGui::EndMenu();
             }
@@ -119,9 +120,11 @@ namespace Navigator {
             {
                 if (ImGui::MenuItem("Spectrum"))
                 {
+                    m_removeHistogram = true;
                 }
                 if (ImGui::MenuItem("Cut"))
                 {
+                    m_removeCut = true;
                 }
                 ImGui::EndMenu();
             }
@@ -146,6 +149,10 @@ namespace Navigator {
         m_spectrumDialog.ImGuiRenderSpectrumDialog();
 
         m_sourceDialog.ImGuiRenderSourceDialog();
+
+        RemoveHistogramDialog();
+
+        RemoveCutDialog();
 
         m_spectrumPanel.OnImGuiRender();
 
@@ -198,5 +205,75 @@ namespace Navigator {
         }
 
         ImGui::End();
+    }
+
+    void EditorLayer::RemoveHistogramDialog()
+    {
+        HistogramMap& histMap = HistogramMap::GetInstance();
+        static std::string selectedGram = "";
+        if (m_removeHistogram)
+        {
+            selectedGram = "";
+            m_removeHistogram = false;
+            ImGui::OpenPopup("Remove Histogram");
+        }
+        if (ImGui::BeginPopupModal("Remove Histogram"))
+        {
+            if (ImGui::BeginCombo("Histogram", selectedGram.c_str()))
+            {
+                for (auto& gram : histMap)
+                {
+                    if (ImGui::Selectable(gram.second->GetName().c_str(), gram.second->GetName() == selectedGram, ImGuiSelectableFlags_DontClosePopups))
+                        selectedGram = gram.second->GetName();
+                }
+                ImGui::EndPopup();
+            }
+            if (ImGui::Button("Ok"))
+            {
+                histMap.RemoveHistogram(selectedGram);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::Button("Cancel"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    void EditorLayer::RemoveCutDialog()
+    {
+        HistogramMap& histMap = HistogramMap::GetInstance();
+        CutMap& cutMap = CutMap::GetInstance();
+        static std::string selectedCut = "";
+        if (m_removeCut)
+        {
+            selectedCut = "";
+            m_removeCut = false;
+            ImGui::OpenPopup("Remove Cut");
+        }
+        if (ImGui::BeginPopupModal("Remove Cut"))
+        {
+            if (ImGui::BeginCombo("Cut", selectedCut.c_str()))
+            {
+                for (auto& cut : cutMap)
+                {
+                    if (ImGui::Selectable(cut.second->GetName().c_str(), cut.second->GetName() == selectedCut, ImGuiSelectableFlags_DontClosePopups))
+                        selectedCut = cut.second->GetName();
+                }
+                ImGui::EndCombo();
+            }
+            if (ImGui::Button("Ok"))
+            {
+                histMap.RemoveCutFromHistograms(selectedCut);
+                cutMap.RemoveCut(selectedCut);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::Button("Cancel"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
     }
 }
