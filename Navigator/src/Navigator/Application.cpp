@@ -64,8 +64,6 @@ namespace Navigator {
 
 	void Application::Run()
 	{
-		//PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline, 2000000);
-		//OnEvent(junk);
 		while(m_runFlag)
 		{
 			HistogramMap::GetInstance().UpdateHistograms();
