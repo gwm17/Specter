@@ -66,9 +66,9 @@ namespace Navigator {
 	{
 		//PhysicsStartEvent junk("/media/gordon/GordonData/gwm17/NavTests/data/", DataSource::SourceType::CompassOffline, 2000000);
 		//OnEvent(junk);
-		HistogramMap::GetInstance().UpdateHistograms();
 		while(m_runFlag)
 		{
+			HistogramMap::GetInstance().UpdateHistograms();
 
 			RenderCommand::SetClearColor(m_bckgnd_color);
 			RenderCommand::Clear();
@@ -81,6 +81,9 @@ namespace Navigator {
 				layer->OnImGuiRender();
 			m_imgui_layer->End();
 			m_window->OnUpdate();
+
+			ParameterMap::GetInstance().find("joseph")->second->validFlag = true;
+			ParameterMap::GetInstance().find("joseph")->second->value = 8.0;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 #include "CutMap.h"
+#include "ParameterMap.h"
 #include "implot.h"
 
 namespace Navigator {
@@ -11,9 +12,13 @@ namespace Navigator {
 
 	Cut1D::~Cut1D() {}
 
-	bool Cut1D::IsInside(double x, double y) const
+	bool Cut1D::IsInside() const
 	{
-		return x >= m_minVal && x <= m_maxVal;
+        ParameterMap& parMap = ParameterMap::GetInstance();
+        auto iter  = parMap.find(m_params.x_par);
+        if (iter == parMap.end() || !iter->second->validFlag)
+            return false;
+		return iter->second->value >= m_minVal && iter->second->value <= m_maxVal;
 	}
 
 	//Only within an ImPlot/ImGui context!!!
@@ -38,8 +43,15 @@ namespace Navigator {
         If odd number of intersections, point is inside. Even, point is outside.
         Edge cases of point is a vertex or on a side considered.
 	*/
-	bool Cut2D::IsInside(double x, double y) const
+	bool Cut2D::IsInside() const
 	{
+        ParameterMap& parMap = ParameterMap::GetInstance();
+        auto iterx = parMap.find(m_params.x_par);
+        auto itery = parMap.find(m_params.y_par);
+        if (iterx == parMap.end() || itery == parMap.end() || !iterx->second->validFlag || !itery->second->validFlag)
+            return false;
+        double x = iterx->second->value;
+        double y = itery->second->value;
         bool result = false;
         double slope;
         for(size_t i=0; i<(m_xpoints.size()-1); i++)
@@ -78,12 +90,12 @@ namespace Navigator {
             iter->second->Draw();
     }
 
-    bool CutMap::IsInsideCut(const std::string& name, double xval, double yval)
+    bool CutMap::IsInsideCut(const std::string& name)
     {
         bool result = false;
         auto iter = m_map.find(name);
         if(iter != m_map.end())
-            result = iter->second->IsInside(xval, yval);
+            result = iter->second->IsInside();
         return result;
     }
 

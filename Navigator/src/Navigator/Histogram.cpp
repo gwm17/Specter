@@ -1,5 +1,6 @@
 #include "Histogram.h"
 #include "CutMap.h"
+#include "ParameterMap.h"
 #include "implot.h"
 
 /*
@@ -44,15 +45,23 @@ namespace Navigator {
 	}
 
 	//Note: only x is used here, y is simply present to maintain compliance with 2D case and can be ignored
-	void Histogram1D::FillData(double x, double y)
+	void Histogram1D::FillData()
 	{
+		ParameterMap& parMap = ParameterMap::GetInstance();
+		if (!parMap.IsParameterValid(m_params.x_par))
+			return;
+		double x = parMap.GetParameterValue(m_params.x_par);
 		if(x < m_params.min_x || x >= m_params.max_x || !m_initFlag)
 			return;
+		auto& cutmap = CutMap::GetInstance();
+		for (auto& cut : m_params.cutsAppliedTo)
+		{
+			if (!cutmap.IsInsideCut(cut))
+				return;
+		}
 
 		int bin = int((x - m_params.min_x)/(m_binWidth));
         
-        auto& cutmap = CutMap::GetInstance();
-
 		m_binCounts[bin] += 1.0;
 	}
 
@@ -107,10 +116,21 @@ namespace Navigator {
 		m_initFlag = true;
 	}
 
-	void Histogram2D::FillData(double x, double y)
+	void Histogram2D::FillData()
 	{
+		ParameterMap& parMap = ParameterMap::GetInstance();
+		CutMap& cutMap = CutMap::GetInstance();
+		if (!parMap.IsParameterValid(m_params.x_par) || !parMap.IsParameterValid(m_params.y_par))
+			return;
+		double x = parMap.GetParameterValue(m_params.x_par);
+		double y = parMap.GetParameterValue(m_params.y_par);
 		if(x < m_params.min_x || x >= m_params.max_x || y < m_params.min_y || y >= m_params.max_y || !m_initFlag)
 			return;
+		for (auto& cut : m_params.cutsAppliedTo)
+		{
+			if (!cutMap.IsInsideCut(cut))
+				return;
+		}
 
 		int bin_x = int((x - m_params.min_x)/m_binWidthX);
 		int bin_y = int((m_params.max_y - y)/m_binWidthY);

@@ -30,7 +30,7 @@ namespace Navigator {
 
 		virtual ~Cut() {}
 
-		virtual bool IsInside(double x, double y = 0) const = 0;
+		virtual bool IsInside() const = 0;
 		virtual void Draw() const = 0;
 		virtual bool Is1D() const = 0;
 		virtual bool Is2D() const = 0;
@@ -50,7 +50,7 @@ namespace Navigator {
 	public:
 		Cut1D(const CutParams& params, double min, double max);
 		virtual ~Cut1D();
-		virtual bool IsInside(double x, double y = 0) const override;
+		virtual bool IsInside() const override;
 		virtual void Draw() const override;
 		virtual bool Is1D() const override { return true; }
 		virtual bool Is2D() const override { return false; }
@@ -66,7 +66,7 @@ namespace Navigator {
 	public:
 		Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
 		virtual ~Cut2D();
-		virtual bool IsInside(double x, double y = 0) const override;
+		virtual bool IsInside() const override;
 		virtual void Draw() const override;
 		virtual bool Is1D() const override { return false; }
 		virtual bool Is2D() const override { return true; }
@@ -103,7 +103,7 @@ namespace Navigator {
 		}
 
 		void DrawCut(const std::string& name);
-		bool IsInsideCut(const std::string& name, double xval, double yval = 0);
+		bool IsInsideCut(const std::string& name);
 		std::vector<CutParams> GetListOfCutParams();
 
 		inline Iter begin() { return m_map.begin(); }

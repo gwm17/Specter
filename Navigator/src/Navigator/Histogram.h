@@ -45,7 +45,7 @@ namespace Navigator {
 		}
 
 		virtual ~Histogram() {};
-		virtual void FillData(double x, double y = 0) { NAV_WARN("Trying to fill a default histogram!"); }
+		virtual void FillData() { NAV_WARN("Trying to fill a default histogram!"); }
 		virtual void Draw() {}
 		virtual void ClearData() {}
 		inline virtual bool Is1D() const { return false; }
@@ -67,7 +67,7 @@ namespace Navigator {
 	public:
 		Histogram1D(const HistogramParameters& params);
 		virtual ~Histogram1D();
-		virtual void FillData(double x, double y=0) override;
+		virtual void FillData() override;
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		inline virtual bool Is1D() const override { return true; }
@@ -87,7 +87,7 @@ namespace Navigator {
 	public:
 		Histogram2D(const HistogramParameters& params);
 		virtual ~Histogram2D();
-		virtual void FillData(double x, double y=0) override;
+		virtual void FillData() override;
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		inline virtual bool Is1D() const override { return false; }
