@@ -16,7 +16,7 @@ IncludeDirs["ImGui"] = "Navigator/vendor/imgui"
 IncludeDirs["glad"] = "Navigator/vendor/glad/include"
 IncludeDirs["ImPlot"] = "Navigator/vendor/implot"
 IncludeDirs["glm"] = "Navigator/vendor/glm"
-IncludeDirs["asio"] = "Navigator/vendor/asio"
+IncludeDirs["asio"] = "Navigator/vendor/asio/asio/include"
 
 include "Navigator/vendor/glfw"
 include "Navigator/vendor/imgui"

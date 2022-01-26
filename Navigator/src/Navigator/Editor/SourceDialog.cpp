@@ -58,7 +58,7 @@ namespace Navigator {
 				{
 					m_fileDialog.SetOpenDirDialog(true);
 				}
-				auto& temp = m_fileDialog.ImGuiRenderOpenDir();
+				auto temp = m_fileDialog.ImGuiRenderOpenDir();
 				if (temp != "")
 					m_chosenLocation = temp;
 			}

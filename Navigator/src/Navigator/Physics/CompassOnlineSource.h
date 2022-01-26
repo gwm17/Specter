@@ -2,7 +2,7 @@
 #define COMPASS_ONLINE_SOURCE_H
 
 #include "DataSource.h"
-#include "asio/include/asio.hpp"
+#include "asio.hpp"
 
 namespace Navigator {
 
