@@ -37,7 +37,7 @@ namespace Navigator {
 	bool PhysicsLayer::OnPhysicsStartEvent(PhysicsStartEvent& event)
 	{
 		m_rawSort.SetCoincidenceWindow(event.GetCoincidenceWindow());
-		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourceType()));
+		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetSourceType()));
 		if (m_source->IsValid())
 		{
 			NAV_INFO("Attach successful. Enabling data pull...");

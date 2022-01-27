@@ -29,7 +29,7 @@ namespace Navigator {
 		bool m_validFlag;
 	};
 
-	NAV_API DataSource* CreateDataSource(const std::string& loc, DataSource::SourceType type);
+	NAV_API DataSource* CreateDataSource(const std::string& loc, const std::string& port, DataSource::SourceType type);
 
 	NAV_API std::string ConvertDataSourceTypeToString(DataSource::SourceType type);
 }

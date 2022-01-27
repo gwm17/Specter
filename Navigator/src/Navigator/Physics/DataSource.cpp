@@ -4,12 +4,12 @@
 
 namespace Navigator {
 
-	DataSource* CreateDataSource(const std::string& loc, DataSource::SourceType type)
+	DataSource* CreateDataSource(const std::string& loc, const std::string& port, DataSource::SourceType type)
 	{
 		switch(type)
 		{
 			case DataSource::SourceType::CompassOffline : return new CompassRun(loc);
-			case DataSource::SourceType::CompassOnline : return new CompassOnlineSource(loc, "5346");
+			case DataSource::SourceType::CompassOnline : return new CompassOnlineSource(loc, port);
 			case DataSource::SourceType::None : return nullptr;
 		}
 	}

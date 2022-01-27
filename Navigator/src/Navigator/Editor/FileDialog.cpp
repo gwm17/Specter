@@ -36,7 +36,7 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_openFileName.c_str()))
 		{
-			ImGui::Text("Current Directory: %s", m_currentPath.string().c_str());
+			ImGui::Text("Current Directory: %s", m_currentPath.lexically_normal().string().c_str());
 			ImGui::SameLine();
 			ImGui::Text("Extension Filter: %s", ext.c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
@@ -60,7 +60,6 @@ namespace Navigator {
 				{
 					m_selectedItem.clear();
 					m_currentPath.append("..");
-					m_currentPath = std::filesystem::absolute(m_currentPath);
 				}
 				ImGui::TableNextColumn();
 				ImGui::Text("N/A");
@@ -112,7 +111,7 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_saveFileName.c_str()))
 		{
-			ImGui::Text("Current Directory: %s", m_currentPath.string().c_str());
+			ImGui::Text("Current Directory: %s", m_currentPath.lexically_normal().string().c_str());
 			ImGui::SameLine();
 			ImGui::Text("Extension Filter: %s", ext.c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
@@ -136,7 +135,6 @@ namespace Navigator {
 				{
 					m_selectedItem.clear();
 					m_currentPath.append("..");
-					m_currentPath = std::filesystem::absolute(m_currentPath);
 				}
 				ImGui::TableNextColumn();
 				ImGui::Text("N/A");
@@ -186,7 +184,7 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_openDirName.c_str()))
 		{
-			ImGui::Text("Current Directory: %s", m_currentPath.string().c_str());
+			ImGui::Text("Current Directory: %s", m_currentPath.lexically_normal().string().c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
@@ -206,7 +204,6 @@ namespace Navigator {
 				if (ImGui::Selectable("[DIR] ..", false, select_flags))
 				{
 					m_currentPath.append("..");
-					m_currentPath = std::filesystem::absolute(m_currentPath);
 					m_selectedItem = m_currentPath.string();
 				}
 				ImGui::TableNextColumn();
