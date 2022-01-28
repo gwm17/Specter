@@ -9,7 +9,7 @@
 namespace Navigator {
 
 	SourceDialog::SourceDialog() :
-		m_openFlag(false), m_chosenWindow(2000000)
+		m_openFlag(false), m_chosenPort("51489"), m_chosenWindow(2000000)
 	{
 	}
 
@@ -30,6 +30,7 @@ namespace Navigator {
 			m_openFlag = false;
 			m_chosenType = DataSource::SourceType::None;
 			m_chosenLocation = "";
+			m_chosenPort = "51489";
 			m_chosenWindow = 2000000;
 			ImGui::OpenPopup("Attach Source");
 		}
@@ -50,6 +51,7 @@ namespace Navigator {
 			if (m_chosenType == DataSource::SourceType::CompassOnline)
 			{
 				ImGui::InputText("Hostname", &m_chosenLocation);
+				ImGui::InputText("Port", &m_chosenPort);
 			}
 			else if (m_chosenType == DataSource::SourceType::CompassOffline)
 			{
@@ -67,7 +69,7 @@ namespace Navigator {
 
 			if (ImGui::Button("Ok"))
 			{
-				PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow);
+				PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort);
 				Application::Get().OnEvent(event);
 				ImGui::CloseCurrentPopup();
 			}

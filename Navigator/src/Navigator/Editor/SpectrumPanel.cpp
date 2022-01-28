@@ -37,8 +37,8 @@ namespace Navigator {
                         m_newCutParams.x_par = zoomed_params.x_par;
                         m_newCutParams.y_par = zoomed_params.y_par;
                         ImGui::InputText("Cut Name", &m_newCutParams.name);
-                        ImGui::BulletText("X Parameter: %s", m_newCutParams.x_par.c_str());
-                        ImGui::BulletText("Y Parameter: %s", m_newCutParams.y_par.c_str());
+                        ImGui::BulletText(("X Parameter: "+m_newCutParams.x_par).c_str());
+                        ImGui::BulletText(("Y Parameter: "+m_newCutParams.y_par).c_str());
                         if(ImGui::Button("Accept & Draw"))
                         {
                             m_cutModeFlag = true;

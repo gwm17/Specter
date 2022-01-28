@@ -36,9 +36,9 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_openFileName.c_str()))
 		{
-			ImGui::Text("Current Directory: %s", m_currentPath.lexically_normal().string().c_str());
+			ImGui::Text(("Current Directory: " + m_currentPath.lexically_normal().string()).c_str());
 			ImGui::SameLine();
-			ImGui::Text("Extension Filter: %s", ext.c_str());
+			ImGui::Text(("Extension Filter: "+ext).c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
@@ -111,9 +111,9 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_saveFileName.c_str()))
 		{
-			ImGui::Text("Current Directory: %s", m_currentPath.lexically_normal().string().c_str());
+			ImGui::Text(("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
 			ImGui::SameLine();
-			ImGui::Text("Extension Filter: %s", ext.c_str());
+			ImGui::Text(("Extension Filter: "+ext).c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
@@ -184,7 +184,7 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_openDirName.c_str()))
 		{
-			ImGui::Text("Current Directory: %s", m_currentPath.lexically_normal().string().c_str());
+			ImGui::Text(("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{

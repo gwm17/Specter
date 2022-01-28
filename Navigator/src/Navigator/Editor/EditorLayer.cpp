@@ -163,23 +163,23 @@ namespace Navigator {
                 auto& params = gram.second->GetParameters();
                 if (ImGui::TreeNode(params.name.c_str()))
                 {
-                    ImGui::BulletText("X Parameter: %s", params.x_par.c_str());
+                    ImGui::BulletText(("X Parameter: "+params.x_par).c_str());
                     ImGui::BulletText("X Bins: %d X Min: %f X Max: %f", params.nbins_x, params.min_x, params.max_x);
                     if (params.y_par != "None")
                     {
-                        ImGui::BulletText("Y Parameter: %s", params.y_par.c_str());
+                        ImGui::BulletText(("Y Parameter: "+params.y_par).c_str());
                         ImGui::BulletText("Y Bins: %d Y Min: %f Y Max: %f", params.nbins_y, params.min_y, params.max_y);
                     }
                     if(params.cutsDrawnUpon.size() != 0 && ImGui::TreeNode("Cuts Drawn"))
                     {
                         for(auto& cut : params.cutsDrawnUpon)
-                            ImGui::BulletText("%s", cut.c_str());
+                            ImGui::BulletText(cut.c_str());
                         ImGui::TreePop();
                     }
                     if(params.cutsAppliedTo.size() != 0 && ImGui::TreeNode("Cuts Applied"))
                     {
                         for(auto& cut : params.cutsAppliedTo)
-                            ImGui::BulletText("%s", cut.c_str());
+                            ImGui::BulletText(cut.c_str());
                         ImGui::TreePop();
                     }
                     ImGui::TreePop();
@@ -195,9 +195,9 @@ namespace Navigator {
                 auto& params = cut.second->GetCutParams();
                 if(ImGui::TreeNode(params.name.c_str()))
                 {
-                    ImGui::BulletText("X Parameter: %s", params.x_par.c_str());
+                    ImGui::BulletText(("X Parameter: "+params.x_par).c_str());
                     if(params.y_par != "None")
-                        ImGui::BulletText("Y Parameter: %s", params.y_par.c_str());
+                        ImGui::BulletText(("Y Parameter: "+params.y_par).c_str());
                     ImGui::TreePop();
                 }
             }

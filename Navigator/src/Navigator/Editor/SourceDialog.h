@@ -19,6 +19,7 @@ namespace Navigator {
 		bool m_openFlag;
 		DataSource::SourceType m_chosenType;
 		std::string m_chosenLocation;
+		std::string m_chosenPort;
 		FileDialog m_fileDialog;
 		int m_chosenWindow;
 	};
