@@ -5,6 +5,7 @@
 
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include "IconsFontAwesome5.h"
 
 namespace Navigator {
 
@@ -32,9 +33,9 @@ namespace Navigator {
 			m_chosenLocation = "";
 			m_chosenPort = "51489";
 			m_chosenWindow = 2000000;
-			ImGui::OpenPopup("Attach Source");
+			ImGui::OpenPopup(ICON_FA_LINK " Attach Source");
 		}
-		if (ImGui::BeginPopupModal("Attach Source"))
+		if (ImGui::BeginPopupModal(ICON_FA_LINK " Attach Source"))
 		{
 			if (ImGui::BeginCombo("Source Type", ConvertDataSourceTypeToString(m_chosenType).c_str()))
 			{
@@ -64,7 +65,7 @@ namespace Navigator {
 				if (temp != "")
 					m_chosenLocation = temp;
 			}
-			ImGui::InputInt("Coincidence Window (ps)", &m_chosenWindow);
+			ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
 
 
 			if (ImGui::Button("Ok"))
@@ -73,6 +74,7 @@ namespace Navigator {
 				Application::Get().OnEvent(event);
 				ImGui::CloseCurrentPopup();
 			}
+			ImGui::SameLine();
 			if (ImGui::Button("Cancel"))
 			{
 				ImGui::CloseCurrentPopup();

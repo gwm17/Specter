@@ -9,6 +9,7 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include "IconsFontAwesome5.h"
 
 namespace Navigator {
 
@@ -45,6 +46,15 @@ namespace Navigator {
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
+
+		io.Fonts->AddFontDefault();
+
+		ImFontConfig config;
+		config.MergeMode = true;
+		config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
+		config.PixelSnapH = true;
+		static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+		io.Fonts->AddFontFromFileTTF("fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
 
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());

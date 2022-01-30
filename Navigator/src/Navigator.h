@@ -20,5 +20,8 @@
 #include "Navigator/Logger.h"
 #include "Navigator/Application.h"
 #include "Navigator/Physics/PhysicsLayer.h"
+#include "Navigator/Layer.h"
+#include "Navigator/Events/Event.h"
+#include "Navigator/Renderer/Renderer.h"
 
 #endif

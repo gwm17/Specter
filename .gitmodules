@@ -17,3 +17,6 @@
 [submodule "Navigator/vendor/asio"]
 	path = Navigator/vendor/asio
 	url = https://github.com/chriskohlhoff/asio.git
+[submodule "Navigator/vendor/IconFontCppHeaders"]
+	path = Navigator/vendor/IconFontCppHeaders
+	url = https://github.com/juliettef/IconFontCppHeaders.git

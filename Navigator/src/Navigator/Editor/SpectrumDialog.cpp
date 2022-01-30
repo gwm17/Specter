@@ -2,6 +2,8 @@
 
 #include "misc/cpp/imgui_stdlib.h"
 
+#include "IconsFontAwesome5.h"
+
 namespace Navigator {
 
 	SpectrumDialog::SpectrumDialog()
@@ -22,10 +24,10 @@ namespace Navigator {
 			m_newParams = m_blank;
 			m_openFlag = false;
 			dims = 1;
-			ImGui::OpenPopup("New Spectrum Dialog");
+			ImGui::OpenPopup(ICON_FA_CHART_BAR " New Spectrum Dialog");
 		}
 
-		if (ImGui::BeginPopupModal("New Spectrum Dialog"))
+		if (ImGui::BeginPopupModal(ICON_FA_CHART_BAR " New Spectrum Dialog"))
 		{
 			ParameterMap& parMap = ParameterMap::GetInstance();
 			ImGui::InputText("Spectrum Name", &m_newParams.name);
@@ -36,7 +38,7 @@ namespace Navigator {
 				ImGui::TableNextRow();
 
 				ImGui::TableNextColumn();
-				if (ImGui::BeginCombo("X Parameter", m_newParams.x_par.c_str()))
+				if (ImGui::BeginCombo("X Param.", m_newParams.x_par.c_str()))
 				{
 					for (auto& params : parMap)
 					{
@@ -57,7 +59,7 @@ namespace Navigator {
 					ImGui::TableNextRow();
 
 					ImGui::TableNextColumn();
-					if (ImGui::BeginCombo("Y Parameter", m_newParams.y_par.c_str()))
+					if (ImGui::BeginCombo("Y Param.", m_newParams.y_par.c_str()))
 					{
 						for (auto& params : parMap)
 						{

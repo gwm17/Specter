@@ -1,6 +1,7 @@
 #include "SpectrumPanel.h"
 #include "implot.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include "IconsFontAwesome5.h"
 
 namespace Navigator {
 
@@ -24,14 +25,14 @@ namespace Navigator {
             {
                 if (m_zoomedFlag && m_zoomedGram != "")
                 {
-                    if(ImGui::Button("Draw Cut"))
+                    if(ImGui::Button(ICON_FA_CUT " Draw Cut"))
                     {
                         m_newCutParams = CutParams();
                         m_newCutX.resize(0);
                         m_newCutY.resize(0);
-                        ImGui::OpenPopup("New Cut Dialog");
+                        ImGui::OpenPopup(ICON_FA_CUT " New Cut Dialog");
                     }
-                    if(ImGui::BeginPopupModal("New Cut Dialog"))
+                    if(ImGui::BeginPopupModal(ICON_FA_CUT " New Cut Dialog"))
                     {
                         auto& zoomed_params = histMap.GetHistogramParams(m_zoomedGram);
                         m_newCutParams.x_par = zoomed_params.x_par;
@@ -44,6 +45,7 @@ namespace Navigator {
                             m_cutModeFlag = true;
                             ImGui::CloseCurrentPopup();
                         }
+                        ImGui::SameLine();
                         if(ImGui::Button("Cancel"))
                         {
                             ImGui::CloseCurrentPopup();
@@ -114,6 +116,7 @@ namespace Navigator {
                             histMap.AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram);
                             ImGui::CloseCurrentPopup();
                         }
+                        ImGui::SameLine();
                         if (ImGui::Button("No"))
                         {
                             ImGui::CloseCurrentPopup();

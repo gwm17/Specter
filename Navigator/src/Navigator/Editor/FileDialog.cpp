@@ -1,5 +1,6 @@
 #include "FileDialog.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include "IconsFontAwesome5.h"
 
 namespace Navigator {
 
@@ -14,7 +15,7 @@ namespace Navigator {
 	}
 
 	FileDialog::FileDialog() :
-		m_currentPath(std::filesystem::current_path()), m_openFileName("Open File"), m_saveFileName("Save File"), m_openDirName("Open Directory"),
+		m_currentPath(std::filesystem::current_path()), m_openFileName(ICON_FA_FILE " Open File"), m_saveFileName(ICON_FA_SAVE " Save File"), m_openDirName(ICON_FA_FOLDER " Open Directory"),
 		m_selectedItem(""), m_openFileFlag(false), m_openDirFlag(false), m_saveFileFlag(false)
 	{
 		table_flags = ImGuiTableFlags_BordersH | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_RowBg;
@@ -56,7 +57,7 @@ namespace Navigator {
 				ImGui::TableHeadersRow();
 				ImGui::TableNextRow();
 				ImGui::TableNextColumn();
-				if (ImGui::Selectable("[DIR] ..", false, select_flags))
+				if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
 				{
 					m_selectedItem.clear();
 					m_currentPath.append("..");
@@ -68,7 +69,7 @@ namespace Navigator {
 					if (entry.is_directory())
 					{
 						ImGui::TableNextRow();
-						text = "[DIR] " + std::filesystem::relative(entry.path(), m_currentPath).string();
+						text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
 						ImGui::TableNextColumn();
 						if (ImGui::Selectable(text.c_str(), false, select_flags))
 						{
@@ -81,7 +82,7 @@ namespace Navigator {
 					else if(entry.path().filename().extension() == ext)
 					{
 						ImGui::TableNextRow();
-						text = "[FILE] " + entry.path().filename().string();
+						text = ICON_FA_FILE " " + entry.path().filename().string();
 						ImGui::TableNextColumn();
 						if (ImGui::Selectable(text.c_str(), false, select_flags))
 							m_selectedItem = entry.path().filename().string();
@@ -131,7 +132,7 @@ namespace Navigator {
 				ImGui::TableHeadersRow();
 				ImGui::TableNextRow();
 				ImGui::TableNextColumn();
-				if (ImGui::Selectable("[DIR] ..", false, select_flags))
+				if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
 				{
 					m_selectedItem.clear();
 					m_currentPath.append("..");
@@ -143,7 +144,7 @@ namespace Navigator {
 					if (entry.is_directory())
 					{
 						ImGui::TableNextRow();
-						text = "[DIR] " + std::filesystem::relative(entry.path(), m_currentPath).string();
+						text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
 						ImGui::TableNextColumn();
 						if (ImGui::Selectable(text.c_str(), false, select_flags))
 						{
@@ -156,7 +157,7 @@ namespace Navigator {
 					else if (entry.path().filename().extension() == ext)
 					{
 						ImGui::TableNextRow();
-						text = "[FILE] " + entry.path().filename().string();
+						text = ICON_FA_FILE " " + entry.path().filename().string();
 						ImGui::TableNextColumn();
 						if (ImGui::Selectable(text.c_str(), false, select_flags))
 							m_selectedItem = entry.path().filename().string();
@@ -201,7 +202,7 @@ namespace Navigator {
 				ImGui::TableHeadersRow();
 				ImGui::TableNextRow();
 				ImGui::TableNextColumn();
-				if (ImGui::Selectable("[DIR] ..", false, select_flags))
+				if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
 				{
 					m_currentPath.append("..");
 					m_selectedItem = m_currentPath.string();
@@ -213,7 +214,7 @@ namespace Navigator {
 					ImGui::TableNextRow();
 					if (entry.is_directory())
 					{
-						text = "[DIR] " + std::filesystem::relative(entry.path(), m_currentPath).string();
+						text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
 						ImGui::TableNextColumn();
 						if (ImGui::Selectable(text.c_str(), false, select_flags))
 						{
@@ -225,7 +226,7 @@ namespace Navigator {
 					}
 					else
 					{
-						text = "[FILE] " + entry.path().filename().string();
+						text = ICON_FA_FILE " " + entry.path().filename().string();
 						ImGui::TableNextColumn();
 						ImGui::Text(text.c_str());
 						ImGui::TableNextColumn();

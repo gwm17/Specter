@@ -17,6 +17,7 @@ IncludeDirs["glad"] = "Navigator/vendor/glad/include"
 IncludeDirs["ImPlot"] = "Navigator/vendor/implot"
 IncludeDirs["glm"] = "Navigator/vendor/glm"
 IncludeDirs["asio"] = "Navigator/vendor/asio/asio/include"
+IncludeDirs["IconFonts"] = "Navigator/vendor/IconFontCppHeaders"
 
 include "Navigator/vendor/glfw"
 include "Navigator/vendor/imgui"
@@ -46,7 +47,8 @@ project "Navigator"
 			"%{IncludeDirs.glad}",
 			"%{IncludeDirs.ImPlot}",
 			"%{IncludeDirs.glm}",
-			"%{IncludeDirs.asio}"
+			"%{IncludeDirs.asio}",
+			"%{IncludeDirs.IconFonts}"
 		}
 	filter {}
 
@@ -58,7 +60,8 @@ project "Navigator"
 		"%{IncludeDirs.glad}",
 		"%{IncludeDirs.ImPlot}",
 		"%{IncludeDirs.glm}",
-		"%{IncludeDirs.asio}"
+		"%{IncludeDirs.asio}",
+		"%{IncludeDirs.IconFonts}"
 	}
 	
 
@@ -133,7 +136,6 @@ project "NavProject"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -141,23 +143,28 @@ project "NavProject"
 		"NavProject/main.cpp"
 	}
 
-
 	includedirs {
 		"Navigator/src",
 		"Navigator/src/Navigator",
 		"Navigator/vendor/spdlog/include/",
-		"Navigator/vendor/implot/",
-		"Navigator/vendor",
+		"%{IncludeDirs.ImPlot}",
+		"%{IncludeDirs.ImGui}",
+		"%{IncludeDirs.glad}",
+		"%{IncludeDirs.glfw}",
 		"%{IncludeDirs.glm}",
-		"%{IncludeDirs.asio}"
+		"%{IncludeDirs.asio}",
+		"%{IncludeDirs.IconFonts}"
 	}
 
 	links {
 		"Navigator"
 	}
 
-
 	systemversion "latest"
+
+	postbuildcommands {
+		(" {COPYDIR} fonts %{cfg.targetdir} ")
+	}
 
 	filter "system:macosx"
 		defines "NAV_APPLE"
@@ -167,7 +174,9 @@ project "NavProject"
 			"%{IncludeDirs.ImGui}",
 			"%{IncludeDirs.glad}",
 			"%{IncludeDirs.ImPlot}",
-			"%{IncludeDirs.glm}"
+			"%{IncludeDirs.glm}",
+			"%{IncludeDirs.asio}",
+			"%{IncludeDirs.IconFonts}"
 		}
 	filter "system:windows"
 		defines "NAV_WINDOWS"

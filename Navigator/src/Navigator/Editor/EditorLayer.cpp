@@ -5,6 +5,8 @@
 #include "Navigator/Application.h"
 #include "Navigator/SpectrumSerializer.h"
 
+#include "IconsFontAwesome5.h"
+
 namespace Navigator {
     
     EditorLayer::EditorLayer() :
@@ -81,15 +83,15 @@ namespace Navigator {
         {
             if(ImGui::BeginMenu("File"))
             {
-                if(ImGui::MenuItem("Open"))
+                if(ImGui::MenuItem(ICON_FA_FOLDER_OPEN "\tOpen"))
                 {
                     m_fileDialog.SetOpenFileDialog(true);
                 }
-                if(ImGui::MenuItem("Save"))
+                if(ImGui::MenuItem(ICON_FA_SAVE "\tSave"))
                 {
                     m_fileDialog.SetSaveFileDialog(true);
                 }
-                if (ImGui::MenuItem("Exit"))
+                if (ImGui::MenuItem(ICON_FA_TIMES_CIRCLE "\tExit"))
                 {
                     Application::Get().Close();
                 }
@@ -97,11 +99,11 @@ namespace Navigator {
             }
             if (ImGui::BeginMenu("Data Source"))
             {
-                if (ImGui::MenuItem("Attach Source"))
+                if (ImGui::MenuItem(ICON_FA_LINK "\tAttach Source"))
                 {
                     m_sourceDialog.OpenSourceDialog();
                 }
-                if (ImGui::MenuItem("Detach Source"))
+                if (ImGui::MenuItem(ICON_FA_UNLINK "\tDetach Source"))
                 {
                     PhysicsStopEvent event;
                     m_callbackFunc(event);
@@ -110,7 +112,7 @@ namespace Navigator {
             }
             if (ImGui::BeginMenu("Add"))
             {
-                if (ImGui::MenuItem("Spectrum"))
+                if (ImGui::MenuItem(ICON_FA_CHART_BAR "\tSpectrum"))
                 {
                     m_spectrumDialog.SetSpectrumDialog();
                 }
@@ -118,11 +120,11 @@ namespace Navigator {
             }
             if (ImGui::BeginMenu("Remove"))
             {
-                if (ImGui::MenuItem("Spectrum"))
+                if (ImGui::MenuItem(ICON_FA_CHART_BAR "\tSpectrum"))
                 {
                     m_removeHistogram = true;
                 }
-                if (ImGui::MenuItem("Cut"))
+                if (ImGui::MenuItem(ICON_FA_CUT "\tCut"))
                 {
                     m_removeCut = true;
                 }
@@ -156,7 +158,7 @@ namespace Navigator {
 
         m_spectrumPanel.OnImGuiRender();
 
-        if (ImGui::Begin("Spectra"))
+        if (ImGui::Begin(ICON_FA_CHART_BAR " Spectra"))
         {
             for (auto& gram : histoMap)
             {
@@ -188,7 +190,7 @@ namespace Navigator {
             ImGui::End();
         }
         
-        if(ImGui::Begin("Cuts"))
+        if(ImGui::Begin(ICON_FA_CUT " Cuts"))
         {
             for(auto& cut : cutMap)
             {
@@ -233,6 +235,7 @@ namespace Navigator {
                 histMap.RemoveHistogram(selectedGram);
                 ImGui::CloseCurrentPopup();
             }
+            ImGui::SameLine();
             if (ImGui::Button("Cancel"))
             {
                 ImGui::CloseCurrentPopup();
@@ -269,6 +272,7 @@ namespace Navigator {
                 cutMap.RemoveCut(selectedCut);
                 ImGui::CloseCurrentPopup();
             }
+            ImGui::SameLine();
             if (ImGui::Button("Cancel"))
             {
                 ImGui::CloseCurrentPopup();
