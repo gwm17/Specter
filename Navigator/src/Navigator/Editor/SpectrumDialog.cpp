@@ -82,7 +82,7 @@ namespace Navigator {
 			{
 				for (auto& name : m_newParams.cutsAppliedTo)
 				{
-					ImGui::BulletText(name.c_str());
+					ImGui::BulletText("%s", name.c_str());
 				}
 				ImGui::TreePop();
 			}

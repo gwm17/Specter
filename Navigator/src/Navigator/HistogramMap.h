@@ -40,6 +40,8 @@ namespace Navigator {
 	private:
 		std::unordered_map<std::string, std::shared_ptr<Histogram>> m_map;
 
+		HistogramParameters m_nullResult;
+
 		static HistogramMap* s_instance;
 	};
 

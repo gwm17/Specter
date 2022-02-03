@@ -12,6 +12,8 @@ namespace Navigator {
 			case DataSource::SourceType::CompassOnline : return new CompassOnlineSource(loc, port);
 			case DataSource::SourceType::None : return nullptr;
 		}
+		NAV_WARN("Invalid DataSourceType at CreateDataSource!");
+		return nullptr;
 	}
 
 	std::string ConvertDataSourceTypeToString(DataSource::SourceType type)
@@ -22,5 +24,7 @@ namespace Navigator {
 			case DataSource::SourceType::CompassOnline : return "CompassOnline";
 			case DataSource::SourceType::CompassOffline : return "CompassOffline";
 		}
+
+		return "None";
 	}
 }

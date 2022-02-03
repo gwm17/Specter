@@ -64,12 +64,8 @@ namespace Navigator {
 
 	void HistogramMap::UpdateHistograms()
 	{
-		std::string xpar, ypar;
-		ParameterMap& pmap = ParameterMap::GetInstance();
 		for (auto& pair : m_map)
-		{
 			pair.second->FillData();
-		}
 	}
 
 	const HistogramParameters& HistogramMap::GetHistogramParams(const std::string& name)
@@ -79,9 +75,7 @@ namespace Navigator {
 		if (iter != m_map.end())
 			return iter->second->GetParameters();
 		else
-		{
-			return HistogramParameters();
-		}
+			return m_nullResult;
 	}
 
 	//Only to be used within ImGui context!!

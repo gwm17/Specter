@@ -16,7 +16,7 @@ namespace Navigator {
 
 	FileDialog::FileDialog() :
 		m_currentPath(std::filesystem::current_path()), m_openFileName(ICON_FA_FILE " Open File"), m_saveFileName(ICON_FA_SAVE " Save File"), m_openDirName(ICON_FA_FOLDER " Open Directory"),
-		m_selectedItem(""), m_openFileFlag(false), m_openDirFlag(false), m_saveFileFlag(false)
+		m_selectedItem(""), m_openFileFlag(false), m_saveFileFlag(false), m_openDirFlag(false)
 	{
 		table_flags = ImGuiTableFlags_BordersH | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_RowBg;
 		select_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_DontClosePopups;
@@ -37,9 +37,9 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_openFileName.c_str()))
 		{
-			ImGui::Text(("Current Directory: " + m_currentPath.lexically_normal().string()).c_str());
+			ImGui::Text("%s", ("Current Directory: " + m_currentPath.lexically_normal().string()).c_str());
 			ImGui::SameLine();
-			ImGui::Text(("Extension Filter: "+ext).c_str());
+			ImGui::Text("%s", ("Extension Filter: "+ext).c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
@@ -87,7 +87,7 @@ namespace Navigator {
 						if (ImGui::Selectable(text.c_str(), false, select_flags))
 							m_selectedItem = entry.path().filename().string();
 						ImGui::TableNextColumn();
-						ImGui::Text(ConvertFileSystemSizeToString(entry.file_size()).c_str());
+						ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
 					}
 				}
 				ImGui::EndTable();
@@ -112,9 +112,9 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_saveFileName.c_str()))
 		{
-			ImGui::Text(("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
+			ImGui::Text("%s", ("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
 			ImGui::SameLine();
-			ImGui::Text(("Extension Filter: "+ext).c_str());
+			ImGui::Text("%s", ("Extension Filter: "+ext).c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
@@ -162,7 +162,7 @@ namespace Navigator {
 						if (ImGui::Selectable(text.c_str(), false, select_flags))
 							m_selectedItem = entry.path().filename().string();
 						ImGui::TableNextColumn();
-						ImGui::Text(ConvertFileSystemSizeToString(entry.file_size()).c_str());
+						ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
 					}
 				}
 				ImGui::EndTable();
@@ -185,7 +185,7 @@ namespace Navigator {
 		std::string text = "";
 		if (ImGui::BeginPopupModal(m_openDirName.c_str()))
 		{
-			ImGui::Text(("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
+			ImGui::Text("%s", ("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
 			ImGui::InputText("Selected", &m_selectedItem);
 			if (ImGui::Button("Ok"))
 			{
@@ -228,9 +228,9 @@ namespace Navigator {
 					{
 						text = ICON_FA_FILE " " + entry.path().filename().string();
 						ImGui::TableNextColumn();
-						ImGui::Text(text.c_str());
+						ImGui::Text("%s", text.c_str());
 						ImGui::TableNextColumn();
-						ImGui::Text(ConvertFileSystemSizeToString(entry.file_size()).c_str());
+						ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
 					}
 				}
 				ImGui::EndTable();
