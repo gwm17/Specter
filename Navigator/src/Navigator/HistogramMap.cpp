@@ -15,6 +15,7 @@ namespace Navigator {
 
 	void HistogramMap::AddHistogram(const HistogramParameters& params)
 	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
 		if (params.y_par == "None")
 			m_map[params.name].reset(new Histogram1D(params));
 		else
@@ -23,11 +24,13 @@ namespace Navigator {
 
 	void HistogramMap::RemoveHistogram(const std::string& name)
 	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
 		m_map.erase(name);
 	}
 
     void HistogramMap::AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname)
     {
+		std::lock_guard<std::mutex> guard(m_histoMutex);
         auto iter = m_map.find(histoname);
         if(iter != m_map.end())
             iter->second->AddCutToBeDrawn(cutname);
@@ -35,6 +38,7 @@ namespace Navigator {
 
     void HistogramMap::AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname)
     {
+		std::lock_guard<std::mutex> guard(m_histoMutex);
         auto iter = m_map.find(histoname);
         if(iter != m_map.end())
             iter->second->AddCutToBeApplied(cutname);
@@ -42,6 +46,7 @@ namespace Navigator {
 
 	void HistogramMap::RemoveCutFromHistograms(const std::string& cutname)
 	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
 		for (auto& gram : m_map)
 		{
 			auto& params = gram.second->GetParameters();
@@ -64,6 +69,7 @@ namespace Navigator {
 
 	void HistogramMap::UpdateHistograms()
 	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
 		for (auto& pair : m_map)
 			pair.second->FillData();
 	}
@@ -71,6 +77,7 @@ namespace Navigator {
 	const HistogramParameters& HistogramMap::GetHistogramParams(const std::string& name)
 	{
 		
+		std::lock_guard<std::mutex> guard(m_histoMutex);
 		auto iter = m_map.find(name);
 		if (iter != m_map.end())
 			return iter->second->GetParameters();
@@ -78,9 +85,22 @@ namespace Navigator {
 			return m_nullResult;
 	}
 
+	std::vector<HistogramParameters> HistogramMap::GetListOfHistograms()
+	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
+		std::vector<HistogramParameters> list;
+		list.reserve(m_map.size());
+		for(auto& gram : m_map)
+		{
+			list.push_back(gram.second->GetParameters());
+		}
+		return list;
+	}
+
 	//Only to be used within ImGui context!!
 	void Navigator::HistogramMap::DrawHistograms()
 	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
 		for (auto& pair : m_map)
 			pair.second->Draw();
 	}
@@ -88,6 +108,7 @@ namespace Navigator {
 	//Only to be used within ImGui context!!
 	void Navigator::HistogramMap::DrawHistogram(const std::string& name)
 	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
 		auto iter = m_map.find(name);
 		if (iter != m_map.end())
 			iter->second->Draw();

@@ -1,6 +1,4 @@
 #include "SpectrumSerializer.h"
-#include "HistogramMap.h"
-#include "CutMap.h"
 
 #include <fstream>
 
@@ -13,9 +11,9 @@ namespace Navigator {
 
 	SpectrumSerializer::~SpectrumSerializer() {}
 
-	void SpectrumSerializer::SerializeData()
+	void SpectrumSerializer::SerializeData(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList)
 	{
-		HistogramMap& histMap = HistogramMap::GetInstance();
+		//HistogramMap& histMap = HistogramMap::GetInstance();
 		CutMap& cutMap = CutMap::GetInstance();
 
 		std::ofstream output(m_filename);
@@ -26,31 +24,34 @@ namespace Navigator {
 		}
 
 		output << "begin_cuts" << std::endl;
-		for (auto& iter : cutMap)
+		for (auto& cut : cutList)
 		{
-			if (iter.second->Is1D())
+			if (cut.y_par == "None")
 			{
+				auto xpoints = cutMap.GetCutXPoints(cut.name);
 				output << "\tbegin_cut1D" << std::endl;
-				output << "\t\tname: " << iter.second->GetName() << std::endl;
-				output << "\t\txparam: " << iter.second->GetXParameter() << std::endl;
-				output << "\t\tminValue: " << iter.second->GetXValues()[0] << std::endl;
-				output << "\t\tmaxValue: " << iter.second->GetXValues()[1] << std::endl;
+				output << "\t\tname: " << cut.name << std::endl;
+				output << "\t\txparam: " << cut.x_par << std::endl;
+				output << "\t\tminValue: " << xpoints[0] << std::endl;
+				output << "\t\tmaxValue: " << xpoints[1] << std::endl;
 				output << "\tend_cut1D" << std::endl;
 			}
-			else if (iter.second->Is2D())
+			else
 			{
+				auto xpoints = cutMap.GetCutXPoints(cut.name);
+				auto ypoints = cutMap.GetCutYPoints(cut.name);
 				output << "\tbegin_cut2D" << std::endl;
-				output << "\t\tname: " << iter.second->GetName() << std::endl;
-				output << "\t\txparam: " << iter.second->GetXParameter() << std::endl;
-				output << "\t\typaram: " << iter.second->GetYParameter() << std::endl;
+				output << "\t\tname: " << cut.name << std::endl;
+				output << "\t\txparam: " << cut.x_par << std::endl;
+				output << "\t\typaram: " << cut.y_par << std::endl;
 				output << "\t\tbegin_xvalues" << std::endl;
-				for (const auto& value : iter.second->GetXValues())
+				for (const auto& value : xpoints)
 				{
 					output << "\t\t\t" << value << std::endl;
 				}
 				output << "\t\tend_xvalues" << std::endl;
 				output << "\t\tbegin_yvalues" << std::endl;
-				for (const auto& value : iter.second->GetYValues())
+				for (const auto& value : ypoints)
 				{
 					output << "\t\t\t" << value << std::endl;
 				}
@@ -61,11 +62,10 @@ namespace Navigator {
 		output << "end_cuts" << std::endl;
 
 		output << "begin_histograms" << std::endl;
-		for (auto& iter : histMap)
+		for (auto& params : histoList)
 		{
-			if (iter.second->Is1D())
+			if (params.y_par == "None")
 			{
-				const auto& params = iter.second->GetParameters();
 				output << "\tbegin_histogram1D" << std::endl;
 				output << "\t\tname: " << params.name << std::endl;
 				output << "\t\txparam: " << params.x_par << std::endl;
@@ -86,9 +86,8 @@ namespace Navigator {
 				output << "\t\tend_cutsapplied" << std::endl;
 				output << "\tend_histogram1D" << std::endl;
 			}
-			else if (iter.second->Is2D())
+			else
 			{
-				const auto& params = iter.second->GetParameters();
 				output << "\tbegin_histogram2D" << std::endl;
 				output << "\t\tname: " << params.name << std::endl;
 				output << "\t\txparam: " << params.x_par << std::endl;
@@ -134,7 +133,6 @@ namespace Navigator {
 
 		std::string check;
 		double value_doub;
-		int value_int;
 		CutParams cut_data, reset_cut;
 		std::vector<double> cut_xdata;
 		std::vector<double> cut_ydata;

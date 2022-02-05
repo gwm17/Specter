@@ -140,7 +140,8 @@ project "NavProject"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
-		"NavProject/main.cpp"
+		"NavProject/*.h",
+		"NavProject/*.cpp"
 	}
 
 	includedirs {

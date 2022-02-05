@@ -33,6 +33,9 @@ namespace Navigator {
     private:
         void RemoveCutDialog();
         void RemoveHistogramDialog();
+        void UpdateHistogramList();
+        void UpdateCutList();
+        void UpdateParameterList(); //Currently not really used, only once. Params all made at construction time of PhysicsLayer
 
         EventCallbackFunc m_callbackFunc;
 
@@ -40,6 +43,11 @@ namespace Navigator {
         FileDialog m_fileDialog;
         SpectrumDialog m_spectrumDialog;
         SourceDialog m_sourceDialog;
+
+
+        std::vector<HistogramParameters> m_histoList;
+        std::vector<CutParams> m_cutList;
+        std::vector<std::string> m_paramList;
 
         //ImGui Settings
         bool dockspaceOpen = true;

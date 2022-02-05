@@ -10,6 +10,10 @@
 #include "PhysicsHitSort.h"
 #include "DataSource.h"
 
+#include <thread>
+#include <mutex>
+#include <atomic>
+
 namespace Navigator {
 
 	class NAV_API PhysicsLayer : public Layer
@@ -29,12 +33,22 @@ namespace Navigator {
 
 		void PushStage(AnalysisStage* stage);
 
+
 	private:
+		void DestroyPhysThread();
+		void AttachDataSource(PhysicsStartEvent& event);
+		void DetachDataSource();
+		void RunSource();
+
 		AnalysisStack m_physStack;
-		bool m_activeFlag;
+		std::atomic<bool> m_activeFlag;
 		PhysicsHitSort m_rawSort;
 
+		std::mutex m_sourceMutex;
+
 		std::unique_ptr<DataSource> m_source;
+
+		std::thread* m_physThread;
 
 	};
 

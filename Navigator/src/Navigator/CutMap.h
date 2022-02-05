@@ -4,6 +4,8 @@
 #include "NavCore.h"
 #include "imgui.h"
 
+#include <thread>
+
 namespace Navigator {
 
 	struct NAV_API CutParams
@@ -104,12 +106,12 @@ namespace Navigator {
 
 		void DrawCut(const std::string& name);
 		bool IsInsideCut(const std::string& name);
+		std::vector<double> GetCutXPoints(const std::string& name);
+		std::vector<double> GetCutYPoints(const std::string& name);
 		std::vector<CutParams> GetListOfCutParams();
 
-		inline Iter begin() { return m_map.begin(); }
-		inline Iter end() { return m_map.end(); }
-
 	private:
+		std::mutex m_cutMutex;
 		std::unordered_map<std::string, std::shared_ptr<Cut>> m_map;
 
 		static CutMap* s_instance;

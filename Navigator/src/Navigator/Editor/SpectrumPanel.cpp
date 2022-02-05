@@ -6,24 +6,25 @@
 namespace Navigator {
 
 	SpectrumPanel::SpectrumPanel() :
-        m_zoomedFlag(false), m_cutModeFlag(false), m_zoomedGram(""), m_totalSlots(1)
+        m_zoomedFlag(false), m_cutModeFlag(false), m_zoomedGram(), m_totalSlots(1)
 	{
         m_tableSizes[0] = 1; m_tableSizes[1] = 1;
 	}
 
 	SpectrumPanel::~SpectrumPanel() {}
 
-	void SpectrumPanel::OnImGuiRender()
+	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList)
 	{
-        HistogramMap& histMap = HistogramMap::GetInstance();
-        ParameterMap& paramMap = ParameterMap::GetInstance();
-        CutMap& cutMap = CutMap::GetInstance();
+        //HistogramMap& histMap = HistogramMap::GetInstance();
+        //ParameterMap& paramMap = ParameterMap::GetInstance();
+        //CutMap& cutMap = CutMap::GetInstance();
         static bool acceptCutFlag = false;
+        bool result = false;
         if (ImGui::Begin("Active View"))
         {
-            if (histMap.size() > 0)
+            if (histoList.size() > 0)
             {
-                if (m_zoomedFlag && m_zoomedGram != "")
+                if (m_zoomedFlag && m_zoomedGram.name != "")
                 {
                     if(ImGui::Button(ICON_FA_CUT " Draw Cut"))
                     {
@@ -34,9 +35,8 @@ namespace Navigator {
                     }
                     if(ImGui::BeginPopupModal(ICON_FA_CUT " New Cut Dialog"))
                     {
-                        auto& zoomed_params = histMap.GetHistogramParams(m_zoomedGram);
-                        m_newCutParams.x_par = zoomed_params.x_par;
-                        m_newCutParams.y_par = zoomed_params.y_par;
+                        m_newCutParams.x_par = m_zoomedGram.x_par;
+                        m_newCutParams.y_par = m_zoomedGram.y_par;
                         ImGui::InputText("Cut Name", &m_newCutParams.name);
                         ImGui::BulletText("%s", ("X Parameter: "+m_newCutParams.x_par).c_str());
                         ImGui::BulletText("%s", ("Y Parameter: "+m_newCutParams.y_par).c_str());
@@ -53,14 +53,14 @@ namespace Navigator {
                         ImGui::EndPopup();
                     }
                     
-                    if (ImPlot::BeginPlot(m_zoomedGram.c_str(), ImVec2(-1, -1)))
+                    if (ImPlot::BeginPlot(m_zoomedGram.name.c_str(), ImVec2(-1, -1)))
                     {
-                        histMap.DrawHistogram(m_zoomedGram);
+                        HistogramMap::GetInstance().DrawHistogram(m_zoomedGram.name);
                         if (!m_cutModeFlag && ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
                             NAV_INFO("We lost 'em, de-zoom and enhance!");
                             m_zoomedFlag = false;
-                            m_zoomedGram = "";
+                            m_zoomedGram = HistogramParameters();
                         }
                         else if (m_cutModeFlag && m_newCutParams.y_par == "None")
                         {
@@ -107,19 +107,21 @@ namespace Navigator {
                             if (m_newCutParams.y_par == "None")
                             {
                                 std::sort(m_newCutX.begin(), m_newCutX.end());
-                                cutMap.AddCut(m_newCutParams, m_newCutX[0], m_newCutX[1]);
+                                CutMap::GetInstance().AddCut(m_newCutParams, m_newCutX[0], m_newCutX[1]);
                             }
                             else
                             {
-                                cutMap.AddCut(m_newCutParams, m_newCutX, m_newCutY);
+                                CutMap::GetInstance().AddCut(m_newCutParams, m_newCutX, m_newCutY);
                             }
-                            histMap.AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram);
+                            HistogramMap::GetInstance().AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram.name);
                             ImGui::CloseCurrentPopup();
+                            result = true;
                         }
                         ImGui::SameLine();
                         if (ImGui::Button("No"))
                         {
                             ImGui::CloseCurrentPopup();
+                            result = false;
                         }
                         ImGui::EndPopup();
                     }
@@ -141,13 +143,12 @@ namespace Navigator {
                                 ImGui::TableNextColumn();
                                 this_gram = i * m_tableSizes[1] + j;
                                 label = "Histogram" + std::to_string(this_gram);
-                                if (ImGui::BeginCombo(label.c_str(), m_selectedGrams[this_gram].c_str()))
+                                if (ImGui::BeginCombo(label.c_str(), m_selectedGrams[this_gram].name.c_str()))
                                 {
-                                    for (auto& gram : histMap)
+                                    for (auto& params : histoList)
                                     {
-                                        auto& params = gram.second->GetParameters();
-                                        if (ImGui::Selectable(params.name.c_str(), params.name == m_selectedGrams[this_gram]))
-                                            m_selectedGrams[this_gram] = params.name;
+                                        if (ImGui::Selectable(params.name.c_str(), params.name == m_selectedGrams[this_gram].name))
+                                            m_selectedGrams[this_gram] = params;
                                     }
                                     ImGui::EndCombo();
                                 }
@@ -161,9 +162,9 @@ namespace Navigator {
                         int i = 0;
                         for (auto& spec : m_selectedGrams)
                         {
-                            if (ImPlot::BeginPlot(spec.c_str()))
+                            if (ImPlot::BeginPlot(spec.name.c_str()))
                             {
-                                histMap.DrawHistogram(spec);
+                                HistogramMap::GetInstance().DrawHistogram(spec.name);
                                 if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                                 {
                                     NAV_INFO("We got'em boys, they're in plot {0}. Zoom and enhance!", i);
@@ -180,5 +181,6 @@ namespace Navigator {
             }
             ImGui::End();
         }
+        return result;
 	}
 }

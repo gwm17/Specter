@@ -4,6 +4,8 @@
 #include "NavCore.h"
 #include "Histogram.h"
 
+#include <thread>
+
 namespace Navigator {
 
 	class NAV_API HistogramMap
@@ -30,14 +32,12 @@ namespace Navigator {
 
 		const HistogramParameters& GetHistogramParams(const std::string& name);
 
+		std::vector<HistogramParameters> GetListOfHistograms();
+
 		static HistogramMap& GetInstance() { return *s_instance; }
 
-		inline Iter begin() { return m_map.begin(); }
-		inline Iter end() { return m_map.end(); }
-		inline size_t size() { return m_map.size(); }
-
-
 	private:
+		std::mutex m_histoMutex;
 		std::unordered_map<std::string, std::shared_ptr<Histogram>> m_map;
 
 		HistogramParameters m_nullResult;

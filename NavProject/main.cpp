@@ -1,6 +1,17 @@
 #include "Navigator.h"
+#include "SPSAnalysisStage.h"
 
-Navigator::Application* Navigator::CreateApplication() { return new Application(); }
+class SPSApp : public Navigator::Application
+{
+public:
+	SPSApp() :
+		Navigator::Application()
+	{
+		PushAnalysisStage(new Navigator::SPSAnalysisStage());
+	}
+};
+
+Navigator::Application* Navigator::CreateApplication() { return new SPSApp(); }
 
 int main(int argc, const char** argv)
 {

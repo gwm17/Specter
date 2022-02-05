@@ -80,8 +80,10 @@ namespace Navigator {
 			m_imgui_layer->End();
 			m_window->OnUpdate();
 
+			/* For debugging 
 			ParameterMap::GetInstance().find("joseph")->second->validFlag = true;
 			ParameterMap::GetInstance().find("joseph")->second->value = 8.0;
+			*/
 		}
 	}
 }

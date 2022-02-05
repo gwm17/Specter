@@ -2,6 +2,7 @@
 #define PARAMETER_MAP_H
 
 #include "NavCore.h"
+#include <thread>
 
 namespace Navigator {
 
@@ -45,22 +46,19 @@ namespace Navigator {
         
 		ParameterMap();
 		~ParameterMap();
-        inline void AddParameter(const std::string& name) { m_map[name] = std::make_shared<ParameterData>(); }
-		inline void SetParameter(const std::string& name, std::shared_ptr<ParameterData>& param) { param = m_map[name]; }
-		double GetParameterValue(const std::string& name);
+		void SetParameter(const std::string& name, std::shared_ptr<ParameterData>& param);
+		ParameterData GetParameter(const std::string& name);
         bool IsParameterValid(const std::string& name);
 		void InvalidateParameters();
 		std::vector<std::string> GetListOfParameters();
-
-        inline Iter end() { return m_map.end(); }
-        inline Iter begin() { return m_map.begin(); }
-        inline Iter find(const std::string& name) { return m_map.find(name); }
 
 		inline static ParameterMap& GetInstance() { return *s_instance; }
 
 	private:
 		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_map;
 		static ParameterMap* s_instance;
+
+		std::mutex m_paramMutex;
 
 	};
 

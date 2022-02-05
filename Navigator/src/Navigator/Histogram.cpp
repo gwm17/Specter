@@ -48,10 +48,8 @@ namespace Navigator {
 	void Histogram1D::FillData()
 	{
 		ParameterMap& parMap = ParameterMap::GetInstance();
-		if (!parMap.IsParameterValid(m_params.x_par))
-			return;
-		double x = parMap.GetParameterValue(m_params.x_par);
-		if(x < m_params.min_x || x >= m_params.max_x || !m_initFlag)
+		ParameterData x = parMap.GetParameter(m_params.x_par);
+		if(!x.validFlag || x.value < m_params.min_x || x.value >= m_params.max_x || !m_initFlag)
 			return;
 		auto& cutmap = CutMap::GetInstance();
 		for (auto& cut : m_params.cutsAppliedTo)
@@ -60,7 +58,7 @@ namespace Navigator {
 				return;
 		}
 
-		int bin = int((x - m_params.min_x)/(m_binWidth));
+		int bin = int((x.value - m_params.min_x)/(m_binWidth));
         
 		m_binCounts[bin] += 1.0;
 	}
@@ -122,9 +120,9 @@ namespace Navigator {
 		CutMap& cutMap = CutMap::GetInstance();
 		if (!parMap.IsParameterValid(m_params.x_par) || !parMap.IsParameterValid(m_params.y_par))
 			return;
-		double x = parMap.GetParameterValue(m_params.x_par);
-		double y = parMap.GetParameterValue(m_params.y_par);
-		if(x < m_params.min_x || x >= m_params.max_x || y < m_params.min_y || y >= m_params.max_y || !m_initFlag)
+		ParameterData x = parMap.GetParameter(m_params.x_par);
+		ParameterData y = parMap.GetParameter(m_params.y_par);
+		if(!x.validFlag || !y.validFlag || x.value < m_params.min_x || x.value >= m_params.max_x || y.value < m_params.min_y || y.value >= m_params.max_y || !m_initFlag)
 			return;
 		for (auto& cut : m_params.cutsAppliedTo)
 		{
@@ -132,8 +130,8 @@ namespace Navigator {
 				return;
 		}
 
-		int bin_x = int((x - m_params.min_x)/m_binWidthX);
-		int bin_y = int((m_params.max_y - y)/m_binWidthY);
+		int bin_x = int((x.value - m_params.min_x)/m_binWidthX);
+		int bin_y = int((m_params.max_y - y.value)/m_binWidthY);
 		int bin = bin_y*m_params.nbins_x + bin_x;
 
 		m_binCounts[bin] += 1.0;

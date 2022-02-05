@@ -1,6 +1,9 @@
 #ifndef SPECTRUM_SERIALIZER_H
 #define SPECTRUM_SERIALIZER_H
 
+#include "HistogramMap.h"
+#include "CutMap.h"
+
 namespace Navigator {
 
 	class NAV_API SpectrumSerializer
@@ -9,7 +12,7 @@ namespace Navigator {
 		SpectrumSerializer(const std::string& filepath);
 		~SpectrumSerializer();
 
-		void SerializeData();
+		void SerializeData(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList);
 		void DeserializeData();
 
 		inline const std::string& GetFilename() { return m_filename; }

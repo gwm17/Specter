@@ -15,10 +15,11 @@ namespace Navigator {
 	{
 	}
 
-	void SpectrumDialog::ImGuiRenderSpectrumDialog()
+	bool SpectrumDialog::ImGuiRenderSpectrumDialog(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList)
 	{
 		static int dims = 1;
 		static std::string selectedCut = "";
+		bool result = false;
 		if (m_openFlag)
 		{
 			m_newParams = m_blank;
@@ -29,7 +30,6 @@ namespace Navigator {
 
 		if (ImGui::BeginPopupModal(ICON_FA_CHART_BAR " New Spectrum Dialog"))
 		{
-			ParameterMap& parMap = ParameterMap::GetInstance();
 			ImGui::InputText("Spectrum Name", &m_newParams.name);
 			ImGui::SliderInt("Dimensions", &dims, 1, 2);
 			if (ImGui::BeginTable("SpecParamsTable", 4))
@@ -40,10 +40,10 @@ namespace Navigator {
 				ImGui::TableNextColumn();
 				if (ImGui::BeginCombo("X Param.", m_newParams.x_par.c_str()))
 				{
-					for (auto& params : parMap)
+					for (auto& params : paramList)
 					{
-						if (ImGui::Selectable(params.first.c_str(), params.first == m_newParams.x_par, selectFlags))
-							m_newParams.x_par = params.first;
+						if (ImGui::Selectable(params.c_str(), params == m_newParams.x_par, selectFlags))
+							m_newParams.x_par = params;
 					}
 					ImGui::EndCombo();
 				}
@@ -61,10 +61,10 @@ namespace Navigator {
 					ImGui::TableNextColumn();
 					if (ImGui::BeginCombo("Y Param.", m_newParams.y_par.c_str()))
 					{
-						for (auto& params : parMap)
+						for (auto& params : paramList)
 						{
-							if (ImGui::Selectable(params.first.c_str(), params.first == m_newParams.y_par, selectFlags))
-								m_newParams.y_par = params.first;
+							if (ImGui::Selectable(params.c_str(), params == m_newParams.y_par, selectFlags))
+								m_newParams.y_par = params;
 						}
 						ImGui::EndCombo();
 					}
@@ -94,11 +94,10 @@ namespace Navigator {
 			}
 			if (ImGui::BeginPopup("Cut List"))
 			{
-				CutMap& cutMap = CutMap::GetInstance();
-				for (auto& cut : cutMap)
+				for (auto& cut : cutList)
 				{
-					if (ImGui::Selectable(cut.first.c_str(), cut.first == selectedCut, selectFlags))
-						selectedCut = cut.first;
+					if (ImGui::Selectable(cut.name.c_str(), cut.name == selectedCut, selectFlags))
+						selectedCut = cut.name;
 				}
 				ImGui::InputText("Selected Cut", &selectedCut);
 				if (ImGui::Button("Ok"))
@@ -118,13 +117,16 @@ namespace Navigator {
 			{
 				HistogramMap::GetInstance().AddHistogram(m_newParams);
 				ImGui::CloseCurrentPopup();
+				result = true;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Cancel"))
 			{
 				ImGui::CloseCurrentPopup();
+				result = false;
 			}
 			ImGui::EndPopup();
 		}
+		return result;
 	}
 }

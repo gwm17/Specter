@@ -16,7 +16,7 @@ namespace Navigator {
 		SpectrumDialog();
 		~SpectrumDialog();
 
-		void ImGuiRenderSpectrumDialog();
+		bool ImGuiRenderSpectrumDialog(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList);
 
 		inline void SetSpectrumDialog() { m_openFlag = true; }
 	private:

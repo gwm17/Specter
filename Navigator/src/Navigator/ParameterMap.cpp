@@ -20,13 +20,6 @@ namespace Navigator {
         NAV_INFO("Making a new parameter named {0}...",name);
         m_pdata = nullptr;
         ParameterMap& map = ParameterMap::GetInstance();
-        auto iter = map.find(name);
-        if(iter == map.end())
-        {
-            NAV_INFO("Added it to the map.");
-            map.AddParameter(name);
-        }
-        
         NAV_INFO("Setting the memory...");
         map.SetParameter(name, m_pdata);
     }
@@ -36,9 +29,6 @@ namespace Navigator {
     void NavParameter::SetParameter(const std::string& name)
     {
         ParameterMap& map = ParameterMap::GetInstance();
-        auto iter = map.find(name);
-        if(iter == map.end())
-            map.AddParameter(name);
         map.SetParameter(name, m_pdata);
     }
 
@@ -50,17 +40,31 @@ namespace Navigator {
 
     ParameterMap::~ParameterMap() {}
 
-    double ParameterMap::GetParameterValue(const std::string& name)
+    void ParameterMap::SetParameter(const std::string& name, std::shared_ptr<ParameterData>& param)
     {
+        std::lock_guard<std::mutex> guard(m_paramMutex);
+        auto iter = m_map.find(name);
+        if(iter == m_map.end())
+        {
+            m_map[name].reset(new ParameterData());
+        }
+
+        param = m_map[name];
+    }
+
+    ParameterData ParameterMap::GetParameter(const std::string& name)
+    {
+        std::lock_guard<std::mutex> guard(m_paramMutex);
         auto iter = m_map.find(name);
         if(iter != m_map.end())
-            return iter->second->value;
+            return *(iter->second);
         else
-            return 0.0;
+            return ParameterData();
     }
 
     bool ParameterMap::IsParameterValid(const std::string& name)
     {
+        std::lock_guard<std::mutex> guard(m_paramMutex);
         auto iter = m_map.find(name);
         if(iter != m_map.end())
             return iter->second->validFlag;
@@ -70,6 +74,7 @@ namespace Navigator {
 
     void ParameterMap::InvalidateParameters()
     {
+        std::lock_guard<std::mutex> guard(m_paramMutex);
         for(auto& iter : m_map)
         {
             iter.second->validFlag = false;
@@ -79,6 +84,7 @@ namespace Navigator {
 
     std::vector<std::string> ParameterMap::GetListOfParameters()
     {
+        std::lock_guard<std::mutex> guard(m_paramMutex);
         std::vector<std::string> list;
         list.reserve(m_map.size());
         for (auto iter : m_map)

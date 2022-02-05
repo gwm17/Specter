@@ -32,12 +32,36 @@ namespace Navigator {
     {
     }
 
+    void EditorLayer::UpdateHistogramList()
+    {
+        HistogramMap& histoMap = HistogramMap::GetInstance();
+        m_histoList = histoMap.GetListOfHistograms();
+    }
+
+    void EditorLayer::UpdateCutList()
+    {
+        CutMap& cutMap = CutMap::GetInstance();
+        m_cutList = cutMap.GetListOfCutParams();
+    }
+
+    void EditorLayer::UpdateParameterList()
+    {
+        ParameterMap& parMap = ParameterMap::GetInstance();
+        m_paramList = parMap.GetListOfParameters();
+    }
+
     void EditorLayer::OnImGuiRender()
     {
+        static bool startFlag = true; //first render retrieve base 
+        if(startFlag)
+        {
+            UpdateParameterList();
+            UpdateHistogramList();
+            UpdateCutList();
+            startFlag = false;
+        }
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
         // because it would be confusing to have two docking targets within each others.
-        HistogramMap& histoMap = HistogramMap::GetInstance();
-        CutMap& cutMap = CutMap::GetInstance();
         if (opt_fullscreen)
         {
             ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -140,15 +164,18 @@ namespace Navigator {
         {
             SpectrumSerializer serializer(open_file_result);
             serializer.DeserializeData();
+            UpdateHistogramList();
+            UpdateCutList();
         }
         else if (!save_file_result.empty())
         {
             NAV_INFO("Found a Save File! {0}", save_file_result);
             SpectrumSerializer serializer(save_file_result);
-            serializer.SerializeData();
+            serializer.SerializeData(m_histoList, m_cutList);
         }
         
-        m_spectrumDialog.ImGuiRenderSpectrumDialog();
+        if(m_spectrumDialog.ImGuiRenderSpectrumDialog(m_histoList, m_cutList, m_paramList))
+            UpdateHistogramList();
 
         m_sourceDialog.ImGuiRenderSourceDialog();
 
@@ -156,13 +183,16 @@ namespace Navigator {
 
         RemoveCutDialog();
 
-        m_spectrumPanel.OnImGuiRender();
+        if(m_spectrumPanel.OnImGuiRender(m_histoList, m_cutList, m_paramList))
+        {
+            UpdateCutList();
+            UpdateHistogramList();
+        }
 
         if (ImGui::Begin(ICON_FA_CHART_BAR " Spectra"))
         {
-            for (auto& gram : histoMap)
+            for (auto& params : m_histoList)
             {
-                auto& params = gram.second->GetParameters();
                 if (ImGui::TreeNode(params.name.c_str()))
                 {
                     ImGui::BulletText("%s", ("X Parameter: "+params.x_par).c_str());
@@ -192,9 +222,8 @@ namespace Navigator {
         
         if(ImGui::Begin(ICON_FA_CUT " Cuts"))
         {
-            for(auto& cut : cutMap)
+            for(auto& params : m_cutList)
             {
-                auto& params = cut.second->GetCutParams();
                 if(ImGui::TreeNode(params.name.c_str()))
                 {
                     ImGui::BulletText("%s", ("X Parameter: "+params.x_par).c_str());
@@ -211,7 +240,6 @@ namespace Navigator {
 
     void EditorLayer::RemoveHistogramDialog()
     {
-        HistogramMap& histMap = HistogramMap::GetInstance();
         static std::string selectedGram = "";
         if (m_removeHistogram)
         {
@@ -223,16 +251,17 @@ namespace Navigator {
         {
             if (ImGui::BeginCombo("Histogram", selectedGram.c_str()))
             {
-                for (auto& gram : histMap)
+                for (auto& gram : m_histoList)
                 {
-                    if (ImGui::Selectable(gram.second->GetName().c_str(), gram.second->GetName() == selectedGram, ImGuiSelectableFlags_DontClosePopups))
-                        selectedGram = gram.second->GetName();
+                    if (ImGui::Selectable(gram.name.c_str(), gram.name == selectedGram, ImGuiSelectableFlags_DontClosePopups))
+                        selectedGram = gram.name;
                 }
                 ImGui::EndPopup();
             }
             if (ImGui::Button("Ok"))
             {
-                histMap.RemoveHistogram(selectedGram);
+                HistogramMap::GetInstance().RemoveHistogram(selectedGram);
+                UpdateHistogramList();
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
@@ -246,8 +275,6 @@ namespace Navigator {
 
     void EditorLayer::RemoveCutDialog()
     {
-        HistogramMap& histMap = HistogramMap::GetInstance();
-        CutMap& cutMap = CutMap::GetInstance();
         static std::string selectedCut = "";
         if (m_removeCut)
         {
@@ -259,17 +286,19 @@ namespace Navigator {
         {
             if (ImGui::BeginCombo("Cut", selectedCut.c_str()))
             {
-                for (auto& cut : cutMap)
+                for (auto& cut : m_cutList)
                 {
-                    if (ImGui::Selectable(cut.second->GetName().c_str(), cut.second->GetName() == selectedCut, ImGuiSelectableFlags_DontClosePopups))
-                        selectedCut = cut.second->GetName();
+                    if (ImGui::Selectable(cut.name.c_str(), cut.name == selectedCut, ImGuiSelectableFlags_DontClosePopups))
+                        selectedCut = cut.name;
                 }
                 ImGui::EndCombo();
             }
             if (ImGui::Button("Ok"))
             {
-                histMap.RemoveCutFromHistograms(selectedCut);
-                cutMap.RemoveCut(selectedCut);
+                HistogramMap::GetInstance().RemoveCutFromHistograms(selectedCut);
+                CutMap::GetInstance().RemoveCut(selectedCut);
+                UpdateHistogramList();
+                UpdateCutList();
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();

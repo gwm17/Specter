@@ -15,10 +15,10 @@ namespace Navigator {
 	bool Cut1D::IsInside() const
 	{
         ParameterMap& parMap = ParameterMap::GetInstance();
-        auto iter  = parMap.find(m_params.x_par);
-        if (iter == parMap.end() || !iter->second->validFlag)
+        ParameterData param  = parMap.GetParameter(m_params.x_par);
+        if (!param.validFlag)
             return false;
-		return iter->second->value >= m_minVal && iter->second->value <= m_maxVal;
+		return param.value >= m_minVal && param.value <= m_maxVal;
 	}
 
 	//Only within an ImPlot/ImGui context!!!
@@ -46,12 +46,12 @@ namespace Navigator {
 	bool Cut2D::IsInside() const
 	{
         ParameterMap& parMap = ParameterMap::GetInstance();
-        auto iterx = parMap.find(m_params.x_par);
-        auto itery = parMap.find(m_params.y_par);
-        if (iterx == parMap.end() || itery == parMap.end() || !iterx->second->validFlag || !itery->second->validFlag)
+        ParameterData paramx = parMap.GetParameter(m_params.x_par);
+        ParameterData paramy = parMap.GetParameter(m_params.y_par);
+        if (!paramx.validFlag || !paramy.validFlag)
             return false;
-        double x = iterx->second->value;
-        double y = itery->second->value;
+        double x = paramx.value;
+        double y = paramy.value;
         bool result = false;
         double slope;
         for(size_t i=0; i<(m_xpoints.size()-1); i++)
@@ -85,6 +85,7 @@ namespace Navigator {
 
     void CutMap::DrawCut(const std::string& name)
     {
+        std::lock_guard<std::mutex> guard(m_cutMutex);
         auto iter = m_map.find(name);
         if(iter != m_map.end())
             iter->second->Draw();
@@ -92,6 +93,7 @@ namespace Navigator {
 
     bool CutMap::IsInsideCut(const std::string& name)
     {
+        std::lock_guard<std::mutex> guard(m_cutMutex);
         bool result = false;
         auto iter = m_map.find(name);
         if(iter != m_map.end())
@@ -99,8 +101,29 @@ namespace Navigator {
         return result;
     }
 
+    std::vector<double> CutMap::GetCutXPoints(const std::string& name)
+    {
+        std::lock_guard<std::mutex> guard(m_cutMutex);
+        std::vector<double> null_result;
+        auto iter = m_map.find(name);
+        if(iter != m_map.end())
+            return iter->second->GetXValues();
+        return null_result;
+    }
+
+    std::vector<double> CutMap::GetCutYPoints(const std::string& name)
+    {
+        std::lock_guard<std::mutex> guard(m_cutMutex);
+        std::vector<double> null_result;
+        auto iter = m_map.find(name);
+        if(iter != m_map.end())
+            return iter->second->GetYValues();
+        return null_result;
+    }
+
     std::vector<CutParams> CutMap::GetListOfCutParams()
     {
+        std::lock_guard<std::mutex> guard(m_cutMutex);
         std::vector<CutParams> list;
         list.reserve(m_map.size());
         for(auto& entry : m_map)

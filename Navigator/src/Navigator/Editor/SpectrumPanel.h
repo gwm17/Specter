@@ -14,15 +14,15 @@ namespace Navigator {
 		SpectrumPanel();
 		~SpectrumPanel();
 	
-		void OnImGuiRender();
-		inline const std::string& GetZoomedOnHistogram() { return m_zoomedGram;  }
+		bool OnImGuiRender(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList);
+		inline const std::string& GetZoomedOnHistogram() { return m_zoomedGram.name;  }
 		inline const bool IsZoomed() { return m_zoomedFlag;  }
 
 	private:
-		std::vector<std::string> m_selectedGrams;
+		std::vector<HistogramParameters> m_selectedGrams;
 		bool m_zoomedFlag;
         bool m_cutModeFlag;
-		std::string m_zoomedGram;
+		HistogramParameters m_zoomedGram;
 		int m_tableSizes[2];
 		int m_totalSlots;
 		CutParams m_newCutParams;
