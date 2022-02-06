@@ -74,6 +74,21 @@ namespace Navigator {
 			pair.second->FillData();
 	}
 
+	void HistogramMap::ClearHistograms()
+	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
+		for(auto& pair : m_map)
+			pair.second->ClearData();
+	}
+
+	void HistogramMap::ClearHistogram(const std::string& name)
+	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
+		auto iter = m_map.find(name);
+		if(iter != m_map.end())
+			iter->second->ClearData();
+	}
+
 	const HistogramParameters& HistogramMap::GetHistogramParams(const std::string& name)
 	{
 		

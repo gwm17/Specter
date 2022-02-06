@@ -26,6 +26,8 @@ namespace Navigator {
 		void RemoveCutFromHistograms(const std::string& cutname);
 
 		void UpdateHistograms();
+		void ClearHistograms();
+		void ClearHistogram(const std::string& name);
 
 		void DrawHistograms();
 		void DrawHistogram(const std::string& name);

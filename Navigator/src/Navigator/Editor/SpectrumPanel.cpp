@@ -52,6 +52,11 @@ namespace Navigator {
                         }
                         ImGui::EndPopup();
                     }
+                    ImGui::SameLine();
+                    if(ImGui::Button("Clear"))
+                    {
+                        HistogramMap::GetInstance().ClearHistogram(m_zoomedGram.name);
+                    }
                     
                     if (ImPlot::BeginPlot(m_zoomedGram.name.c_str(), ImVec2(-1, -1)))
                     {
@@ -129,6 +134,11 @@ namespace Navigator {
                 else
                 {
                     ImGui::SliderInt2("Rows, Columns", m_tableSizes, 1, 3);
+                    ImGui::SameLine();
+                    if(ImGui::Button("Clear All"))
+                    {
+                        HistogramMap::GetInstance().ClearHistograms();
+                    }
                     m_totalSlots = m_tableSizes[0] * m_tableSizes[1];
                     m_selectedGrams.resize(m_totalSlots);
                     if (ImGui::BeginTable("Select Histograms", m_tableSizes[1]))
