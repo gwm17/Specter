@@ -6,6 +6,8 @@
 
 #include <thread>
 
+struct ImPlotRect;
+
 namespace Navigator {
 
 	class NAV_API HistogramMap
@@ -19,7 +21,6 @@ namespace Navigator {
 		void AddHistogram(const HistogramParameters& params);
 
 		void RemoveHistogram(const std::string& name);
-
 		
         void AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname);
         void AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname);
@@ -33,6 +34,7 @@ namespace Navigator {
 		void DrawHistogram(const std::string& name);
 
 		const HistogramParameters& GetHistogramParams(const std::string& name);
+		StatResults AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region);
 
 		std::vector<HistogramParameters> GetListOfHistograms();
 

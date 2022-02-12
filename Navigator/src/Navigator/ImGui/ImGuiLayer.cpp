@@ -34,7 +34,9 @@ namespace Navigator {
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		//Viewports are real wonky on Linux and sometimes on Mac
+		// Can currently cause assertion failure on checking number of monitors in ImGui sanity checks.
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		ImGui::StyleColorsDark();
 		ImPlot::StyleColorsDark();
@@ -54,7 +56,7 @@ namespace Navigator {
 		config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
 		config.PixelSnapH = true;
 		static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		io.Fonts->AddFontFromFileTTF("fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
+		io.Fonts->AddFontFromFileTTF("fonts/fa-solid-900.ttf", 13.0f, &config, icon_ranges);
 
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());

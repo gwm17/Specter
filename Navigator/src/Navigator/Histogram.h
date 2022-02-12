@@ -5,6 +5,15 @@
 
 namespace Navigator {
 
+	struct NAV_API StatResults
+	{
+		int integral = 0.0;
+		double cent_x = 0.0;
+		double cent_y = 0.0;
+		double sigma_x = 0.0;
+		double sigma_y = 0.0;
+	};
+
 	struct NAV_API HistogramParameters
 	{
 		HistogramParameters() {}
@@ -48,6 +57,7 @@ namespace Navigator {
 		virtual void FillData() { NAV_WARN("Trying to fill a default histogram!"); }
 		virtual void Draw() {}
 		virtual void ClearData() {}
+		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) { return StatResults();  }
 		inline virtual bool Is1D() const { return false; }
 		inline virtual bool Is2D() const { return false; }
 		inline HistogramParameters& GetParameters() { return m_params; }
@@ -70,6 +80,7 @@ namespace Navigator {
 		virtual void FillData() override;
 		virtual void Draw() override;
 		virtual void ClearData() override;
+		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
 		inline virtual bool Is1D() const override { return true; }
 		inline virtual bool Is2D() const override { return false; }
 
@@ -90,6 +101,7 @@ namespace Navigator {
 		virtual void FillData() override;
 		virtual void Draw() override;
 		virtual void ClearData() override;
+		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
 		inline virtual bool Is1D() const override { return false; }
 		inline virtual bool Is2D() const override { return true; }
 

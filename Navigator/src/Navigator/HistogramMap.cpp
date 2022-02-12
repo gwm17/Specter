@@ -1,6 +1,8 @@
 #include "HistogramMap.h"
 #include "ParameterMap.h"
 
+#include "implot.h"
+
 namespace Navigator {
 
 	HistogramMap* HistogramMap::s_instance = new HistogramMap();
@@ -98,6 +100,16 @@ namespace Navigator {
 			return iter->second->GetParameters();
 		else
 			return m_nullResult;
+	}
+
+	StatResults HistogramMap::AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region)
+	{
+		std::lock_guard<std::mutex> guard(m_histoMutex);
+		auto iter = m_map.find(name);
+		if (iter != m_map.end())
+			return iter->second->AnalyzeRegion(region.X.Min, region.X.Max, region.Y.Min, region.Y.Max);
+		else
+			return StatResults();
 	}
 
 	std::vector<HistogramParameters> HistogramMap::GetListOfHistograms()

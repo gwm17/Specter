@@ -1,12 +1,23 @@
 #include "SpectrumPanel.h"
-#include "implot.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "IconsFontAwesome5.h"
 
 namespace Navigator {
 
+    std::string GenerateStatString(const std::string& name, const StatResults& results, bool is2D = true)
+    {
+        std::stringstream stream;
+        stream << "Region: " << name << "\n" << "Integral: " << results.integral << "\n";
+        if (results.integral == 0)
+            return stream.str();
+        stream << "Centroid X: " << results.cent_x << " Std. Dev. X: " << results.sigma_x << " FWHM X: " << 2.355 * results.sigma_x << "\n";
+        if(is2D)
+            stream << "Centroid Y: " << results.cent_y << " Std. Dev. Y: " << results.sigma_y << " FWHM Y: " << 2.355 * results.sigma_y << "\n";
+        return stream.str();
+    }
+
 	SpectrumPanel::SpectrumPanel() :
-        m_zoomedFlag(false), m_cutModeFlag(false), m_zoomedGram(), m_totalSlots(1)
+        m_zoomedFlag(false), m_cutModeFlag(false), m_zoomedGram(), m_nRegions(0), m_totalSlots(1)
 	{
         m_tableSizes[0] = 1; m_tableSizes[1] = 1;
 	}
@@ -20,43 +31,21 @@ namespace Navigator {
         //CutMap& cutMap = CutMap::GetInstance();
         static bool acceptCutFlag = false;
         bool result = false;
+        //static std::string selectedRegion = "";
         if (ImGui::Begin("Active View"))
         {
             if (histoList.size() > 0)
             {
                 if (m_zoomedFlag && m_zoomedGram.name != "")
                 {
-                    if(ImGui::Button(ICON_FA_CUT " Draw Cut"))
-                    {
-                        m_newCutParams = CutParams();
-                        m_newCutX.resize(0);
-                        m_newCutY.resize(0);
-                        ImGui::OpenPopup(ICON_FA_CUT " New Cut Dialog");
-                    }
-                    if(ImGui::BeginPopupModal(ICON_FA_CUT " New Cut Dialog"))
-                    {
-                        m_newCutParams.x_par = m_zoomedGram.x_par;
-                        m_newCutParams.y_par = m_zoomedGram.y_par;
-                        ImGui::InputText("Cut Name", &m_newCutParams.name);
-                        ImGui::BulletText("%s", ("X Parameter: "+m_newCutParams.x_par).c_str());
-                        ImGui::BulletText("%s", ("Y Parameter: "+m_newCutParams.y_par).c_str());
-                        if(ImGui::Button("Accept & Draw"))
-                        {
-                            m_cutModeFlag = true;
-                            ImGui::CloseCurrentPopup();
-                        }
-                        ImGui::SameLine();
-                        if(ImGui::Button("Cancel"))
-                        {
-                            ImGui::CloseCurrentPopup();
-                        }
-                        ImGui::EndPopup();
-                    }
+                    RenderCutButton();
                     ImGui::SameLine();
                     if(ImGui::Button("Clear"))
                     {
                         HistogramMap::GetInstance().ClearHistogram(m_zoomedGram.name);
                     }
+                    ImGui::SameLine();
+                    RenderRemoveRegionButton();
                     
                     if (ImPlot::BeginPlot(m_zoomedGram.name.c_str(), ImVec2(-1, -1)))
                     {
@@ -95,6 +84,26 @@ namespace Navigator {
                                 m_newCutY.push_back(point.y);
                             }
                             ImPlot::PlotLine(m_newCutParams.name.c_str(), m_newCutX.data(), m_newCutY.data(), m_newCutX.size());
+                        }
+
+                        if (ImPlot::IsPlotSelected()) {
+                            auto& select = ImPlot::GetPlotSelection();
+                            if (ImGui::IsMouseClicked(ImPlot::GetInputMap().SelectCancel)) {
+                                ImPlot::CancelPlotSelection();
+                                m_integralRegions.emplace_back(select, "integralRegion_"+std::to_string(m_nRegions), m_zoomedGram.name);
+                                m_nRegions++;
+                            }
+                        }
+                        for (size_t i = 0; i < m_integralRegions.size(); i++)
+                        {
+                            auto& region = m_integralRegions[i];
+                            if (m_zoomedGram.name == region.histogram_name)
+                            {
+                                ImPlot::DragRect(i, &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
+                                StatResults results = HistogramMap::GetInstance().AnalyzeHistogramRegion(m_zoomedGram.name, region.region);
+                                ImPlot::PlotText(GenerateStatString(region.name, results, m_zoomedGram.y_par != "None").c_str(), (region.region.X.Max + region.region.X.Min) * 0.5, 
+                                                 (region.region.Y.Min + region.region.Y.Max) * 0.5);
+                            }
                         }
                         ImPlot::EndPlot();
                     }
@@ -181,6 +190,15 @@ namespace Navigator {
                                     m_zoomedFlag = true;
                                     m_zoomedGram = spec;
                                 }
+
+                                for (size_t i = 0; i < m_integralRegions.size(); i++)
+                                {
+                                    auto& region = m_integralRegions[i];
+                                    if (spec.name == region.histogram_name)
+                                    {
+                                        ImPlot::DragRect(i, &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
+                                    }
+                                }
                                 ImPlot::EndPlot();
                             }
                             i++;
@@ -193,4 +211,82 @@ namespace Navigator {
         }
         return result;
 	}
+
+    void SpectrumPanel::RenderCutButton()
+    {
+        if (ImGui::Button(ICON_FA_CUT " Draw Cut"))
+        {
+            m_newCutParams = CutParams();
+            m_newCutX.resize(0);
+            m_newCutY.resize(0);
+            ImGui::OpenPopup(ICON_FA_CUT " New Cut Dialog");
+        }
+        if (ImGui::BeginPopupModal(ICON_FA_CUT " New Cut Dialog"))
+        {
+            m_newCutParams.x_par = m_zoomedGram.x_par;
+            m_newCutParams.y_par = m_zoomedGram.y_par;
+            ImGui::InputText("Cut Name", &m_newCutParams.name);
+            ImGui::BulletText("%s", ("X Parameter: " + m_newCutParams.x_par).c_str());
+            ImGui::BulletText("%s", ("Y Parameter: " + m_newCutParams.y_par).c_str());
+            if (ImGui::Button("Accept & Draw"))
+            {
+                m_cutModeFlag = true;
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    void SpectrumPanel::RenderRemoveRegionButton()
+    {
+        static std::string selectedRegion = "";
+        if (ImGui::Button("Delete Region"))
+        {
+            selectedRegion = "";
+            ImGui::OpenPopup("Remove Integral Region");
+        }
+        if (ImGui::BeginPopupModal("Remove Integral Region"))
+        {
+            if (ImGui::BeginCombo("Region", selectedRegion.c_str()))
+            {
+                for (auto& region : m_integralRegions)
+                {
+                    if (region.histogram_name == m_zoomedGram.name)
+                    {
+                        if (ImGui::Selectable(region.name.c_str(), region.name == selectedRegion, ImGuiSelectableFlags_DontClosePopups))
+                            selectedRegion = region.name;
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            if (ImGui::Button("Ok"))
+            {
+                RemoveSelectedRegion(selectedRegion);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    void SpectrumPanel::RemoveSelectedRegion(const std::string& region)
+    {
+        for (size_t i=0; i<m_integralRegions.size(); i++)
+        {
+            if (m_integralRegions[i].name == region)
+            {
+                m_integralRegions.erase(m_integralRegions.begin() + i);
+                break;
+            }
+        }
+    }
 }
