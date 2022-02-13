@@ -49,7 +49,7 @@ namespace Navigator {
 		m_file->open(m_filename, std::ios::binary | std::ios::in);
 	
 		m_file->seekg(0, std::ios_base::end);
-		m_size = m_file->tellg();
+		m_size = (unsigned int)m_file->tellg();
 		m_nHits = m_size/24;
 		if(m_size == 0) 
 		{

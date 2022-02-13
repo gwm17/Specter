@@ -102,7 +102,7 @@ namespace Navigator {
 		if (results.integral == 0)
 			return results;
 
-		results.cent_x /= double(results.integral);
+		results.cent_x /= results.integral;
 		for (int i = bin_min; i <= bin_max; i++)
 			results.sigma_x += m_binCounts[i] * ((m_params.min_x + m_binWidth * i) - results.cent_x) * ((m_params.min_x + m_binWidth * i) - results.cent_x);
 		results.sigma_x = std::sqrt(results.sigma_x / (results.integral - 1));
@@ -208,12 +208,12 @@ namespace Navigator {
 		if (y_min <= m_params.min_y)
 			ybin_max = m_params.nbins_y - 1;
 		else
-			ybin_max = int((m_params.max_y - y_min)) / m_binWidthY;
+			ybin_max = int((m_params.max_y - y_min) / m_binWidthY);
 
 		if (y_max >= m_params.max_y)
 			ybin_min = 0;
 		else
-			ybin_min = int((m_params.max_y - y_max)) / m_binWidthY;
+			ybin_min = int((m_params.max_y - y_max) / m_binWidthY);
 
 		for (int y = ybin_min; y <= ybin_max; y++)
 		{

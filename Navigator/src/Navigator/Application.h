@@ -47,7 +47,7 @@ namespace Navigator {
 		static Application* s_instance;
 	};
 
-	NAV_API Application* CreateApplication();
+	Application* CreateApplication();
 }
 
 #endif

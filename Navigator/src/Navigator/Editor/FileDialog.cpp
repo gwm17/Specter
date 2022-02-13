@@ -7,7 +7,7 @@ namespace Navigator {
 	std::string ConvertFileSystemSizeToString(std::uintmax_t value)
 	{
 		int i = 0;
-		double mantissa = value;
+		double mantissa = (double)value;
 		for (; mantissa >= 1024.0; ++i)
 			mantissa /= 1024.0;
 		mantissa = std::ceil(mantissa * 10.0) / 10.0;

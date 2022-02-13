@@ -18,13 +18,13 @@ namespace Navigator {
 	class NAV_API WindowResizeEvent : public Event 
 	{
 	public:
-		WindowResizeEvent(float x, float y) :
+		WindowResizeEvent(int x, int y) :
 			m_xSize(x), m_ySize(y)
 		{
 		}
 
-		inline float GetXSize() { return m_xSize; }
-		inline float GetYSize() { return m_ySize; }
+		inline int GetXSize() { return m_xSize; }
+		inline int GetYSize() { return m_ySize; }
 		std::string ToString() const override 
 		{
 			std::stringstream ss;
@@ -36,7 +36,7 @@ namespace Navigator {
 		EVENT_TYPE_SETUP(WindowResize)
 
 	private:
-		float m_xSize, m_ySize;
+		int m_xSize, m_ySize;
 	};
 
 	class NAV_API AppUpdateEvent : public Event 

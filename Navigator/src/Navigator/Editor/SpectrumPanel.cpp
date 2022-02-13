@@ -26,12 +26,8 @@ namespace Navigator {
 
 	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList)
 	{
-        //HistogramMap& histMap = HistogramMap::GetInstance();
-        //ParameterMap& paramMap = ParameterMap::GetInstance();
-        //CutMap& cutMap = CutMap::GetInstance();
         static bool acceptCutFlag = false;
         bool result = false;
-        //static std::string selectedRegion = "";
         if (ImGui::Begin("Active View"))
         {
             if (histoList.size() > 0)
@@ -66,7 +62,7 @@ namespace Navigator {
                             {
                                 m_newCutX.push_back(ImPlot::GetPlotMousePos().x);
                             }
-                            ImPlot::PlotVLines(m_newCutParams.name.c_str(), m_newCutX.data(), m_newCutX.size());
+                            ImPlot::PlotVLines(m_newCutParams.name.c_str(), m_newCutX.data(), int(m_newCutX.size()));
                            
                         }
                         else if(m_cutModeFlag)
@@ -83,7 +79,7 @@ namespace Navigator {
                                 m_newCutX.push_back(point.x);
                                 m_newCutY.push_back(point.y);
                             }
-                            ImPlot::PlotLine(m_newCutParams.name.c_str(), m_newCutX.data(), m_newCutY.data(), m_newCutX.size());
+                            ImPlot::PlotLine(m_newCutParams.name.c_str(), m_newCutX.data(), m_newCutY.data(), int(m_newCutX.size()));
                         }
 
                         if (ImPlot::IsPlotSelected()) {
@@ -99,7 +95,7 @@ namespace Navigator {
                             auto& region = m_integralRegions[i];
                             if (m_zoomedGram.name == region.histogram_name)
                             {
-                                ImPlot::DragRect(i, &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
+                                ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
                                 StatResults results = HistogramMap::GetInstance().AnalyzeHistogramRegion(m_zoomedGram.name, region.region);
                                 ImPlot::PlotText(GenerateStatString(region.name, results, m_zoomedGram.y_par != "None").c_str(), (region.region.X.Max + region.region.X.Min) * 0.5, 
                                                  (region.region.Y.Min + region.region.Y.Max) * 0.5);
@@ -196,7 +192,7 @@ namespace Navigator {
                                     auto& region = m_integralRegions[i];
                                     if (spec.name == region.histogram_name)
                                     {
-                                        ImPlot::DragRect(i, &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
+                                        ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
                                     }
                                 }
                                 ImPlot::EndPlot();

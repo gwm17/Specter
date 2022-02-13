@@ -73,7 +73,7 @@ namespace Navigator {
     //Only in ImPlot/ImGui context!!!!
     void Cut2D::Draw() const
     {
-        ImPlot::PlotLine(m_params.name.c_str(), m_xpoints.data(), m_ypoints.data(), m_xpoints.size());
+        ImPlot::PlotLine(m_params.name.c_str(), m_xpoints.data(), m_ypoints.data(), (int)m_xpoints.size());
     }
 
     /* CutMap */

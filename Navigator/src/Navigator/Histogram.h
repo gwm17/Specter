@@ -7,7 +7,7 @@ namespace Navigator {
 
 	struct NAV_API StatResults
 	{
-		int integral = 0.0;
+		double integral = 0.0;
 		double cent_x = 0.0;
 		double cent_y = 0.0;
 		double sigma_x = 0.0;
