@@ -34,8 +34,8 @@ namespace Navigator {
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		//Viewports are real wonky on Linux and sometimes on Mac
-		// Can currently cause assertion failure on checking number of monitors in ImGui sanity checks.
+		//Viewports are real wonky on Linux and sometimes on MacOS
+		//Can currently cause assertion failure on checking number of monitors in ImGui sanity checks.
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		ImGui::StyleColorsDark();
@@ -49,14 +49,16 @@ namespace Navigator {
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		io.Fonts->AddFontDefault();
-
+		//io.Fonts->AddFontDefault();
+		ImFontConfig latin_config;
+		latin_config.RasterizerMultiply = 1.3;
 		ImFontConfig config;
 		config.MergeMode = true;
-		config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
+		//config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
 		config.PixelSnapH = true;
 		static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		io.Fonts->AddFontFromFileTTF("fonts/fa-solid-900.ttf", 13.0f, &config, icon_ranges);
+		io.Fonts->AddFontFromFileTTF("fonts/Roboto-Regular.ttf", 16.0f, &latin_config, io.Fonts->GetGlyphRangesDefault());
+		io.Fonts->AddFontFromFileTTF("fonts/fa-solid-900.ttf", 16.0f, &config, icon_ranges);
 
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());

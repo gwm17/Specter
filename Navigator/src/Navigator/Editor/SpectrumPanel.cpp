@@ -8,7 +8,7 @@ namespace Navigator {
     {
         std::stringstream stream;
         stream << "Region: " << name << "\n" << "Integral: " << results.integral << "\n";
-        if (results.integral == 0)
+        if (results.integral == 0.0)
             return stream.str();
         stream << "Centroid X: " << results.cent_x << " Std. Dev. X: " << results.sigma_x << " FWHM X: " << 2.355 * results.sigma_x << "\n";
         if(is2D)
