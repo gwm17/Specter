@@ -10,9 +10,9 @@ namespace Navigator {
         stream << "Region: " << name << "\n" << "Integral: " << results.integral << "\n";
         if (results.integral == 0.0)
             return stream.str();
-        stream << "Centroid X: " << results.cent_x << " Std. Dev. X: " << results.sigma_x << " FWHM X: " << 2.355 * results.sigma_x << "\n";
+        stream << "Centroid X: " << results.cent_x << "\nStd. Dev. X: " << results.sigma_x << "\nFWHM X: " << 2.355 * results.sigma_x << "\n";
         if(is2D)
-            stream << "Centroid Y: " << results.cent_y << " Std. Dev. Y: " << results.sigma_y << " FWHM Y: " << 2.355 * results.sigma_y << "\n";
+            stream << "Centroid Y: " << results.cent_y << "\nStd. Dev. Y: " << results.sigma_y << "\nFWHM Y: " << 2.355 * results.sigma_y << "\n";
         return stream.str();
     }
 
@@ -92,7 +92,7 @@ namespace Navigator {
                         }
                         for (size_t i = 0; i < m_integralRegions.size(); i++)
                         {
-                            auto& region = m_integralRegions[i];
+                            auto region = m_integralRegions[i];
                             if (m_zoomedGram.name == region.histogram_name)
                             {
                                 ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
