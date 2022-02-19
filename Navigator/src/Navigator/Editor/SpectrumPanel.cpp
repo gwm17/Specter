@@ -17,7 +17,7 @@ namespace Navigator {
     }
 
 	SpectrumPanel::SpectrumPanel() :
-        m_zoomedFlag(false), m_cutModeFlag(false), m_zoomedGram(), m_nRegions(0), m_totalSlots(1)
+        m_zoomedFlag(false), m_cutModeFlag(false), m_zoomedGram(),  m_totalSlots(1), m_nRegions(0)
 	{
         m_tableSizes[0] = 1; m_tableSizes[1] = 1;
 	}

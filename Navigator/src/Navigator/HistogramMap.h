@@ -13,8 +13,6 @@ namespace Navigator {
 	class NAV_API HistogramMap
 	{
 	public:
-		using Iter = std::unordered_map<std::string, std::shared_ptr<Histogram>>::iterator;
-
 		HistogramMap();
 		~HistogramMap();
 

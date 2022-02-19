@@ -129,7 +129,6 @@ namespace Navigator {
 				std::lock_guard<std::mutex> guard(m_sourceMutex);
 				if (m_source == nullptr || !m_source->IsValid())
 				{
-					//NAV_WARN("Internal state of PhysicsEventBuilder not set properly! Either histogram map or data source not initialized!");
 					m_activeFlag = false;
 					return;
 				}
@@ -146,17 +145,13 @@ namespace Navigator {
 				}
 			}
 
-			//NAV_INFO("Doing a physics");
-			
 			if (m_eventBuilder.AddDatumToEvent(datum))
 			{
 				event = m_eventBuilder.GetReadyEvent();
-				//NAV_INFO("Built event size: {0}", event.size());
 				for (auto& stage : m_physStack)
 					stage->AnalyzePhysicsEvent(event);
 				
 				histMap.UpdateHistograms();
-				//Cleanup to be ready for next event
 				ParameterMap::GetInstance().InvalidateParameters();
 			}
 		}

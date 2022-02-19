@@ -84,8 +84,6 @@ namespace Navigator {
 	class NAV_API CutMap
 	{
 	public:
-		using Iter = std::unordered_map<std::string, std::shared_ptr<Cut>>::iterator;
-
 		CutMap();
 		~CutMap();
 
