@@ -9,19 +9,19 @@ namespace Navigator {
 
 	SPSAnalysisStage::~SPSAnalysisStage() {}
 
-	void SPSAnalysisStage::AnalyzeRawPhysicsEvent(const RawPhysicsEvent& event)
+	void SPSAnalysisStage::AnalyzePhysicsEvent(const NavEvent& event)
 	{
 
 
 		for(auto& hit : event)
 		{
-			if(hit.board == 8 && hit.channel == 8)
+			if(hit.id == 136)
 				delayFLTime.SetValue(hit.timestamp/1.0e3);
-			else if(hit.board == 8 && hit.channel == 9)
+			else if(hit.id == 137)
 				delayFRTime.SetValue(hit.timestamp/1.0e3);
-			else if(hit.board == 8 && hit.channel == 10)
+			else if(hit.id == 138)
 				delayBLTime.SetValue(hit.timestamp/1.0e3);
-			else if(hit.board == 8 && hit.channel == 11)
+			else if(hit.id == 139)
 				delayBRTime.SetValue(hit.timestamp/1.0e3);
 		}
 

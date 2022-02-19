@@ -8,7 +8,7 @@ namespace Navigator {
 		SPSAnalysisStage();
 		virtual ~SPSAnalysisStage();
 
-		virtual void AnalyzeRawPhysicsEvent(const RawPhysicsEvent& event) override;
+		virtual void AnalyzePhysicsEvent(const NavEvent& event) override;
 
 	private:
 		NavParameter delayFLTime;
