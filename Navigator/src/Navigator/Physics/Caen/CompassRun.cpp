@@ -14,12 +14,12 @@
 namespace Navigator {
 	
 	CompassRun::CompassRun() :
-		DataSource(), m_directory("")
+		DataSource(), m_directory(""), m_startIndex(0)
 	{
 	}
 	
 	CompassRun::CompassRun(const std::string& dir) :
-		DataSource(), m_directory(dir)
+		DataSource(), m_directory(dir), m_startIndex(0)
 	{
 		CollectFiles();
 	}
@@ -87,18 +87,18 @@ namespace Navigator {
 	{
 	
 		std::pair<CompassHit, bool*> earliestHit = std::make_pair(CompassHit(), nullptr);
-		for(unsigned int i=startIndex; i<m_datafiles.size(); i++) 
+		for(unsigned int i=m_startIndex; i<m_datafiles.size(); i++) 
 		{
 			if(m_datafiles[i].CheckHitHasBeenUsed()) 
 				m_datafiles[i].GetNextHit();
 	
 			if(m_datafiles[i].IsEOF()) 
 			{
-				if(i == startIndex)
-					startIndex++;
+				if(i == m_startIndex)
+					m_startIndex++;
 				continue;
 			} 
-			else if(i == startIndex) 
+			else if(i == m_startIndex) 
 			{
 				earliestHit = std::make_pair(m_datafiles[i].GetCurrentHit(), m_datafiles[i].GetUsedFlagPtr());
 			} 

@@ -38,7 +38,7 @@ namespace Navigator {
 		const std::string m_extension = ".bin";
 
 		std::vector<CompassFile> m_datafiles;
-		unsigned int startIndex; //this is the file we start looking at; increases as we finish files.
+		unsigned int m_startIndex; //this is the file we start looking at; increases as we finish files.
 
 		ShiftMap m_smap;
 
