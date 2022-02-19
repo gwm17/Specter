@@ -3,19 +3,17 @@
 
 #include "Navigator/NavCore.h"
 #include "Navigator/ParameterMap.h"
-#include "CompassHit.h"
+#include "NavData.h"
 
 namespace Navigator {
 
 	class NAV_API AnalysisStage
 	{
 	public:
-		using RawPhysicsEvent = std::vector<CompassHit>;
-
 		AnalysisStage(const std::string& name="AnalysisStage");
 		virtual ~AnalysisStage();
 
-		virtual void AnalyzeRawPhysicsEvent(const RawPhysicsEvent& event) {};
+		virtual void AnalyzePhysicsEvent(const NavEvent& event) {};
 
 		inline std::string GetName() { return m_name; }
 	private:

@@ -83,7 +83,7 @@ namespace Navigator {
                         }
 
                         if (ImPlot::IsPlotSelected()) {
-                            auto& select = ImPlot::GetPlotSelection();
+                            auto select = ImPlot::GetPlotSelection();
                             if (ImGui::IsMouseClicked(ImPlot::GetInputMap().SelectCancel)) {
                                 ImPlot::CancelPlotSelection();
                                 m_integralRegions.emplace_back(select, "integralRegion_"+std::to_string(m_nRegions), m_zoomedGram.name);
@@ -92,7 +92,7 @@ namespace Navigator {
                         }
                         for (size_t i = 0; i < m_integralRegions.size(); i++)
                         {
-                            auto region = m_integralRegions[i];
+                            auto& region = m_integralRegions[i];
                             if (m_zoomedGram.name == region.histogram_name)
                             {
                                 ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));

@@ -1,6 +1,6 @@
 #include "DataSource.h"
-#include "CompassRun.h"
-#include "CompassOnlineSource.h"
+#include "Caen/CompassRun.h"
+#include "Caen/CompassOnlineSource.h"
 
 namespace Navigator {
 

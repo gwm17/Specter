@@ -73,6 +73,7 @@ namespace Navigator {
 			m_validFlag = true;
 		}
 	}
+
 	/*
 		GetHitsFromFiles() is the function which actually retrieves and sorts the data from the individual
 		files. There are several tricks which allow this to happen. First is that, after sorting, it is impossible
@@ -114,22 +115,29 @@ namespace Navigator {
 		return true;
 	}
 
-	const CompassHit& CompassRun::GetData()
+	const NavData& CompassRun::GetData()
 	{
 		if(!IsValid())
 		{
 			NAV_ERROR("Trying to access CompassRun data when invalid, bug detected!");
-			m_hit = CompassHit();
-			return m_hit;
+			m_datum = NavData();
+			return m_datum;
 		}
 
-		if(GetHitsFromFiles())
-			return m_hit;
-		else
+		if (!GetHitsFromFiles())
 		{
 			m_validFlag = false;
-			return m_hit;
+			m_datum = NavData();
 		}
+		else
+		{
+			m_datum.longEnergy = m_hit.lgate;
+			m_datum.shortEnergy = m_hit.sgate;
+			m_datum.timestamp = m_hit.timestamp;
+			m_datum.id = m_hit.board * 16 + m_hit.channel;
+		}
+
+		return m_datum;
 	}
 
 }

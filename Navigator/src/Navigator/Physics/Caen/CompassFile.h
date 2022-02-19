@@ -13,7 +13,7 @@
 
 #include "Navigator/NavCore.h"
 #include "CompassHit.h"
-#include "ShiftMap.h"
+#include "Navigator/Physics/ShiftMap.h"
 
 namespace Navigator {
 

@@ -51,7 +51,7 @@ namespace Navigator {
 
 		//io.Fonts->AddFontDefault();
 		ImFontConfig latin_config;
-		latin_config.RasterizerMultiply = 1.3;
+		latin_config.RasterizerMultiply = 1.3f;
 		ImFontConfig config;
 		config.MergeMode = true;
 		//config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced

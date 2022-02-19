@@ -1,7 +1,8 @@
 #ifndef COMPASS_ONLINE_SOURCE_H
 #define COMPASS_ONLINE_SOURCE_H
 
-#include "DataSource.h"
+#include "Navigator/Physics/DataSource.h"
+#include "CompassHit.h"
 #include "asio.hpp"
 
 namespace Navigator {
@@ -12,7 +13,7 @@ namespace Navigator {
 		CompassOnlineSource(const std::string& hostname, const std::string& port);
 		virtual ~CompassOnlineSource() override;
 
-		virtual const CompassHit& GetData() override;
+		virtual const NavData& GetData() override;
 
 	private:
 		void InitSocket(const std::string& hostname, const std::string& port);

@@ -2,12 +2,12 @@
 #include "Navigator/ParameterMap.h"
 
 //temp
-#include "CompassHit.h"
+#include "NavData.h"
 
 namespace Navigator {
 
 	PhysicsLayer::PhysicsLayer() :
-		m_activeFlag(false), m_source(nullptr), m_physThread(nullptr)
+		m_activeFlag(false), m_source(nullptr), m_eventBuilder(0), m_physThread(nullptr)
 	{
 	}
 
@@ -94,8 +94,8 @@ namespace Navigator {
 	void PhysicsLayer::AttachDataSource(PhysicsStartEvent& event)
 	{
 		std::lock_guard<std::mutex> guard(m_sourceMutex);
-		m_rawSort.SetCoincidenceWindow(event.GetCoincidenceWindow());
 		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetSourceType()));
+		m_eventBuilder.SetCoincidenceWindow(event.GetCoincidenceWindow());
 		if (m_source->IsValid())
 		{
 			NAV_INFO("Attach successful. Enabling data pull...");
@@ -121,8 +121,8 @@ namespace Navigator {
 	{
 		HistogramMap& histMap = HistogramMap::GetInstance();
 
-		CompassHit hit;
-
+		NavEvent event;
+		NavData datum;
 		while(m_activeFlag)
 		{
 			{
@@ -137,7 +137,7 @@ namespace Navigator {
 					Looks funny, but two conditions lead to !IsValid(). Either source prev. shutdown,
 					OR we reached end of source, indicated after prev. data grab
 				*/
-				hit = m_source->GetData();
+				datum = m_source->GetData();
 				if(!m_source->IsValid())
 				{
 					NAV_INFO("End of data source.");
@@ -145,26 +145,19 @@ namespace Navigator {
 					return;
 				}
 			}
+
 			//NAV_INFO("Doing a physics");
-			if(m_rawSort.IsHitInWindow(hit))
+			
+			if (m_eventBuilder.AddDatumToEvent(datum))
 			{
-				//NAV_INFO("Adding hit to event with timestamp {0}", hit.timestamp);
-				m_rawSort.AddHit(hit);
-			}
-			else
-			{
-				//NAV_INFO("Obtaining built event...");
-				auto event = m_rawSort.GetRawPhysicsEvent();
+				event = m_eventBuilder.GetReadyEvent();
 				//NAV_INFO("Built event size: {0}", event.size());
 				for (auto& stage : m_physStack)
-					stage->AnalyzeRawPhysicsEvent(event);
+					stage->AnalyzePhysicsEvent(event);
+				
 				histMap.UpdateHistograms();
-	
 				//Cleanup to be ready for next event
 				ParameterMap::GetInstance().InvalidateParameters();
-				m_rawSort.ClearRawPhysicsEvent();
-				//Need to add hit in hand, start new event
-				m_rawSort.AddHit(hit);
 			}
 		}
 	}

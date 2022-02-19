@@ -2,10 +2,10 @@
 #define DATA_SOURCE_H
 
 #include "Navigator/NavCore.h"
-#include "CompassHit.h"
+#include "NavData.h"
 
 namespace Navigator {
-
+	
 	class NAV_API DataSource
 	{
 	public:
@@ -22,11 +22,12 @@ namespace Navigator {
 		}
 
 		virtual ~DataSource() {};
-		virtual const CompassHit& GetData() = 0;
+		virtual const NavData& GetData() = 0;
 		inline bool IsValid() { return m_validFlag; }
 
 	protected:
 		bool m_validFlag;
+		NavData m_datum;
 	};
 
 	NAV_API DataSource* CreateDataSource(const std::string& loc, const std::string& port, DataSource::SourceType type);

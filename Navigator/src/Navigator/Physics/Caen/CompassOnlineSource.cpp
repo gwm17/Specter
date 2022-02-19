@@ -30,13 +30,13 @@ namespace Navigator {
 		m_validFlag = true;
 	}
 
-	const CompassHit& CompassOnlineSource::GetData()
+	const NavData& CompassOnlineSource::GetData()
 	{
 		if (!IsValid())
 		{
 			NAV_ERROR("Attempting to access invalid source at CompassOnlineSource!");
-			m_currentHit = CompassHit();
-			return m_currentHit;
+			m_datum = NavData();
+			return m_datum;
 		}
 		else if (m_bufferIter == nullptr || m_bufferIter == m_bufferEnd)
 		{
@@ -44,15 +44,19 @@ namespace Navigator {
 		}
 		
 		if (m_bufferIter != m_bufferEnd)
-		{
 			GetHit();
-			return m_currentHit;
-		}
 		else
 		{
-			m_currentHit = CompassHit();
-			return m_currentHit;
+			m_datum = NavData();
+			return m_datum;
 		}
+
+		m_datum.longEnergy = m_currentHit.lgate;
+		m_datum.shortEnergy = m_currentHit.sgate;
+		m_datum.timestamp = m_currentHit.timestamp;
+		m_datum.id = m_currentHit.board * 16 + m_currentHit.channel;
+
+		return m_datum;
 	}
 
 	void CompassOnlineSource::FillBuffer()

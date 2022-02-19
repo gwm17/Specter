@@ -1,5 +1,5 @@
-#ifndef PHYSICS_EVENT_BUILDER_H
-#define PHYSICS_EVENT_BUILDER_H
+#ifndef PHYSICS_LAYER_H
+#define PHYSICS_LAYER_H
 
 #include "Navigator/NavCore.h"
 #include "Navigator/HistogramMap.h"
@@ -7,8 +7,8 @@
 #include "Navigator/Events/PhysicsEvent.h"
 #include "AnalysisStack.h"
 #include "AnalysisStage.h"
-#include "PhysicsHitSort.h"
 #include "DataSource.h"
+#include "PhysicsEventBuilder.h"
 
 #include <thread>
 #include <mutex>
@@ -42,11 +42,11 @@ namespace Navigator {
 
 		AnalysisStack m_physStack;
 		std::atomic<bool> m_activeFlag;
-		PhysicsHitSort m_rawSort;
 
 		std::mutex m_sourceMutex;
 
 		std::unique_ptr<DataSource> m_source;
+		PhysicsEventBuilder m_eventBuilder;
 
 		std::thread* m_physThread;
 
