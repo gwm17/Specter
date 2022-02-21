@@ -11,6 +11,12 @@ namespace Navigator {
 		PhysicsEventBuilder(uint64_t windowSize);
 		~PhysicsEventBuilder();
 		inline void SetCoincidenceWindow(uint64_t windowSize) { m_coincWindow = windowSize; }
+		inline void ClearAll() 
+		{
+			m_event.clear();
+			m_readyEvent.clear();
+			m_eventStartTime = 0;
+		}
 		bool AddDatumToEvent(const NavData& datum);
 		const NavEvent& GetReadyEvent() const;
 

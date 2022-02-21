@@ -1,4 +1,5 @@
 #include "SpectrumDialog.h"
+#include "Navigator/SpectrumManager.h"
 
 #include "misc/cpp/imgui_stdlib.h"
 
@@ -115,7 +116,7 @@ namespace Navigator {
 
 			if (ImGui::Button("Ok"))
 			{
-				HistogramMap::GetInstance().AddHistogram(m_newParams);
+				SpectrumManager::GetInstance().AddHistogram(m_newParams);
 				ImGui::CloseCurrentPopup();
 				result = true;
 			}

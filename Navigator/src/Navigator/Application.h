@@ -10,7 +10,6 @@
 #include "Navigator/Window.h"
 #include "Navigator/ImGui/ImGuiLayer.h"
 #include "Navigator/Physics/PhysicsLayer.h"
-#include "Navigator/HistogramMap.h"
 #include "glm/vec4.hpp"
 
 namespace Navigator {

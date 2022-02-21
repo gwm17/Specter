@@ -1,6 +1,4 @@
 #include "Histogram.h"
-#include "CutMap.h"
-#include "ParameterMap.h"
 #include "implot.h"
 
 /*
@@ -45,21 +43,9 @@ namespace Navigator {
 	}
 
 	//Note: only x is used here, y is simply present to maintain compliance with 2D case and can be ignored
-	void Histogram1D::FillData()
+	void Histogram1D::FillData(double x, double y)
 	{
-		ParameterMap& parMap = ParameterMap::GetInstance();
-		ParameterData x = parMap.GetParameter(m_params.x_par);
-		if(!x.validFlag || x.value < m_params.min_x || x.value >= m_params.max_x || !m_initFlag)
-			return;
-		auto& cutmap = CutMap::GetInstance();
-		for (auto& cut : m_params.cutsAppliedTo)
-		{
-			if (!cutmap.IsInsideCut(cut))
-				return;
-		}
-
-		int bin = int((x.value - m_params.min_x)/(m_binWidth));
-        
+		int bin = int((x - m_params.min_x)/(m_binWidth));
 		m_binCounts[bin] += 1.0;
 	}
 
@@ -68,9 +54,6 @@ namespace Navigator {
 	{
 		ImPlot::SetupAxes(m_params.x_par.c_str(), "Counts",0, ImPlotAxisFlags_LockMin);
 		ImPlot::PlotBars(m_params.name.c_str(), &m_binCenters.data()[0], &m_binCounts.data()[0], m_params.nbins_x, m_binWidth);
-        auto& cutmap = CutMap::GetInstance();
-        for(auto& cut : m_params.cutsDrawnUpon)
-            cutmap.DrawCut(cut);
 	}
 
 	void Histogram1D::ClearData()
@@ -143,24 +126,10 @@ namespace Navigator {
 		m_initFlag = true;
 	}
 
-	void Histogram2D::FillData()
+	void Histogram2D::FillData(double x, double y)
 	{
-		ParameterMap& parMap = ParameterMap::GetInstance();
-		CutMap& cutMap = CutMap::GetInstance();
-		if (!parMap.IsParameterValid(m_params.x_par) || !parMap.IsParameterValid(m_params.y_par))
-			return;
-		ParameterData x = parMap.GetParameter(m_params.x_par);
-		ParameterData y = parMap.GetParameter(m_params.y_par);
-		if(!x.validFlag || !y.validFlag || x.value < m_params.min_x || x.value >= m_params.max_x || y.value < m_params.min_y || y.value >= m_params.max_y || !m_initFlag)
-			return;
-		for (auto& cut : m_params.cutsAppliedTo)
-		{
-			if (!cutMap.IsInsideCut(cut))
-				return;
-		}
-
-		int bin_x = int((x.value - m_params.min_x)/m_binWidthX);
-		int bin_y = int((m_params.max_y - y.value)/m_binWidthY);
+		int bin_x = int((x - m_params.min_x)/m_binWidthX);
+		int bin_y = int((m_params.max_y - y)/m_binWidthY);
 		int bin = bin_y*m_params.nbins_x + bin_x;
 
 		m_binCounts[bin] += 1.0;
@@ -176,9 +145,6 @@ namespace Navigator {
 		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, 0.0, m_maxBinContent, NULL,
 							ImPlotPoint(m_params.min_x, m_params.min_y), ImPlotPoint(m_params.max_x, m_params.max_y));
 		ImPlot::PopColormap();
-        auto& cutmap = CutMap::GetInstance();
-        for(auto& cut : m_params.cutsDrawnUpon)
-            cutmap.DrawCut(cut);
 	}
 
 	void Histogram2D::ClearData()

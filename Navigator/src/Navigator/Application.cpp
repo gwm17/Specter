@@ -3,9 +3,6 @@
 #include "Renderer/RenderCommand.h"
 #include "Editor/EditorLayer.h"
 
-//temp
-#include "CutMap.h"
-
 namespace Navigator {
 
 	Application* Application::s_instance = nullptr;
@@ -66,8 +63,6 @@ namespace Navigator {
 	{
 		while(m_runFlag)
 		{
-			HistogramMap::GetInstance().UpdateHistograms();
-
 			RenderCommand::SetClearColor(m_bckgnd_color);
 			RenderCommand::Clear();
 

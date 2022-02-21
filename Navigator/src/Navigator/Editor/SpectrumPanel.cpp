@@ -1,4 +1,5 @@
 #include "SpectrumPanel.h"
+#include "Navigator/SpectrumManager.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "IconsFontAwesome5.h"
 
@@ -38,14 +39,14 @@ namespace Navigator {
                     ImGui::SameLine();
                     if(ImGui::Button("Clear"))
                     {
-                        HistogramMap::GetInstance().ClearHistogram(m_zoomedGram.name);
+                        SpectrumManager::GetInstance().ClearHistogram(m_zoomedGram.name);
                     }
                     ImGui::SameLine();
                     RenderRemoveRegionButton();
                     
                     if (ImPlot::BeginPlot(m_zoomedGram.name.c_str(), ImVec2(-1, -1)))
                     {
-                        HistogramMap::GetInstance().DrawHistogram(m_zoomedGram.name);
+                        SpectrumManager::GetInstance().DrawHistogram(m_zoomedGram.name);
                         if (!m_cutModeFlag && ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
                             NAV_INFO("We lost 'em, de-zoom and enhance!");
@@ -96,7 +97,7 @@ namespace Navigator {
                             if (m_zoomedGram.name == region.histogram_name)
                             {
                                 ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
-                                StatResults results = HistogramMap::GetInstance().AnalyzeHistogramRegion(m_zoomedGram.name, region.region);
+                                StatResults results = SpectrumManager::GetInstance().AnalyzeHistogramRegion(m_zoomedGram.name, region.region);
                                 ImPlot::PlotText(GenerateStatString(region.name, results, m_zoomedGram.y_par != "None").c_str(), (region.region.X.Max + region.region.X.Min) * 0.5, 
                                                  (region.region.Y.Min + region.region.Y.Max) * 0.5);
                             }
@@ -117,13 +118,13 @@ namespace Navigator {
                             if (m_newCutParams.y_par == "None")
                             {
                                 std::sort(m_newCutX.begin(), m_newCutX.end());
-                                CutMap::GetInstance().AddCut(m_newCutParams, m_newCutX[0], m_newCutX[1]);
+                                SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX[0], m_newCutX[1]);
                             }
                             else
                             {
-                                CutMap::GetInstance().AddCut(m_newCutParams, m_newCutX, m_newCutY);
+                                SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX, m_newCutY);
                             }
-                            HistogramMap::GetInstance().AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram.name);
+                            SpectrumManager::GetInstance().AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram.name);
                             ImGui::CloseCurrentPopup();
                             result = true;
                         }
@@ -142,7 +143,7 @@ namespace Navigator {
                     ImGui::SameLine();
                     if(ImGui::Button("Clear All"))
                     {
-                        HistogramMap::GetInstance().ClearHistograms();
+                        SpectrumManager::GetInstance().ClearHistograms();
                     }
                     m_totalSlots = m_tableSizes[0] * m_tableSizes[1];
                     m_selectedGrams.resize(m_totalSlots);
@@ -179,7 +180,7 @@ namespace Navigator {
                         {
                             if (ImPlot::BeginPlot(spec.name.c_str()))
                             {
-                                HistogramMap::GetInstance().DrawHistogram(spec.name);
+                                SpectrumManager::GetInstance().DrawHistogram(spec.name);
                                 if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                                 {
                                     NAV_INFO("We got'em boys, they're in plot {0}. Zoom and enhance!", i);

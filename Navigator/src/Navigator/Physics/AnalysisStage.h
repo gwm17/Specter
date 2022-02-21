@@ -2,7 +2,7 @@
 #define ANALYSIS_STAGE_H
 
 #include "Navigator/NavCore.h"
-#include "Navigator/ParameterMap.h"
+#include "Navigator/Parameter.h"
 #include "NavData.h"
 
 namespace Navigator {

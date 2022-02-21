@@ -1,8 +1,8 @@
 #ifndef SPECTRUM_SERIALIZER_H
 #define SPECTRUM_SERIALIZER_H
 
-#include "HistogramMap.h"
-#include "CutMap.h"
+#include "Histogram.h"
+#include "Cut.h"
 
 namespace Navigator {
 

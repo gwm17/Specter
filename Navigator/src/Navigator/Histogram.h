@@ -54,7 +54,7 @@ namespace Navigator {
 		}
 
 		virtual ~Histogram() {};
-		virtual void FillData() { NAV_WARN("Trying to fill a default histogram!"); }
+		virtual void FillData(double x, double y=0.0) { NAV_WARN("Trying to fill a default histogram!"); }
 		virtual void Draw() {}
 		virtual void ClearData() {}
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) { return StatResults();  }
@@ -77,7 +77,7 @@ namespace Navigator {
 	public:
 		Histogram1D(const HistogramParameters& params);
 		virtual ~Histogram1D();
-		virtual void FillData() override;
+		virtual void FillData(double x, double y=0.0) override;
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
@@ -98,7 +98,7 @@ namespace Navigator {
 	public:
 		Histogram2D(const HistogramParameters& params);
 		virtual ~Histogram2D();
-		virtual void FillData() override;
+		virtual void FillData(double x, double y) override;
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;

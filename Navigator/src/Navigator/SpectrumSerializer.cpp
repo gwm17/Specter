@@ -1,4 +1,5 @@
 #include "SpectrumSerializer.h"
+#include "SpectrumManager.h"
 
 #include <fstream>
 
@@ -13,8 +14,7 @@ namespace Navigator {
 
 	void SpectrumSerializer::SerializeData(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList)
 	{
-		//HistogramMap& histMap = HistogramMap::GetInstance();
-		CutMap& cutMap = CutMap::GetInstance();
+		SpectrumManager& manager = SpectrumManager::GetInstance();
 
 		std::ofstream output(m_filename);
 		if (!output.is_open())
@@ -28,7 +28,7 @@ namespace Navigator {
 		{
 			if (cut.y_par == "None")
 			{
-				auto xpoints = cutMap.GetCutXPoints(cut.name);
+				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
 				output << "\tbegin_cut1D" << std::endl;
 				output << "\t\tname: " << cut.name << std::endl;
 				output << "\t\txparam: " << cut.x_par << std::endl;
@@ -38,8 +38,8 @@ namespace Navigator {
 			}
 			else
 			{
-				auto xpoints = cutMap.GetCutXPoints(cut.name);
-				auto ypoints = cutMap.GetCutYPoints(cut.name);
+				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
+				std::vector<double> ypoints = manager.GetCutYPoints(cut.name);
 				output << "\tbegin_cut2D" << std::endl;
 				output << "\t\tname: " << cut.name << std::endl;
 				output << "\t\txparam: " << cut.x_par << std::endl;
@@ -121,8 +121,7 @@ namespace Navigator {
 
 	void SpectrumSerializer::DeserializeData()
 	{
-		HistogramMap& histMap = HistogramMap::GetInstance();
-		CutMap& cutMap = CutMap::GetInstance();
+		SpectrumManager& manager = SpectrumManager::GetInstance();
 
 		std::ifstream input(m_filename);
 		if (!input.is_open())
@@ -156,7 +155,7 @@ namespace Navigator {
 						input >> check >> value_doub;
 						cut_xdata.push_back(value_doub);
 						input >> check;
-						cutMap.AddCut(cut_data, cut_xdata[0], cut_xdata[1]);
+						manager.AddCut(cut_data, cut_xdata[0], cut_xdata[1]);
 					}
 					else if (check == "begin_cut2D")
 					{
@@ -182,7 +181,7 @@ namespace Navigator {
 								cut_ydata.push_back(std::stod(check));
 						}
 						input >> check;
-						cutMap.AddCut(cut_data, cut_xdata, cut_ydata);
+						manager.AddCut(cut_data, cut_xdata, cut_ydata);
 					}
 					else if (check == "end_cuts")
 						break;
@@ -229,7 +228,7 @@ namespace Navigator {
 							}
 						}
 						input >> check;
-						histMap.AddHistogram(hist_data);
+						manager.AddHistogram(hist_data);
 					}
 					else if (check == "begin_histogram2D")
 					{
@@ -265,7 +264,7 @@ namespace Navigator {
 							}
 						}
 						input >> check;
-						histMap.AddHistogram(hist_data);
+						manager.AddHistogram(hist_data);
 					}
 					else if (check == "end_histograms")
 						break;

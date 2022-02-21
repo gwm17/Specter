@@ -1,9 +1,8 @@
 #ifndef SPECTRUM_DIALOG_H
 #define SPECTRUM_DIALOG_H
 
-#include "Navigator/HistogramMap.h"
-#include "Navigator/ParameterMap.h"
-#include "Navigator/CutMap.h"
+#include "Navigator/Histogram.h"
+#include "Navigator/Cut.h"
 
 #include "imgui.h"
 

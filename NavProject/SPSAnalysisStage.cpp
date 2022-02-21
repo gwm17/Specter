@@ -5,6 +5,14 @@ namespace Navigator {
 	SPSAnalysisStage::SPSAnalysisStage() :
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg")
 	{
+		SpectrumManager& manager = SpectrumManager::GetInstance();
+		manager.BindParameter(delayFLTime);
+		manager.BindParameter(delayFRTime);
+		manager.BindParameter(delayBLTime);
+		manager.BindParameter(delayBRTime);
+		manager.BindParameter(x1);
+		manager.BindParameter(x2);
+		manager.BindParameter(xavg);
 	}
 
 	SPSAnalysisStage::~SPSAnalysisStage() {}

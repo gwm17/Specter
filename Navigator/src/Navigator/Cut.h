@@ -32,7 +32,7 @@ namespace Navigator {
 
 		virtual ~Cut() {}
 
-		virtual bool IsInside() const = 0;
+		virtual bool IsInside(double x, double y=0.0) const = 0;
 		virtual void Draw() const = 0;
 		virtual bool Is1D() const = 0;
 		virtual bool Is2D() const = 0;
@@ -52,7 +52,7 @@ namespace Navigator {
 	public:
 		Cut1D(const CutParams& params, double min, double max);
 		virtual ~Cut1D();
-		virtual bool IsInside() const override;
+		virtual bool IsInside(double x, double y=0.0) const override;
 		virtual void Draw() const override;
 		virtual bool Is1D() const override { return true; }
 		virtual bool Is2D() const override { return false; }
@@ -68,7 +68,7 @@ namespace Navigator {
 	public:
 		Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
 		virtual ~Cut2D();
-		virtual bool IsInside() const override;
+		virtual bool IsInside(double x, double y) const override;
 		virtual void Draw() const override;
 		virtual bool Is1D() const override { return false; }
 		virtual bool Is2D() const override { return true; }
@@ -79,40 +79,6 @@ namespace Navigator {
 		std::vector<double> m_xpoints;
 		std::vector<double> m_ypoints;
         const ImVec4 colorVec = {1.0, 0.0, 0.0, 0.5};
-	};
-
-	class NAV_API CutMap
-	{
-	public:
-		CutMap();
-		~CutMap();
-
-		inline static CutMap& GetInstance() { return *s_instance; }
-
-		inline void AddCut(const CutParams& params, double min, double max)
-		{
-			m_map[params.name].reset(new Cut1D(params, min, max));
-		}
-		inline void AddCut(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
-		{
-			m_map[params.name].reset(new Cut2D(params, xpoints, ypoints));
-		}
-		inline void RemoveCut(const std::string& name)
-		{
-			m_map.erase(name);
-		}
-
-		void DrawCut(const std::string& name);
-		bool IsInsideCut(const std::string& name);
-		std::vector<double> GetCutXPoints(const std::string& name);
-		std::vector<double> GetCutYPoints(const std::string& name);
-		std::vector<CutParams> GetListOfCutParams();
-
-	private:
-		std::mutex m_cutMutex;
-		std::unordered_map<std::string, std::shared_ptr<Cut>> m_map;
-
-		static CutMap* s_instance;
 	};
 }
 

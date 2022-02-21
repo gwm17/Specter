@@ -4,6 +4,7 @@
 #include "FileDialog.h"
 #include "Navigator/Application.h"
 #include "Navigator/SpectrumSerializer.h"
+#include "Navigator/SpectrumManager.h"
 
 #include "IconsFontAwesome5.h"
 
@@ -34,20 +35,17 @@ namespace Navigator {
 
     void EditorLayer::UpdateHistogramList()
     {
-        HistogramMap& histoMap = HistogramMap::GetInstance();
-        m_histoList = histoMap.GetListOfHistograms();
+        m_histoList = SpectrumManager::GetInstance().GetListOfHistograms();
     }
 
     void EditorLayer::UpdateCutList()
     {
-        CutMap& cutMap = CutMap::GetInstance();
-        m_cutList = cutMap.GetListOfCutParams();
+        m_cutList = SpectrumManager::GetInstance().GetListOfCuts();
     }
 
     void EditorLayer::UpdateParameterList()
     {
-        ParameterMap& parMap = ParameterMap::GetInstance();
-        m_paramList = parMap.GetListOfParameters();
+        m_paramList = SpectrumManager::GetInstance().GetListOfParameters();
     }
 
     void EditorLayer::OnImGuiRender()
@@ -260,7 +258,7 @@ namespace Navigator {
             }
             if (ImGui::Button("Ok"))
             {
-                HistogramMap::GetInstance().RemoveHistogram(selectedGram);
+                SpectrumManager::GetInstance().RemoveHistogram(selectedGram);
                 UpdateHistogramList();
                 ImGui::CloseCurrentPopup();
             }
@@ -295,8 +293,7 @@ namespace Navigator {
             }
             if (ImGui::Button("Ok"))
             {
-                HistogramMap::GetInstance().RemoveCutFromHistograms(selectedCut);
-                CutMap::GetInstance().RemoveCut(selectedCut);
+                SpectrumManager::GetInstance().RemoveCut(selectedCut);
                 UpdateHistogramList();
                 UpdateCutList();
                 ImGui::CloseCurrentPopup();

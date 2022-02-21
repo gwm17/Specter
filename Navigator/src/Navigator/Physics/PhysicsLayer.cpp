@@ -1,7 +1,5 @@
 #include "PhysicsLayer.h"
-#include "Navigator/ParameterMap.h"
-
-//temp
+#include "Navigator/SpectrumManager.h"
 #include "NavData.h"
 
 namespace Navigator {
@@ -96,6 +94,7 @@ namespace Navigator {
 		std::lock_guard<std::mutex> guard(m_sourceMutex);
 		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetSourceType()));
 		m_eventBuilder.SetCoincidenceWindow(event.GetCoincidenceWindow());
+		m_eventBuilder.ClearAll();
 		if (m_source->IsValid())
 		{
 			NAV_INFO("Attach successful. Enabling data pull...");
@@ -119,7 +118,7 @@ namespace Navigator {
 
 	void PhysicsLayer::RunSource()
 	{
-		HistogramMap& histMap = HistogramMap::GetInstance();
+		SpectrumManager& manager = SpectrumManager::GetInstance();
 
 		NavEvent event;
 		NavData datum;
@@ -151,8 +150,8 @@ namespace Navigator {
 				for (auto& stage : m_physStack)
 					stage->AnalyzePhysicsEvent(event);
 				
-				histMap.UpdateHistograms();
-				ParameterMap::GetInstance().InvalidateParameters();
+				manager.UpdateHistograms();
+				manager.InvalidateParameters();
 			}
 		}
 	}
