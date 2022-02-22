@@ -45,6 +45,8 @@ namespace Navigator {
 	//Note: only x is used here, y is simply present to maintain compliance with 2D case and can be ignored
 	void Histogram1D::FillData(double x, double y)
 	{
+		if (x < m_params.min_x || x >= m_params.max_x)
+			return;
 		int bin = int((x - m_params.min_x)/(m_binWidth));
 		m_binCounts[bin] += 1.0;
 	}
@@ -128,6 +130,8 @@ namespace Navigator {
 
 	void Histogram2D::FillData(double x, double y)
 	{
+		if (x < m_params.min_x || x >= m_params.max_x || y < m_params.min_y || y >= m_params.max_y)
+			return;
 		int bin_x = int((x - m_params.min_x)/m_binWidthX);
 		int bin_y = int((m_params.max_y - y)/m_binWidthY);
 		int bin = bin_y*m_params.nbins_x + bin_x;
