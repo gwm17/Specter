@@ -54,7 +54,7 @@ namespace Navigator {
 	//Can only be used within an ImGui / ImPlot context!!
 	void Histogram1D::Draw()
 	{
-		ImPlot::SetupAxes(m_params.x_par.c_str(), "Counts",0, ImPlotAxisFlags_LockMin);
+		ImPlot::SetupAxes(m_params.x_par.c_str(), "Counts",0, ImPlotAxisFlags_LockMin | ImPlotAxisFlags_AutoFit);
 		ImPlot::PlotBars(m_params.name.c_str(), &m_binCenters.data()[0], &m_binCounts.data()[0], m_params.nbins_x, m_binWidth);
 	}
 
@@ -100,6 +100,8 @@ namespace Navigator {
 	Histogram2D::Histogram2D(const HistogramParameters& params) :
 		Histogram(params)
 	{
+		m_colorScaleRange[0] = 0.0f;
+		m_colorScaleRange[1] = 0.0f;
 		InitBins();
 	}
 
@@ -130,7 +132,7 @@ namespace Navigator {
 
 	void Histogram2D::FillData(double x, double y)
 	{
-		if (x < m_params.min_x || x >= m_params.max_x || y < m_params.min_y || y >= m_params.max_y)
+		if (x < m_params.min_x || x >= m_params.max_x || y <= m_params.min_y || y > m_params.max_y)
 			return;
 		int bin_x = int((x - m_params.min_x)/m_binWidthX);
 		int bin_y = int((m_params.max_y - y)/m_binWidthY);
@@ -138,7 +140,7 @@ namespace Navigator {
 
 		m_binCounts[bin] += 1.0;
 
-		m_maxBinContent = m_binCounts[bin] > m_maxBinContent ? (m_binCounts[bin]*2) : m_maxBinContent;
+		m_maxBinContent = m_binCounts[bin] > m_maxBinContent ? (m_binCounts[bin]) : m_maxBinContent;
 	}
 
 	//Can only be used within an ImGui / ImPlot context!!
@@ -146,7 +148,7 @@ namespace Navigator {
 	{
 		ImPlot::SetupAxes(m_params.x_par.c_str(), m_params.y_par.c_str());
 		ImPlot::PushColormap(ImPlotColormap_Viridis);
-		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, 0.0, m_maxBinContent, NULL,
+		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, m_colorScaleRange[0], m_colorScaleRange[1], NULL,
 							ImPlotPoint(m_params.min_x, m_params.min_y), ImPlotPoint(m_params.max_x, m_params.max_y));
 		ImPlot::PopColormap();
 	}

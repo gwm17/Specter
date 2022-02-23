@@ -60,6 +60,7 @@ namespace Navigator {
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) { return StatResults();  }
 		inline virtual bool Is1D() const { return false; }
 		inline virtual bool Is2D() const { return false; }
+		inline virtual float* GetColorScaleRange() { return nullptr; }
 		inline HistogramParameters& GetParameters() { return m_params; }
 		inline const std::string& GetXParam() const { return m_params.x_par; };
 		inline const std::string& GetYParam() const { return m_params.y_par; };
@@ -105,6 +106,8 @@ namespace Navigator {
 		inline virtual bool Is1D() const override { return false; }
 		inline virtual bool Is2D() const override { return true; }
 
+		inline virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
+
 	private:
 		void InitBins();
 
@@ -113,6 +116,7 @@ namespace Navigator {
 		double m_binWidthY;
 		double m_binWidthX;
 		double m_maxBinContent;
+		float m_colorScaleRange[2];
 	};
 
 }

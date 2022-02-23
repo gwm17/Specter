@@ -43,7 +43,13 @@ namespace Navigator {
                     }
                     ImGui::SameLine();
                     RenderRemoveRegionButton();
-                    
+                    if (m_zoomedGram.y_par != "None")
+                    {
+                        float* scale = SpectrumManager::GetInstance().GetColorScaleRange(m_zoomedGram.name);
+                        ImGui::DragFloatRange2("Min / Max", &(scale[0]), &(scale[1]), 0.01f);
+                        ImPlot::ColormapScale("##HistogramScale", scale[0], scale[1], ImVec2(0, -1), ImPlotColormap_Viridis);
+                        ImGui::SameLine();
+                    }
                     if (ImPlot::BeginPlot(m_zoomedGram.name.c_str(), ImVec2(-1, -1)))
                     {
                         SpectrumManager::GetInstance().DrawHistogram(m_zoomedGram.name);
@@ -104,6 +110,7 @@ namespace Navigator {
                         }
                         ImPlot::EndPlot();
                     }
+                    
                     if (acceptCutFlag)
                     {
                         acceptCutFlag = false;

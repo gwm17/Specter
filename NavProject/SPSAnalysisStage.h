@@ -18,6 +18,8 @@ namespace Navigator {
 		NavParameter x1;
 		NavParameter x2;
 		NavParameter xavg;
+		NavParameter scintLeft;
+		NavParameter anodeBack;
 
 		double weight1 = 1.7;
 		double weight2 = -0.7;

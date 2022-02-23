@@ -3,7 +3,8 @@
 namespace Navigator {
 
 	SPSAnalysisStage::SPSAnalysisStage() :
-		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg")
+		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
+		scintLeft("scintLeft"), anodeBack("anodeBack")
 	{
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 		manager.BindParameter(delayFLTime);
@@ -13,6 +14,8 @@ namespace Navigator {
 		manager.BindParameter(x1);
 		manager.BindParameter(x2);
 		manager.BindParameter(xavg);
+		manager.BindParameter(scintLeft);
+		manager.BindParameter(anodeBack);
 	}
 
 	SPSAnalysisStage::~SPSAnalysisStage() {}
@@ -23,20 +26,33 @@ namespace Navigator {
 
 		for(auto& hit : event)
 		{
-			if(hit.id == 136)
-				delayFLTime.SetValue(hit.timestamp/1.0e3);
-			else if(hit.id == 137)
-				delayFRTime.SetValue(hit.timestamp/1.0e3);
-			else if(hit.id == 138)
-				delayBLTime.SetValue(hit.timestamp/1.0e3);
-			else if(hit.id == 139)
-				delayBRTime.SetValue(hit.timestamp/1.0e3);
+			switch (hit.id)
+			{
+				case 129:
+					scintLeft.SetValue(hit.longEnergy);
+					break;
+				case 136:
+					delayFLTime.SetValue(hit.timestamp / 1.0e3);
+					break;
+				case 137:
+					delayFRTime.SetValue(hit.timestamp / 1.0e3);
+					break;
+				case 138:
+					delayBLTime.SetValue(hit.timestamp / 1.0e3);
+					break;
+				case 139:
+					delayBRTime.SetValue(hit.timestamp / 1.0e3);
+					break;
+				case 143:
+					anodeBack.SetValue(hit.longEnergy);
+					break;
+			}
 		}
 
 		if(delayFLTime.IsValid() && delayFRTime.IsValid())
 			x1.SetValue((delayFLTime.GetValue() - delayFRTime.GetValue())*0.5);
 
 		if(delayBLTime.IsValid() && delayBRTime.IsValid())
-			x1.SetValue((delayBLTime.GetValue() - delayBRTime.GetValue())*0.5);
+			x2.SetValue((delayBLTime.GetValue() - delayBRTime.GetValue())*0.5);
 	}
 }

@@ -116,6 +116,18 @@ namespace Navigator {
 			return m_nullHistoResult;
 	}
 
+	float* SpectrumManager::GetColorScaleRange(const std::string& name)
+	{
+		std::lock_guard<std::mutex> guard(m_managerMutex);
+		auto iter = m_histoMap.find(name);
+		if (iter != m_histoMap.end())
+		{
+			return iter->second->GetColorScaleRange();
+		}
+
+		return nullptr;
+	}
+
 	StatResults SpectrumManager::AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
