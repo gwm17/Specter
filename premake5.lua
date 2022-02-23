@@ -67,9 +67,9 @@ project "Navigator"
 
 	files {
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/vendor/implot/*.h",
+		"%{prj.name}/vendor/implot/**.h",
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/implot/*.cpp"
+		"%{prj.name}/vendor/implot/**.cpp"
 	}
 
 	defines {
@@ -84,7 +84,8 @@ project "Navigator"
 
 	systemversion "latest"
 	defines {
-		"GLFW_INCLUDE_NONE"
+		"GLFW_INCLUDE_NONE",
+		"IMPLOT_BACKEND_ENABLE_OPENGL3"
 	}
 
 
