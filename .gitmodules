@@ -1,9 +1,6 @@
 [submodule "Navigator/vendor/spdlog"]
 	path = Navigator/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "Navigator/vendor/implot"]
-	path = Navigator/vendor/implot
-	url = https://github.com/gwm17/implot.git
 [submodule "Navigator/vendor/imgui"]
 	path = Navigator/vendor/imgui
 	url = https://github.com/gwm17/imgui.git
