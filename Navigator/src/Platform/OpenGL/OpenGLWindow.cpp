@@ -126,7 +126,7 @@ namespace Navigator {
 		glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset)
 			{
 				Data& data = *(Data*) glfwGetWindowUserPointer(window);
-				MouseScrolledEvent event(xoffset, yoffset);
+				MouseScrolledEvent event((float)xoffset, (float)yoffset);
 				data.event_callback_func(event);
 			});
 
