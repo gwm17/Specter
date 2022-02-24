@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"
 #include "Editor/EditorLayer.h"
 
@@ -74,11 +73,6 @@ namespace Navigator {
 				layer->OnImGuiRender();
 			m_imgui_layer->End();
 			m_window->OnUpdate();
-
-			/* For debugging 
-			ParameterMap::GetInstance().find("joseph")->second->validFlag = true;
-			ParameterMap::GetInstance().find("joseph")->second->value = 8.0;
-			*/
 		}
 	}
 }

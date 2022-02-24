@@ -25,6 +25,5 @@
 #include "Navigator/SpectrumManager.h"
 #include "Navigator/Layer.h"
 #include "Navigator/Events/Event.h"
-#include "Navigator/Renderer/Renderer.h"
 
 #endif
