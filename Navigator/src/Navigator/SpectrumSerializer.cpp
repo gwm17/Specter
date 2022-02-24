@@ -122,6 +122,7 @@ namespace Navigator {
 	void SpectrumSerializer::DeserializeData()
 	{
 		SpectrumManager& manager = SpectrumManager::GetInstance();
+		manager.RemoveAllSpectra();
 
 		std::ifstream input(m_filename);
 		if (!input.is_open())

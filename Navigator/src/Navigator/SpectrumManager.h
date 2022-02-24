@@ -19,6 +19,13 @@ namespace Navigator {
 
 		inline static SpectrumManager& GetInstance() { return *s_instance;  }
 
+		inline void RemoveAllSpectra()
+		{
+			std::lock_guard<std::mutex> guard(m_managerMutex);
+			m_histoMap.clear();
+			m_cutMap.clear();
+		}
+
 		void AddHistogram(const HistogramParameters& params);
 		void RemoveHistogram(const std::string& name);
 		void AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname);

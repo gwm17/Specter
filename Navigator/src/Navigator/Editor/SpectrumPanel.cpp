@@ -55,7 +55,6 @@ namespace Navigator {
                         SpectrumManager::GetInstance().DrawHistogram(m_zoomedGram.name);
                         if (!m_cutModeFlag && ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
-                            NAV_INFO("We lost 'em, de-zoom and enhance!");
                             m_zoomedFlag = false;
                             m_zoomedGram = HistogramParameters();
                         }
@@ -190,7 +189,6 @@ namespace Navigator {
                                 SpectrumManager::GetInstance().DrawHistogram(spec.name);
                                 if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                                 {
-                                    NAV_INFO("We got'em boys, they're in plot {0}. Zoom and enhance!", i);
                                     m_zoomedFlag = true;
                                     m_zoomedGram = spec;
                                 }
