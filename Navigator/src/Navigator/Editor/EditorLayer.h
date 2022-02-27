@@ -33,9 +33,11 @@ namespace Navigator {
     private:
         void RemoveCutDialog();
         void RemoveHistogramDialog();
+        void ExportHistogramDialog();
         void UpdateHistogramList();
         void UpdateCutList();
         void UpdateParameterList(); //Currently not really used, only once. Params all made at construction time of PhysicsLayer
+        void ExportHistogram(HistogramParameters selectedGram, const std::string& filename);
 
         EventCallbackFunc m_callbackFunc;
 
@@ -58,6 +60,7 @@ namespace Navigator {
 
         bool m_removeHistogram;
         bool m_removeCut;
+        bool m_exportHistogram;
     };
 
 }

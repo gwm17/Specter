@@ -36,6 +36,7 @@ namespace Navigator {
 		void DrawHistogram(const std::string& name);
 		const HistogramParameters& GetHistogramParams(const std::string& name);
 		float* GetColorScaleRange(const std::string& name);
+        std::vector<double> GetBinData(const std::string& name);
 		StatResults AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region);
 		std::vector<HistogramParameters> GetListOfHistograms();
 

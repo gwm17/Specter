@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
 #include "imgui.h"
+#include "misc/cpp/imgui_stdlib.h"
 #include "implot.h"
 #include "FileDialog.h"
 #include "Navigator/Application.h"
@@ -11,7 +12,7 @@
 namespace Navigator {
     
     EditorLayer::EditorLayer() :
-        Layer("EditorLayer"), m_removeHistogram(false), m_removeCut(false)
+        Layer("EditorLayer"), m_removeHistogram(false), m_removeCut(false), m_exportHistogram(false)
     {
     }
     
@@ -152,6 +153,14 @@ namespace Navigator {
                 }
                 ImGui::EndMenu();
             }
+            if (ImGui::BeginMenu("Export"))
+            {
+                if (ImGui::MenuItem(ICON_FA_SAVE "\tAs .csv"))
+                {
+                    m_exportHistogram = true;
+                }
+                ImGui::EndMenu();
+            }
             ImGui::EndMenuBar();
         }
 
@@ -180,6 +189,8 @@ namespace Navigator {
         RemoveHistogramDialog();
 
         RemoveCutDialog();
+        
+        ExportHistogramDialog();
 
         if(m_spectrumPanel.OnImGuiRender(m_histoList, m_cutList, m_paramList))
         {
@@ -254,7 +265,7 @@ namespace Navigator {
                     if (ImGui::Selectable(gram.name.c_str(), gram.name == selectedGram, ImGuiSelectableFlags_DontClosePopups))
                         selectedGram = gram.name;
                 }
-                ImGui::EndPopup();
+                ImGui::EndCombo();
             }
             if (ImGui::Button("Ok"))
             {
@@ -305,5 +316,70 @@ namespace Navigator {
             }
             ImGui::EndPopup();
         }
+    }
+
+    void EditorLayer::ExportHistogramDialog()
+    {
+        static std::string filename = "";
+        static HistogramParameters selectedGram = HistogramParameters();
+        if(m_exportHistogram)
+        {
+            filename = "";
+            selectedGram = HistogramParameters();
+            m_exportHistogram = false;
+            ImGui::OpenPopup("Export Histogram");
+        }
+        if(ImGui::BeginPopupModal("Export Histogram"))
+        {
+            if(ImGui::BeginCombo("Histogram", selectedGram.name.c_str()))
+            {
+                for (auto& gram : m_histoList)
+                {
+                    if (ImGui::Selectable(gram.name.c_str(), gram.name == selectedGram.name, ImGuiSelectableFlags_DontClosePopups))
+                        selectedGram = gram;
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::InputText("File", &filename);
+            ImGui::SameLine();
+            if(ImGui::Button("Open"))
+            {
+                m_fileDialog.SetSaveFileDialog(true);
+            }
+            std::string result = m_fileDialog.ImGuiRenderSaveFile(".csv");
+            if(!result.empty())
+                filename = result;
+            if(ImGui::Button("Ok"))
+            {
+                ExportHistogram(selectedGram, filename);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if(ImGui::Button("Cancel"))
+                ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
+    }
+
+    void EditorLayer::ExportHistogram(HistogramParameters selectedGram, const std::string& filename)
+    {
+        std::ofstream output(filename);
+        if(!output.is_open())
+        {
+            NAV_ERROR("Unable to create export file {0}. Check pathing.", filename);
+            return;
+        }
+        
+        std::vector<double> data = SpectrumManager::GetInstance().GetBinData(selectedGram.name);
+        
+        output<<"Histogram Name,"<<selectedGram.name<<std::endl;
+        output<<"Min X,"<<selectedGram.min_x<<std::endl<<"Max X,"<<selectedGram.max_x<<std::endl;
+        if(selectedGram.y_par != "None")
+            output<<"Min Y,"<<selectedGram.min_y<<std::endl<<"Max Y,"<<selectedGram.max_y<<std::endl;
+        output<<"Nbins,"<<data.size()<<std::endl;
+        output<<"Bin,Counts"<<std::endl;
+        for(size_t i=0; i<data.size(); i++)
+            output<<i<<","<<data[i]<<std::endl;
+        output.close();
     }
 }

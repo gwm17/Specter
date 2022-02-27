@@ -61,6 +61,7 @@ namespace Navigator {
 		inline virtual bool Is1D() const { return false; }
 		inline virtual bool Is2D() const { return false; }
 		inline virtual float* GetColorScaleRange() { return nullptr; }
+        inline virtual std::vector<double> GetBinData() { return std::vector<double>(); }
 		inline HistogramParameters& GetParameters() { return m_params; }
 		inline const std::string& GetXParam() const { return m_params.x_par; };
 		inline const std::string& GetYParam() const { return m_params.y_par; };
@@ -84,6 +85,7 @@ namespace Navigator {
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
 		inline virtual bool Is1D() const override { return true; }
 		inline virtual bool Is2D() const override { return false; }
+        inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
 
 	private:
 		void InitBins();
@@ -105,6 +107,7 @@ namespace Navigator {
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
 		inline virtual bool Is1D() const override { return false; }
 		inline virtual bool Is2D() const override { return true; }
+        inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
 
 		inline virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
 
