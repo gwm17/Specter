@@ -1,3 +1,13 @@
+/*
+	SpectrumManager.cpp
+	SpectrumManager is the global resource management class. Controls everything related to spectra (histograms, cuts, parameters). Since
+	the manager must traverse threads, explicit synchronoization is handled through a mutex. To this end, excessive calls to the manager should be
+	avoided if possible, as this will increase the lock deadtime in the application, which is especially bad for online data sources.
+
+	Note that SpectrumManager is a singleton. There should only ever be one SpectrumManager with a given application.
+
+	GWM -- Feb 2022
+*/
 #include "SpectrumManager.h"
 
 #include "implot.h"
@@ -14,10 +24,12 @@ namespace Navigator {
 	{
 	}
 
+	/*************Histogram Functions Begin*************/
+
 	void SpectrumManager::AddHistogram(const HistogramParameters& params)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
-		if (params.y_par == "None")
+		if (params.y_par == "None") //Check dimensionality
 			m_histoMap[params.name].reset(new Histogram1D(params));
 		else
 			m_histoMap[params.name].reset(new Histogram2D(params));
@@ -45,6 +57,7 @@ namespace Navigator {
 			iter->second->AddCutToBeApplied(cutname);
 	}
 
+	//Use this to fill histograms. Currently can only be filled in bulk; maybe a use case for individual fills?
 	void SpectrumManager::UpdateHistograms()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -52,7 +65,7 @@ namespace Navigator {
 		for (auto& pair : m_histoMap)
 		{
 			cutFlag = true;
-			for (auto& cutname : pair.second->GetParameters().cutsAppliedTo)
+			for (auto& cutname : pair.second->GetParameters().cutsAppliedTo) //check the event against cuts
 			{
 				if (!IsInsideCut(cutname))
 				{
@@ -101,7 +114,7 @@ namespace Navigator {
 		if (iter != m_histoMap.end())
 		{
 			iter->second->Draw();
-			for (auto& cutname : iter->second->GetParameters().cutsDrawnUpon)
+			for (auto& cutname : iter->second->GetParameters().cutsDrawnUpon) //Draw all cuts made upon the histogram
 				DrawCut(cutname);
 		}
 	}
@@ -116,6 +129,7 @@ namespace Navigator {
 			return m_nullHistoResult;
 	}
 
+	//For 2D spectra, we want to allow zooming along the z-axis (color)
 	float* SpectrumManager::GetColorScaleRange(const std::string& name)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -140,6 +154,7 @@ namespace Navigator {
         return std::vector<double>();
     }
 
+	//Pass through for stats
 	StatResults SpectrumManager::AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -150,6 +165,8 @@ namespace Navigator {
 			return StatResults();
 	}
 
+	//This function allows us to obtain the key histogram info in a list, avoiding excessive manager calls and thread-locks
+	//in something like the Editor.
 	std::vector<HistogramParameters> SpectrumManager::GetListOfHistograms()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -162,6 +179,12 @@ namespace Navigator {
 		return list;
 	}
 
+	/*************Histogram Functions End*************/
+
+
+	/*************Parameter Functions Begin*************/
+
+	//Bind a NavParameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
 	void SpectrumManager::BindParameter(NavParameter& param)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -174,6 +197,7 @@ namespace Navigator {
 		param.m_pdata = m_paramMap[param.GetName()];
 	}
 
+	//Once an analysis pass is done and histograms filled, reset all parameters
 	void SpectrumManager::InvalidateParameters()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -184,6 +208,7 @@ namespace Navigator {
 		}
 	}
 
+	//Similar to GetListOfHistograms, see that documentation
 	std::vector<std::string> SpectrumManager::GetListOfParameters()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -197,11 +222,15 @@ namespace Navigator {
 		return list;
 	}
 
+	/*************Parameter Functions End*************/
+
+	/*************Cut Functions Begin*************/
+
 	void SpectrumManager::RemoveCut(const std::string& name)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
 		m_cutMap.erase(name);
-		RemoveCutFromHistograms(name);
+		RemoveCutFromHistograms(name); //Once a cut is gone, remove all references to it.
 	}
 
 	std::vector<double> SpectrumManager::GetCutXPoints(const std::string& name)
@@ -224,6 +253,7 @@ namespace Navigator {
 		return null_result;
 	}
 
+	//Similar to GetListOfHistograms, see that documentation
 	std::vector<CutParams> SpectrumManager::GetListOfCuts()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -234,13 +264,15 @@ namespace Navigator {
 		return list;
 	}
 
+	/*************Cut Functions End*************/
+
 	/*
 		Private Functions
 		Can only be called from within the SpectrumManager, therefore the lock should already have been aquired by 
-		whatever parent function calls them
+		whatever parent function calls them. No explicit synchronization.
 	*/
 
-	//private helper function; does not need thread-locked
+	//Can only be called by RemoveCut currently. May be a use case where this should be promoted to public to on the fly mod a gram.
 	void SpectrumManager::RemoveCutFromHistograms(const std::string& cutname)
 	{
 		for (auto& gram : m_histoMap)
@@ -263,6 +295,7 @@ namespace Navigator {
 		}
 	}
 
+	//Obv. only need to draw a cut if its parent histogram is drawn.
 	void SpectrumManager::DrawCut(const std::string& name)
 	{
 		auto iter = m_cutMap.find(name);
@@ -270,6 +303,7 @@ namespace Navigator {
 			iter->second->Draw();
 	}
 
+	//Check if event passes a cut. Only used when filling histograms.
 	bool SpectrumManager::IsInsideCut(const std::string& name)
 	{
 		bool result = false;

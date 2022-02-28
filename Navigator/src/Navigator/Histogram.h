@@ -1,3 +1,26 @@
+/*
+	Histogram.h
+	Histogram related classes. We use a custom histogram class here because the ImPlot histograms are not a data structure, but rather just a function. This means that at every draw call for an ImPlot 
+	histogram the entire data set will need to be properly binned and memory will need to be allocated to make histogram arrays. For our use case this is obviously bad. For one thing, data runs can have
+	thousands to millions of events. In the ImPlot paradigm we would need to loop over all of this data and bin it, not to mention explicitly store all of this data in memory for every histogram. I point this
+	out not to say that ImPlot histograms are bad intrinsically, because they definitely have a use for smaller data sets, but rather to explain why for this program I have re-invented the wheel somewhat. 
+
+	HistogramParameters are the underlying data which define a histogram. This is grouped in a struct to easily pass these around for use in contexts like the Editor.
+	Every histogram has a set of histogram parameters.
+
+	Histogram is the base class of all histograms. Should not be used in practice. Every histogram contains functions to query what type of underlying histogram it is. If one has
+	the Histogram object, Is1D() or Is2D() can be called. If one only has the HistogramParameters, the values of x_par and y_par can be inspected. In particular, a 1D histogram will have
+	y_par set to "None", while a 2D histogram should have a valid parameter name for y_par.
+
+	Histogram1D is a one dimensional (single parameter) histogram. Histogram2D is a two dimensional (two parameter) histogram. The only real difference between these in practice, other than
+	the obvious two vs. one parameter thing, is that a Histogram2D contains methods to set the z-axis range (color scale) which ImPlot does not provide intrinsic access to from the plot itself.
+	When the range is set to (0,0), the color scale is set to the default (0, maxValue). Otherwise the color is scaled as appropriate. If you query a Histogram1D for its color scale you will recieve
+	a nullptr.
+
+	StatResults is a struct containing statistical information about a region of a histogram.
+
+	GWM -- Feb 2022
+*/
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 

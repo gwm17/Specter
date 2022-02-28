@@ -1,3 +1,11 @@
+/*
+	Window.h
+
+	Abstract class for a window in Navigator. Based entirely upon the work of @TheCherno, see his Hazel repository. This exists primarily to allow for the option
+	to extend Navigator to other rendering backends, most likely Metal, or potentially DX12. See code in Platform for specific implementations (currently only for OpenGL).
+
+	GWM -- Feb 2022
+*/
 #ifndef WINDOW_H
 #define WINDOW_H
 

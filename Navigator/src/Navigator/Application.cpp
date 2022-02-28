@@ -1,3 +1,13 @@
+/*
+	Application.cpp
+	This is the main application class, master and controller of program flow. Contains a layer stack, where each layer represets an
+	aspect of the application. Based on the Application class written by @TheCherno during his tutorial series on making a game engine.
+	Check out his work to learn more!
+
+	Note that Application is a singleton. Should only ever be one application ever created in the project.
+
+	GWM -- Feb 2022
+*/
 #include "Application.h"
 #include "Renderer/RenderCommand.h"
 #include "Editor/EditorLayer.h"
@@ -12,12 +22,12 @@ namespace Navigator {
 		s_instance = this;
 
 		m_window = std::unique_ptr<Window>(Window::Create());
-		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
+		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent)); //Allow window to pass events back
 
 		m_physicsLayer = new PhysicsLayer();
 		PushLayer(m_physicsLayer);
 		EditorLayer* editor = new EditorLayer(); //memory handled by layer stack
-		editor->SetEventCallbackFunc(BIND_EVENT_FUNCTION(Application::OnEvent));
+		editor->SetEventCallbackFunc(BIND_EVENT_FUNCTION(Application::OnEvent)); //Allow editor to pass events back
 		PushLayer(editor);
 		m_imgui_layer = new ImGuiLayer();
 		PushOverlay(m_imgui_layer);

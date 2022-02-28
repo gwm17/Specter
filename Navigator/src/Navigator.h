@@ -1,3 +1,10 @@
+/*
+	Navigator.h
+	This header file contains all of the essential includes for a project made using the Navigator library.
+	Should be included into your main project files.
+
+	GWM -- Feb 2022
+*/
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 

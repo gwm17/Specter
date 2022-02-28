@@ -1,3 +1,13 @@
+/*
+	SpectrumManager.h
+	SpectrumManager is the global resource management class. Controls everything related to spectra (histograms, cuts, parameters). Since 
+	the manager must traverse threads, explicit synchronoization is handled through a mutex. To this end, excessive calls to the manager should be
+	avoided if possible, as this will increase the lock deadtime in the application, which is especially bad for online data sources.
+
+	Note that SpectrumManager is a singleton. There should only ever be one SpectrumManager with a given application.
+
+	GWM -- Feb 2022
+*/
 #ifndef SPECTRUM_MANAGER_H
 #define SPECTRUM_MANAGER_H
 
@@ -19,6 +29,7 @@ namespace Navigator {
 
 		inline static SpectrumManager& GetInstance() { return *s_instance;  }
 
+		//To clear all managed spectra. Note that Parameters are left untouched.
 		inline void RemoveAllSpectra()
 		{
 			std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -26,6 +37,7 @@ namespace Navigator {
 			m_cutMap.clear();
 		}
 
+		/*Histogram Functions*/
 		void AddHistogram(const HistogramParameters& params);
 		void RemoveHistogram(const std::string& name);
 		void AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname);
@@ -39,11 +51,15 @@ namespace Navigator {
         std::vector<double> GetBinData(const std::string& name);
 		StatResults AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region);
 		std::vector<HistogramParameters> GetListOfHistograms();
+		/********************/
 
+		/*Parameter Functions*/
 		void BindParameter(NavParameter& param);
 		void InvalidateParameters();
 		std::vector<std::string> GetListOfParameters();
+		/********************/
 
+		/*Cut Functions*/
 		inline void AddCut(const CutParams& params, double min, double max)
 		{
 			std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -58,21 +74,24 @@ namespace Navigator {
 		std::vector<double> GetCutXPoints(const std::string& name);
 		std::vector<double> GetCutYPoints(const std::string& name);
 		std::vector<CutParams> GetListOfCuts();
+		/**************/
 
 	private:
+		//Only used from within manager
 		void RemoveCutFromHistograms(const std::string& cutname);
 		void DrawCut(const std::string& name);
 		bool IsInsideCut(const std::string& name);
 
 		static SpectrumManager* s_instance;
 
+		//Actual data
 		std::unordered_map<std::string, std::shared_ptr<Histogram>> m_histoMap;
 		std::unordered_map<std::string, std::shared_ptr<Cut>> m_cutMap;
 		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_paramMap;
 
-		HistogramParameters m_nullHistoResult;
+		HistogramParameters m_nullHistoResult; //For handling bad query
 
-		std::mutex m_managerMutex;
+		std::mutex m_managerMutex; //synchronization
 	};
 
 }

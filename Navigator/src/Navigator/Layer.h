@@ -1,3 +1,9 @@
+/*
+	Layer.h
+	Layer is an abstract class representing an aspect of the application. Based entirely upon @TheCherno's tutorials in his game engine series. 
+	
+	GWM -- Feb 2022
+*/
 #ifndef LAYER_H
 #define LAYER_H
 

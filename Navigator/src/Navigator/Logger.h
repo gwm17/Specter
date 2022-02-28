@@ -1,3 +1,13 @@
+/*
+	Logger.h
+	Logging class which is a thin wrapper on the spdlog library. Must be initialized in the project at start (see NavProject main.cpp for example).
+	Again, strongly based upon @TheCherno's work, see his Hazel repository for more details.
+
+	Note Logger is a singleton. Should only ever be intialized once. Macros for calling the log provided to make clean looking code at the other side.
+	Consider making some logging calls only defined on Debug.
+
+	GWM -- Feb 2022
+*/
 #ifndef LOGGER_H
 #define LOGGER_H
 
@@ -22,6 +32,7 @@ namespace Navigator {
 
 }
 
+//Macros for clean code. Different logging levels.
 #define NAV_CRITICAL(...) ::Navigator::Logger::GetLogger()->critical(__VA_ARGS__)
 #define NAV_WARN(...) ::Navigator::Logger::GetLogger()->warn(__VA_ARGS__)
 #define NAV_ERROR(...) ::Navigator::Logger::GetLogger()->error(__VA_ARGS__)

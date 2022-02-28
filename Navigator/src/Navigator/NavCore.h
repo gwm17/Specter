@@ -1,14 +1,17 @@
 #ifndef NAVCORE_H
 #define NAVCORE_H
 
-
+/*
+	Have to handle Windows dll import/export behavior. Otherwise, NAV_API 
+	is just an empty expression.
+*/
 #ifdef NAV_WINDOWS
 	#ifdef NAV_EXPORT
 		#define NAV_API __declspec(dllexport)
 	#else
 		#define NAV_API __declspec(dllimport)
 	#endif
-
+	
 	#ifdef _MSC_VER
 		#pragma warning (disable: 4127)             // condition expression is constant
 		#pragma warning (disable: 4251)				// class 'xxx' needs to have dll-interface to be used by clients of struct 'xxx' // when NAV_API is set to__declspec(dllexport)
@@ -29,6 +32,7 @@
 //Bit field setter
 #define BIT(x) (1<<x)
 
+//Macro to bind a function using lambda expressions
 #define BIND_EVENT_FUNCTION(x) [this](auto&&... args) -> decltype(auto) { return this->x(std::forward<decltype(args)>(args)...); }
 
 #endif

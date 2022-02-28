@@ -1,10 +1,24 @@
-#ifndef CUT_MAP_H
-#define CUT_MAP_H
+/*
+	Cut.h
+	Cut related classes. A cut here is defined as a filter upon a histogram based on some range for a parameter or set of parameters.
+
+	CutParams is the underlying data that defines a cut (excluding the actual points).
+
+	Cut is the base class for all cut objects. Should not be used in practice. All cut objects have functions which can query what kind of cut it is. If one has the cut object,
+	Is1D() or Is2D() can be called. If one has the CutParams, a 1D cut will have y_par set to "None" while a 2D cut will have a valid parameter name.
+
+	Cut1D is a one-dimensional (single parameter cut) while Cut2D is a two-dimensional (two parameter cut). There are a few differences between 1D and 2D cuts. 
+	A Cut1D only contains two values, a min and a max. The parameter is checked that it falls within these bounds.
+	A Cut2D contains a set of (x,y) points that form a closed polygon. The polygon may be convex. The parameter is checked that it falls within the polygon using similar methods
+	to flood-fill algorithms.
+
+	GWM -- Feb 2022
+*/
+#ifndef CUT_H
+#define CUT_H
 
 #include "NavCore.h"
 #include "imgui.h"
-
-#include <thread>
 
 namespace Navigator {
 
@@ -78,7 +92,6 @@ namespace Navigator {
 	private:
 		std::vector<double> m_xpoints;
 		std::vector<double> m_ypoints;
-        const ImVec4 colorVec = {1.0, 0.0, 0.0, 0.5};
 	};
 }
 
