@@ -1,3 +1,16 @@
+/*
+	FileDialog.h
+	File dialog window in ImGui using std::filesystem. This is slightly complicated, as file dialogs change function
+	based on the type of action one wants to perform. In our case we have OpenFile, SaveFile, and OpenDirectory. One can also
+	specify the kind of file (extension). Use FontAwesome icons.
+
+	Use style: 
+	if(ImGui::Button())
+		Set...FileDialog(true);
+	std::string value = ImGuiRender...(extension);
+
+	GWM -- Feb 2022
+*/
 #ifndef FILE_DIALOG_H
 #define FILE_DIALOG_H
 

@@ -1,10 +1,9 @@
-//
-//  AnalysisStack.cpp
-//  Navigator
-//
-//  Created by Gordon McCann on 12/26/21.
-//
+/*
+    AnalysisStack.cpp
+    Container for the analyses in the PhysicsLayer. Really just a specialized wrapper around std::vector.
 
+    GWM -- Feb 2022
+*/
 #include "AnalysisStack.h"
 
 namespace Navigator {

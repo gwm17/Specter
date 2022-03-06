@@ -1,3 +1,9 @@
+/*
+	KeyEvent.h
+	Events related to mouse. Again, based on @TheCherno's work.
+
+	GWM -- Feb 2022
+*/
 #ifndef MOUSE_EVENT_H
 #define MOUSE_EVENT_H
 

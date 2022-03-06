@@ -1,3 +1,10 @@
+/*
+	SpectrumPanel.h
+	This is the big boi. Renders a panel holding all of the drawn plots. Good news is that in general only a few things really require
+	any modification if new types of plots are to be rendered, basically just the zoomed in spectrum rendering.
+
+	GWM -- Feb 2022
+*/
 #ifndef SPECTRUM_PANEL_H
 #define SPECTRUM_PANEL_H
 
@@ -8,6 +15,7 @@
 
 namespace Navigator {
 
+	//Simple struct for holding a region of interest
 	struct NAV_API IntegrationRegion
 	{
 		IntegrationRegion(const ImPlotRect& rect, const std::string& n, const std::string& hist_n) :

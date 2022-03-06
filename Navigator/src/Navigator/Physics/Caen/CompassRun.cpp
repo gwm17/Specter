@@ -8,6 +8,11 @@
 	Written by G.W. McCann Oct. 2020
 
 	Updated to also handle scaler data. -- GWM Oct. 2020
+
+	Modifed and updated for use in Navigator. Obviously stripped out any ROOT code. Also, now uses the very nice std::filesystem
+	library to handle filepathing. Also, removed scalers (for now).
+
+	GWM -- Feb 2022
 */
 #include "CompassRun.h"
 
@@ -131,10 +136,11 @@ namespace Navigator {
 		}
 		else
 		{
+			//Convert data from CoMPASS format to universal Navigator format.
 			m_datum.longEnergy = m_hit.lgate;
 			m_datum.shortEnergy = m_hit.sgate;
 			m_datum.timestamp = m_hit.timestamp;
-			m_datum.id = m_hit.board * 16 + m_hit.channel;
+			m_datum.id = m_hit.board * m_nchannels_per_board + m_hit.channel;
 		}
 
 		return m_datum;

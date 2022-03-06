@@ -1,3 +1,10 @@
+/*
+    EditorLayer.cpp
+    Application layer encapsulating the editor for Navigator. Written using the Dear ImGui library. Setup based off of @TheCherno's Hazel game engine.
+    EditorLayer essentially controls the state for UI related actions.
+
+    GWM -- Feb 2022
+*/
 #include "EditorLayer.h"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -34,6 +41,7 @@ namespace Navigator {
     {
     }
 
+    //These updates are used whenever a new object is added to the manager.
     void EditorLayer::UpdateHistogramList()
     {
         m_histoList = SpectrumManager::GetInstance().GetListOfHistograms();
@@ -49,6 +57,7 @@ namespace Navigator {
         m_paramList = SpectrumManager::GetInstance().GetListOfParameters();
     }
 
+    //The main function
     void EditorLayer::OnImGuiRender()
     {
         static bool startFlag = true; //first render retrieve base 
@@ -164,7 +173,7 @@ namespace Navigator {
             ImGui::EndMenuBar();
         }
 
-
+        //Render all of our sub-windows, dialogs, panels, etc
         std::string open_file_result = m_fileDialog.ImGuiRenderOpenFile(".nav");
         std::string save_file_result = m_fileDialog.ImGuiRenderSaveFile(".nav");
         if (!open_file_result.empty())
@@ -246,6 +255,8 @@ namespace Navigator {
 
         ImGui::End();
     }
+
+    //Simple dialogs, no need for separate class
 
     void EditorLayer::RemoveHistogramDialog()
     {

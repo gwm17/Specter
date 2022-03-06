@@ -1,3 +1,11 @@
+/*
+	ImGuiLayer.h
+	The layer containing all of the ImGui related setup and calls. Based on the work by @TheCherno in his game engine series.
+	Should always exist as an overlay in the Application LayerStack. Note that it currently is OpenGL specific based on
+	ImGui implementation/backends.
+
+	GWM -- Feb 2022
+*/
 #include "ImGuiLayer.h"
 #include "Navigator/Application.h"
 #include "Navigator/NavCore.h"
@@ -38,7 +46,7 @@ namespace Navigator {
 		//Can currently cause assertion failure on checking number of monitors in ImGui sanity checks.
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		ImGui::StyleColorsDark();
+		ImGui::StyleColorsDark(); //Hacker mode
 		ImPlot::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -49,6 +57,9 @@ namespace Navigator {
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
+		//Setup our fonts. We have Roboto for text and FontAwesome for our icons.
+		//Note the .ttf files are found in NavProject, or in the bin dir. This is because
+		//the actual program (NavProject) is launched from either the bin/ ... /NaProject or the NavProject directory
 		//io.Fonts->AddFontDefault();
 		ImFontConfig latin_config;
 		latin_config.RasterizerMultiply = 1.3f;
@@ -64,7 +75,7 @@ namespace Navigator {
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init("#version 410");
+		ImGui_ImplOpenGL3_Init("#version 410"); //GLSL version
 
 		NAV_INFO("ImGui Finished initializing.");
 	}
@@ -107,6 +118,9 @@ namespace Navigator {
 
 	void ImGuiLayer::OnImGuiRender()
 	{
+		//Demo's used to figure out how to do things.
+		//Should not be on for actual NavProject for 
+		//real use
 		//static bool show = true;
 		//ImGui::ShowDemoWindow(&show);
 		//ImPlot::ShowDemoWindow();

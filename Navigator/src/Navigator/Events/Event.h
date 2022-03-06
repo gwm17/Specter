@@ -1,3 +1,11 @@
+/*
+	Event.h
+	Event system for Navigator. Based entirely upon the work of @TheCherno in his game engine series, with additons specific to
+	Navigator. Abstract Event class and an EventDispatcher. EventDispatcher links a function to the event for handling. See Application::OnEvent for
+	an example of use.
+
+	GWM -- Feb 2022
+*/
 #ifndef EVENT_H
 #define EVENT_H
 
@@ -71,6 +79,7 @@ namespace Navigator {
 		Event& m_event;
 	};
 
+	//For easy printing
 	NAV_API inline std::ostream& operator<<(std::ostream& os, const Event& e)
 	{
 		return os << e.ToString();

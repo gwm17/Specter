@@ -1,3 +1,9 @@
+/*
+	KeyEvent.h
+	Events related to key presses. Again, based on @TheCherno's work.
+
+	GWM -- Feb 2022
+*/
 #ifndef KEY_EVENT_H
 #define KEY_EVENT_H
 
@@ -6,6 +12,7 @@
 
 namespace Navigator {
 
+	//Since so many key related events, have a base
 	class NAV_API KeyEvent : public Event
 	{
 	public:

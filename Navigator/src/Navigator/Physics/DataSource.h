@@ -1,3 +1,11 @@
+/*
+	DataSource.h
+	Abstract data source class. In Navigator a DataSource can be either an online (live) source or an offline (file) source. By default, 
+	Navigator has classes to handle CAEN CoMPASS data sources (files and online); other sources may be implemented as more use cases for Navigator become
+	apparent.
+
+	GWM -- Feb 2022
+*/
 #ifndef DATA_SOURCE_H
 #define DATA_SOURCE_H
 
@@ -9,7 +17,7 @@ namespace Navigator {
 	class NAV_API DataSource
 	{
 	public:
-		enum class SourceType
+		enum class SourceType //Need to know what kind of sources are available.
 		{
 			None,
 			CompassOnline,

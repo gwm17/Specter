@@ -1,3 +1,11 @@
+/*
+	NavData.h
+	Simple data structures for the event building process in Navigator. Way to create uniform data from different sources. Note that the current paradigm
+	is very heavily tied to digital data aquisition systems. Any attempt to use Navigator for analog systems would require a deep overhaul of the event processing.
+	Most likely link to something like nscldaq.
+
+	GWM -- Feb 2022
+*/
 #ifndef NAVDATA_H
 #define NAVDATA_H
 

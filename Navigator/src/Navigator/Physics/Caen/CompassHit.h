@@ -1,3 +1,9 @@
+/*
+	CompassHit.h
+	Simple struct representing data from the CAEN CoMPASS DAQ. Note here I do not have any of the non-standard data available (calibrated energy, waveform data, etc.)
+
+	GWM -- Feb 2022
+*/
 #ifndef COMPASS_HIT_H
 #define COMPASS_HIT_H
 

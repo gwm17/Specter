@@ -1,3 +1,17 @@
+/*
+	CompassOnlineSource.cpp
+	A data source for online CAEN CoMPASS Data. Creates a tcp socket, connects to the remote source, and pulls data to a buffer. Data is then converted
+	from the CAEN CoMPASS format to the native NavData format. Uses asio as the networking library (see asio docs).
+
+	IMPORTANT
+	Navigator wants a unqiue ID on each hit. To do this we use the idiom:
+	id = board_number * nchannels_per_board + channel_number
+	This requires two things: that the class variable m_nchannels_per_board be set to match your physical digitizers, and that ALL of your
+	digitizers have the SAME number of channels. By default CompassRun assumes 16 channels per board, as this is what is used with the SE-SPS setup at FoxLab.
+	If you use a different set of boards, CHANGE THIS VALUE! If you use mixed boards, you will need to invent a new id scheme altogether.
+
+	GWM -- Feb 2022
+*/
 #include "CompassOnlineSource.h"
 
 namespace Navigator {
@@ -14,6 +28,8 @@ namespace Navigator {
 	void CompassOnlineSource::InitSocket(const std::string& hostname, const std::string& port)
 	{
 		m_validFlag = false;
+		//asio tends to work in terms of exceptions, which we avoid in the rest of this project.
+		//If the connection is unsuccessful, an exception is thrown, which we parse and print to the terminal.
 		try
 		{
 			asio::ip::tcp::resolver resolver(m_socketContext);
@@ -54,7 +70,7 @@ namespace Navigator {
 		m_datum.longEnergy = m_currentHit.lgate;
 		m_datum.shortEnergy = m_currentHit.sgate;
 		m_datum.timestamp = m_currentHit.timestamp;
-		m_datum.id = m_currentHit.board * 16 + m_currentHit.channel;
+		m_datum.id = m_currentHit.board * m_nchannels_per_board + m_currentHit.channel;
 
 		return m_datum;
 	}

@@ -1,3 +1,9 @@
+/*
+	SpectrumDialog.h
+	Handles creation of new spectra. Pretty much that simple.
+
+	GWM -- Feb 2022
+*/
 #ifndef SPECTRUM_DIALOG_H
 #define SPECTRUM_DIALOG_H
 

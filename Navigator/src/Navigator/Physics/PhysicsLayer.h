@@ -1,3 +1,12 @@
+/*
+	PhysicsLayer.h
+	The layer of the application representing all physics. This includes the data source and the thread upon which data is piped, event built, and analyzed.
+	PhysicsLayer receives a PhysicsStartEvent or PhysicsStopEvent to handle changes to the state of the secondary thread. As it handles the thread, it must have synchronization.
+	This is handled on two levels. The first is a mutex that synchronizes access to the DataSource. The second is an atomic boolean flag which is used to control the state of the physics thread.
+	PhysicsLayer also owns the AnalysisStack for the application.
+
+	GWM -- Feb 2022
+*/
 #ifndef PHYSICS_LAYER_H
 #define PHYSICS_LAYER_H
 
@@ -32,7 +41,6 @@ namespace Navigator {
 
 		void PushStage(AnalysisStage* stage);
 
-
 	private:
 		void DestroyPhysThread();
 		void AttachDataSource(PhysicsStartEvent& event);
@@ -40,7 +48,7 @@ namespace Navigator {
 		void RunSource();
 
 		AnalysisStack m_physStack;
-		std::atomic<bool> m_activeFlag;
+		std::atomic<bool> m_activeFlag; //safe read/write across thread, but more expensive
 
 		std::mutex m_sourceMutex;
 

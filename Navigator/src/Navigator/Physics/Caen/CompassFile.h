@@ -7,6 +7,10 @@
 	in the future.
 
 	Written by G.W. McCann Oct. 2020
+
+	Modified for Navigator; not really any significant changes. Just some simple changes, removal of unused data.
+
+	GWM -- Feb 2022
 */
 #ifndef COMPASSFILE_H
 #define COMPASSFILE_H

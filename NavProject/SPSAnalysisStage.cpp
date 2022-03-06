@@ -1,7 +1,14 @@
+/*
+	SPSAnalysisStage.cpp
+	Example of a user AnalysisStage. This one is based around the SE-SPS detector system in FoxLab at FSU.
+
+	GWM -- Feb 2022
+*/
 #include "SPSAnalysisStage.h"
 
 namespace Navigator {
 
+	//Construct each NavParameter with their unique name. Then bind them to the SpectrumManager.
 	SPSAnalysisStage::SPSAnalysisStage() :
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
 		scintLeft("scintLeft"), anodeBack("anodeBack")
@@ -20,10 +27,13 @@ namespace Navigator {
 
 	SPSAnalysisStage::~SPSAnalysisStage() {}
 
+	//Do some physics!
 	void SPSAnalysisStage::AnalyzePhysicsEvent(const NavEvent& event)
 	{
 
-
+		//Most analysis stages will start kinda like this. Take the raw event data and
+		//put it into NavParameters using the hit id. Switches are perfect for this. Can also
+		//create mapping classes to use text-file-based id association (commonly called channel maps).
 		for(auto& hit : event)
 		{
 			switch (hit.id)
@@ -49,6 +59,8 @@ namespace Navigator {
 			}
 		}
 
+		//If you want to use parameters to calculate another parameter, you
+		//need to check that the parameter is valid (set in this event)!
 		if(delayFLTime.IsValid() && delayFRTime.IsValid())
 			x1.SetValue((delayFLTime.GetValue() - delayFRTime.GetValue())*0.5);
 

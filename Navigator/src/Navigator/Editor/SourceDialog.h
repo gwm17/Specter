@@ -1,3 +1,10 @@
+/*
+	SourceDialog.h
+	Handles selection of data source type and location specification. Needs to be updated when new source
+	types are added to Navigator.
+
+	GWM -- Feb 2022
+*/
 #ifndef SOURCE_DIALOG_H
 #define SOURCE_DIALOG_H
 

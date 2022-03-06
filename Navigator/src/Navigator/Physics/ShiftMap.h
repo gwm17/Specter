@@ -4,10 +4,11 @@
 	formated file containing data for shifts and then stores them in an unordered_map.
 	Key is a global compass channel (board#*16 + channel). Shifts in ps.
 
-	Note: Timestamps are now shifted in binary conversion. This means that shifts *MUST*
-	be stored as Long64_t types. No decimals!
-
 	Written by G.W. McCann Oct. 2020
+
+	Not currently implemented for Navigator though it could still be useful. Leave this here as a maybe upgrade path.
+
+	GWM -- Feb 2022
 */
 #ifndef SHIFTMAP_H
 #define SHIFTMAP_H

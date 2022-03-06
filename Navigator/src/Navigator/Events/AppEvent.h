@@ -1,3 +1,9 @@
+/*
+	AppEvent.h
+	Events related to the main application (window events mostly). Again, based on @TheCherno's work.
+
+	GWM -- Feb 2022
+*/
 #ifndef APP_EVENT_H
 #define APP_EVENT_H
 
@@ -6,6 +12,7 @@
 
 namespace Navigator {
 
+	// Window closing is pure event (no data)
 	class NAV_API WindowCloseEvent : public Event 
 	{
 	public:

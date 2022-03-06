@@ -1,3 +1,9 @@
+/*
+	KeyEvent.h
+	Events related to physics processes. Again, based on @TheCherno's work.
+
+	GWM -- Feb 2022
+*/
 #ifndef PHYSICS_EVENT_H
 #define PHYSICS_EVENT_H
 
@@ -7,6 +13,7 @@
 
 namespace Navigator {
 
+	//When we start physics, need info for what kind of source we make
 	class NAV_API PhysicsStartEvent : public Event
 	{
 	public:
@@ -48,6 +55,7 @@ namespace Navigator {
 		EVENT_TYPE_SETUP(PhysicsStop);
 	};
 
+	//Unused. Exists as a potential path of upgrade
 	class NAV_API PhysicsParamEvent : public Event
 	{
 	public:

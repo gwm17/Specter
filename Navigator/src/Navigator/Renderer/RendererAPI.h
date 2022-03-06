@@ -1,3 +1,10 @@
+/*
+	RenderAPI.h
+	Render API abstraction. Exists to allow Navigator the felxibility to be backend api agnostic, though currently
+	only OpenGL is implemented. Entirely based upon the work done by @TheCherno in his game engine series. See his content for more details.
+
+	GWM -- Feb 2022
+*/
 #ifndef RENDERER_API_H
 #define RENDERER_API_H
 
@@ -12,7 +19,7 @@ namespace Navigator {
 		enum class API
 		{
 			None = 0,
-			OpenGL = 1
+			OpenGL = 1 //Currently only have OpenGL
 		};
 
 		virtual void Clear() = 0;

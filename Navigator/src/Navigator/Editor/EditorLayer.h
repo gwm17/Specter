@@ -1,3 +1,10 @@
+/*
+    EditorLayer.h
+    Application layer encapsulating the editor for Navigator. Written using the Dear ImGui library. Setup based off of @TheCherno's Hazel game engine.
+    EditorLayer essentially controls the state for UI related actions.
+
+    GWM -- Feb 2022
+*/
 #ifndef EDITOR_LAYER_H
 #define EDITOR_LAYER_H
 

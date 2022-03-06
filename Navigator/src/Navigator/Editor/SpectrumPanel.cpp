@@ -1,3 +1,10 @@
+/*
+    SpectrumPanel.cpp
+    This is the big boi. Renders a panel holding all of the drawn plots. Good news is that in general only a few things really require
+    any modification if new types of plots are to be rendered, basically just the zoomed in spectrum rendering.
+
+    GWM -- Feb 2022
+*/
 #include "SpectrumPanel.h"
 #include "Navigator/SpectrumManager.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -5,6 +12,7 @@
 
 namespace Navigator {
 
+    //Convert a StatResults struct from analysis to a std::string helper function
     std::string GenerateStatString(const std::string& name, const StatResults& results, bool is2D = true)
     {
         std::stringstream stream;
@@ -25,6 +33,7 @@ namespace Navigator {
 
 	SpectrumPanel::~SpectrumPanel() {}
 
+    //Main render function. Handles generating subplot regions as well as the zoomed in region
 	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList)
 	{
         static bool acceptCutFlag = false;
@@ -214,6 +223,7 @@ namespace Navigator {
         return result;
 	}
 
+    //Renders Cut button as well as dialog for creating cuts.
     void SpectrumPanel::RenderCutButton()
     {
         if (ImGui::Button(ICON_FA_CUT " Draw Cut"))
@@ -244,6 +254,7 @@ namespace Navigator {
         }
     }
 
+    //Simple button/dialog for removing integration regions
     void SpectrumPanel::RenderRemoveRegionButton()
     {
         static std::string selectedRegion = "";

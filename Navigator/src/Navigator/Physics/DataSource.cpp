@@ -1,9 +1,18 @@
+/*
+	DataSource.cpp
+	Abstract data source class. In Navigator a DataSource can be either an online (live) source or an offline (file) source. By default,
+	Navigator has classes to handle CAEN CoMPASS data sources (files and online); other sources may be implemented as more use cases for Navigator become
+	apparent.
+
+	GWM -- Feb 2022
+*/
 #include "DataSource.h"
 #include "Caen/CompassRun.h"
 #include "Caen/CompassOnlineSource.h"
 
 namespace Navigator {
 
+	//loc=either an ip address or a file location, port=address port, or unused in case of file
 	DataSource* CreateDataSource(const std::string& loc, const std::string& port, DataSource::SourceType type)
 	{
 		switch(type)

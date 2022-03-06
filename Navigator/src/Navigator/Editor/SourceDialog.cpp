@@ -1,3 +1,10 @@
+/*
+	SourceDialog.cpp
+	Handles selection of data source type and location specification. Needs to be updated when new source
+	types are added to Navigator.
+
+	GWM -- Feb 2022
+*/
 #include "SourceDialog.h"
 #include "Navigator/Events/PhysicsEvent.h"
 #include "Navigator/Events/Event.h"
