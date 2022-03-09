@@ -57,6 +57,11 @@ namespace Navigator {
 		void BindParameter(NavParameter& param);
 		void InvalidateParameters();
 		std::vector<std::string> GetListOfParameters();
+		/*********************/
+
+		/*Variable Functions*/
+		void BindVariable(NavVariable& var);
+		std::vector<std::string> GetListOfVariables();
 		/********************/
 
 		/*Cut Functions*/
@@ -88,6 +93,7 @@ namespace Navigator {
 		std::unordered_map<std::string, std::shared_ptr<Histogram>> m_histoMap;
 		std::unordered_map<std::string, std::shared_ptr<Cut>> m_cutMap;
 		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_paramMap;
+		std::unordered_map<std::string, std::shared_ptr<std::atomic<double>>> m_varMap;
 
 		HistogramParameters m_nullHistoResult; //For handling bad query
 

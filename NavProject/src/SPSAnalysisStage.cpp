@@ -11,7 +11,7 @@ namespace Navigator {
 	//Construct each NavParameter with their unique name. Then bind them to the SpectrumManager.
 	SPSAnalysisStage::SPSAnalysisStage() :
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
-		scintLeft("scintLeft"), anodeBack("anodeBack")
+		scintLeft("scintLeft"), anodeBack("anodeBack"), x1_weight("x1_weight"), x2_weight("x2_weight")
 	{
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 		manager.BindParameter(delayFLTime);
@@ -23,6 +23,9 @@ namespace Navigator {
 		manager.BindParameter(xavg);
 		manager.BindParameter(scintLeft);
 		manager.BindParameter(anodeBack);
+
+		manager.BindVariable(x1_weight);
+		manager.BindVariable(x2_weight);
 	}
 
 	SPSAnalysisStage::~SPSAnalysisStage() {}
@@ -66,5 +69,8 @@ namespace Navigator {
 
 		if(delayBLTime.IsValid() && delayBRTime.IsValid())
 			x2.SetValue((delayBLTime.GetValue() - delayBRTime.GetValue())*0.5);
+
+		if (x1.IsValid() && x2.IsValid())
+			xavg.SetValue(x1_weight.GetValue() * x1.GetValue() + x2_weight.GetValue() * x2.GetValue());
 	}
 }

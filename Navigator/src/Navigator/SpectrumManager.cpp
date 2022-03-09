@@ -224,6 +224,31 @@ namespace Navigator {
 
 	/*************Parameter Functions End*************/
 
+	/*************Variable Functions Begin*************/
+
+	void SpectrumManager::BindVariable(NavVariable& var)
+	{
+		std::lock_guard<std::mutex> guard(m_managerMutex);
+		auto iter = m_varMap.find(var.GetName());
+		if (iter == m_varMap.end())
+		{
+			m_varMap[var.GetName()].reset(new std::atomic<double>(0.0));
+		}
+		var.m_pdata = m_varMap[var.GetName()];
+	}
+
+	std::vector<std::string> SpectrumManager::GetListOfVariables()
+	{
+		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::vector<std::string> list;
+		list.reserve(m_varMap.size());
+		for (auto iter : m_varMap)
+			list.push_back(iter.first);
+		return list;
+	}
+
+	/*************Variable Functions End*************/
+
 	/*************Cut Functions Begin*************/
 
 	void SpectrumManager::RemoveCut(const std::string& name)

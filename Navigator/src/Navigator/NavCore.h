@@ -6,11 +6,7 @@
 	is just an empty expression.
 */
 #ifdef NAV_WINDOWS
-	#ifdef NAV_EXPORT
-		#define NAV_API __declspec(dllexport)
-	#else
-		#define NAV_API __declspec(dllimport)
-	#endif
+	#define NAV_API
 	
 	#ifdef _MSC_VER
 		#pragma warning (disable: 4127)             // condition expression is constant

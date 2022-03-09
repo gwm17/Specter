@@ -39,4 +39,15 @@ namespace Navigator {
 
     NavParameter::~NavParameter() {}
 
+	NavVariable::NavVariable() :
+		m_name(""), m_pdata(nullptr)
+	{
+	}
+
+	NavVariable::NavVariable(const std::string& name) :
+		m_name(name), m_pdata(nullptr)
+	{
+	}
+
+	NavVariable::~NavVariable() {}
 }

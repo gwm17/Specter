@@ -22,8 +22,8 @@
 
 	GWM -- Feb 2022
 */
-#ifndef PARAMETER_MAP_H
-#define PARAMETER_MAP_H
+#ifndef PARAMETER_H
+#define PARAMETER_H
 
 #include "NavCore.h"
 
@@ -56,6 +56,28 @@ namespace Navigator {
 		std::string m_name;
 		std::shared_ptr<ParameterData> m_pdata;
 
+	};
+
+	//Similar to  parameters, sometimes you want to have a numeric input (in calculation terms, a constant)
+	//which you can use with your analysis. To be able to expose these numeric values to the UI, we need to implement them
+	//in the manager. To help with this, NavVariables are atomics. So unlike NavParameters they are implicity thread safe on read and write.
+	//However, this does not mean they can be modified in the analysis! To the AnalysisStage they should be treated as constant, while the UI
+	//should view them as modifiable. These are real god damn dangerous, but I think the power they offer outweighs the risk, for now.
+	class NAV_API NavVariable
+	{
+	public:
+		NavVariable();
+		NavVariable(const std::string& name);
+		~NavVariable();
+
+		inline void SetValue(double value) { *(m_pdata) = value; }
+		inline double GetValue() { return *(m_pdata); }
+		inline const std::string& GetName() { return m_name; }
+
+		friend class SpectrumManager;
+	private:
+		std::shared_ptr<std::atomic<double>> m_pdata;
+		std::string m_name;
 	};
 
 }

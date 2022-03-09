@@ -6,6 +6,7 @@
 */
 #include "Navigator.h"
 #include "SPSAnalysisStage.h"
+#include "SPSInputLayer.h"
 
 //User application class. Pushes user analysis stages.
 class SPSApp : public Navigator::Application
@@ -14,6 +15,7 @@ public:
 	SPSApp() :
 		Navigator::Application()
 	{
+		PushLayer(new Navigator::SPSInputLayer());
 		PushAnalysisStage(new Navigator::SPSAnalysisStage());
 	}
 };

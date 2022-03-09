@@ -28,9 +28,9 @@ namespace Navigator {
 		NavParameter scintLeft;
 		NavParameter anodeBack;
 
-		//some variables.
-		double weight1 = 1.7;
-		double weight2 = -0.7;
+		//Create a few variables
+		NavVariable x1_weight;
+		NavVariable x2_weight;
 	};
 
 }

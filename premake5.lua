@@ -24,7 +24,7 @@ include "Navigator/vendor/imgui"
 include "Navigator/vendor/glad"
 project "Navigator"
 	location "Navigator"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
 	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
@@ -107,17 +107,13 @@ project "Navigator"
 			"IOKit.framework",
 			"OpenGL.framework",
 			"Carbon.framework",
-			"dl",
+			"dl"
 		}
 		linkoptions{
 			"-pthread",
 			"-undefined dynamic_lookup"
 		}
 	filter "system:windows"
-		defines "NAV_EXPORT"
-		postbuildcommands {
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/NavProject/\"")
-		}
 		links {
 			"opengl32.lib"
 		}
@@ -141,8 +137,8 @@ project "NavProject"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
-		"NavProject/*.h",
-		"NavProject/*.cpp"
+		"NavProject/src/*.h",
+		"NavProject/src/*.cpp"
 	}
 
 	includedirs {
@@ -165,7 +161,7 @@ project "NavProject"
 	systemversion "latest"
 
 	postbuildcommands {
-		(" {COPYDIR} fonts %{cfg.targetdir} ")
+		(" {COPYDIR} Resources %{cfg.targetdir} ")
 	}
 
 	filter "system:macosx"
@@ -180,10 +176,32 @@ project "NavProject"
 			"%{IncludeDirs.asio}",
 			"%{IncludeDirs.IconFonts}"
 		}
+		links {
+			"Cocoa.framework",
+			"CoreVideo.framework",
+			"IOKit.framework",
+			"OpenGL.framework",
+			"Carbon.framework",
+			"GLFW",
+			"GLAD",
+			"ImGui",
+			"dl"
+		}
+		linkoptions {
+			"-pthread"
+		}
 	filter "system:windows"
 		defines "NAV_WINDOWS"
 	filter "system:linux"
 		defines "NAV_LINUX"
+		links {
+			"GL",
+			"X11",
+			"GLFW",
+			"GLAD",
+			"ImGui",
+			"dl"
+		}
 
 	
 
