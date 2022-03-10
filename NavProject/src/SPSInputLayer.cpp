@@ -5,7 +5,7 @@ namespace Navigator {
 
 	SPSInputLayer::SPSInputLayer() :
 		Layer("SPSInputLayer"), x1_weight("x1_weight"), x2_weight("x2_weight"), m_bfield(0.0), m_theta(0.0), m_beamKE(0.0),
-		m_targMass(0.0), m_projMass(0.0), m_ejectMass(0.0), m_residMass(0.0)
+		m_rxnEqn("")
 	{
 		for (int i = 0; i < 2; i++)
 		{
@@ -45,12 +45,19 @@ namespace Navigator {
 			{
 				UpdateWeights();
 			}
+			ImGui::Text("-------Current Settings-------");
+			ImGui::Text("Reaction Equation: ");
+			ImGui::SameLine();
+			ImGui::Text(m_rxnEqn.c_str());
+			ImGui::Text("X1 Weight: %f", x1_weight.GetValue());
+			ImGui::Text("X2 Weight: %f", x2_weight.GetValue());
 			ImGui::End();
 		}
 	}
 
 	void SPSInputLayer::UpdateWeights()
 	{
+		m_rxnEqn = "";
 		for (int i = 0; i < 2; i++)
 			m_residNums[i] = m_targNums[i] + m_projNums[i] - m_ejectNums[i];
 		if (m_residNums[0] < 0 || m_residNums[1] <= 0)
@@ -59,12 +66,54 @@ namespace Navigator {
 			return;
 		}
 
-		m_targMass = m_masses.FindMass(m_targNums[0], m_targNums[1]);
-		m_projMass = m_masses.FindMass(m_projNums[0], m_projNums[1]);
-		m_ejectMass = m_masses.FindMass(m_ejectNums[0], m_ejectNums[1]);
-		m_residMass = m_masses.FindMass(m_residNums[0], m_residNums[1]);
-		if (m_targMass == 0.0 || m_projMass == 0.0 || m_ejectMass == 0.0 || m_residMass == 0.0)
+		if (m_bfield == 0.0 || m_beamKE == 0.0)
+		{
+			NAV_ERROR("Invaild kinematic settings at SPSInputLayer::UpdateWeights()! BeamKE: {0} Bfield: {1}", m_beamKE, m_bfield);
+			return;
+		}
+
+		double targMass = m_masses.FindMass(m_targNums[0], m_targNums[1]);
+		double projMass = m_masses.FindMass(m_projNums[0], m_projNums[1]);
+		double ejectMass = m_masses.FindMass(m_ejectNums[0], m_ejectNums[1]);
+		double residMass = m_masses.FindMass(m_residNums[0], m_residNums[1]);
+		if (targMass == 0.0 || projMass == 0.0 || ejectMass == 0.0 || residMass == 0.0)
 			return;
 
+		std::string temp;
+		temp = m_masses.FindSymbol(m_targNums[0], m_targNums[1]);
+		m_rxnEqn += temp + "(";
+		temp = m_masses.FindSymbol(m_projNums[0], m_projNums[1]);
+		m_rxnEqn += temp + ",";
+		temp = m_masses.FindSymbol(m_ejectNums[0], m_ejectNums[1]);
+		m_rxnEqn += temp + ")";
+		temp = m_masses.FindSymbol(m_residNums[0], m_residNums[1]);
+		m_rxnEqn += temp;
+
+		double theta_rad = m_theta * c_deg2rad;
+		double bfield_t = m_bfield * 0.1; //convert to tesla
+		double Q = targMass + projMass - ejectMass - residMass;
+		//kinematics a la Iliadis p.590
+		double term1 = std::sqrt(projMass * ejectMass * m_beamKE) / (ejectMass + residMass) * std::cos(theta_rad);
+		double term2 = (m_beamKE * (residMass - projMass) + residMass * Q) / (ejectMass + residMass);
+
+		double ejectKE = term1 + std::sqrt(term1 * term1 + term2);
+		ejectKE *= ejectKE;
+
+		//momentum
+		double ejectP = std::sqrt(ejectKE * (ejectKE + 2.0 * ejectMass));
+
+		//calculate rho from B a la B*rho = (proj. momentum)/(proj. charge)
+		double rho = (ejectP * c_mev2j) / (m_ejectNums[0] * c_e * c_C * bfield_t) * 100.0; //in cm
+
+		double K;
+		K = sqrt(projMass * ejectMass * m_beamKE / ejectKE);
+		K *= std::sin(theta_rad);
+
+		double denom = ejectMass + residMass - std::sqrt(projMass * ejectMass * m_beamKE / ejectKE) * std::cos(theta_rad);
+
+		K /= denom;
+		double zshift = -1 * rho * c_spsDisp * c_spsMag * K; //delta-Z in cm
+		x1_weight.SetValue((0.5 - zshift / c_wireDist));
+		x2_weight.SetValue((1.0 - x1_weight.GetValue()));
 	}
 }

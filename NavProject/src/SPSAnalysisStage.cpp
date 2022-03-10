@@ -65,10 +65,10 @@ namespace Navigator {
 		//If you want to use parameters to calculate another parameter, you
 		//need to check that the parameter is valid (set in this event)!
 		if(delayFLTime.IsValid() && delayFRTime.IsValid())
-			x1.SetValue((delayFLTime.GetValue() - delayFRTime.GetValue())*0.5);
+			x1.SetValue((delayFLTime.GetValue() - delayFRTime.GetValue())*0.5*0.4762);
 
 		if(delayBLTime.IsValid() && delayBRTime.IsValid())
-			x2.SetValue((delayBLTime.GetValue() - delayBRTime.GetValue())*0.5);
+			x2.SetValue((delayBLTime.GetValue() - delayBRTime.GetValue())*0.5*0.5051);
 
 		if (x1.IsValid() && x2.IsValid())
 			xavg.SetValue(x1_weight.GetValue() * x1.GetValue() + x2_weight.GetValue() * x2.GetValue());
