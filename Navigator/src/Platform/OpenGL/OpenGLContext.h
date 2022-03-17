@@ -1,3 +1,9 @@
+/*
+	OpenGLContext.h
+	Implementation of OpenGL rendering context. Entirely based upon the work done by @TheCherno in his game engine series. See his content for more details.
+
+	GWM -- Feb 2022
+*/
 #ifndef OPEGL_CONTEXT_H
 #define OPEGL_CONTEXT_H
 

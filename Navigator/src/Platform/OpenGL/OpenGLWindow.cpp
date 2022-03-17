@@ -1,3 +1,11 @@
+/*
+	OpenGLWindow.h
+	Implementation of a window with OpenGL context. Not really OpenGL specific, other than in creation of GraphicsContext.
+	Bulk of creation can be used in any api/context (glfw compatible with Cocoa, X11, or Windows). Based entirely upon the
+	work of @TheCherno in his game engine series.
+
+	GWM -- Feb 2022
+*/
 #include "OpenGLWindow.h"
 #include "OpenGLContext.h"
 #include "Navigator/NavCore.h"
@@ -40,6 +48,7 @@ namespace Navigator {
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
         
+		//Apple specific. OpenGL is technically deprecated, so a little extra work to force the correct version
 #ifdef __APPLE__
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -49,12 +58,13 @@ namespace Navigator {
 
 		m_window = glfwCreateWindow((int)m_data.width, (int)m_data.height, m_data.name.c_str(), nullptr, nullptr);
 
-		m_context = new OpenGLContext(m_window);
+		m_context = new OpenGLContext(m_window); //This is the only seriously OpenGL specific code
 		m_context->Init();
 
 		glfwSetWindowUserPointer(m_window, &m_data);
 		SetVSync(true);
 
+		//Set all of the callback functions for the window. 
 		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
 			{
 				Data& data = *(Data*) glfwGetWindowUserPointer(window);

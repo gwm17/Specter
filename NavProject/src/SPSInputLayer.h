@@ -1,3 +1,16 @@
+/*
+	SPSInputLayer.h
+	An example of what a user created layer might look like. This is how one would extend the base editor to have more
+	functionality, specific to their experiment/setup. In this case, we provide inputs for reaction information so that
+	the kinematic shift of the SE-SPS focal plane can be calculated, and weights for tracing particle trajectories are
+	produced for use in analysis (as NavVariables).
+
+	A reminder that these layers should not be that intense. The more work that is shoved into the UI, the less responsive
+	and more sluggish overall the UI will become. The vast bulk of the analysis work should be left to the PhysicsLayer which has its own
+	thread to work upon.
+
+	GWM -- Feb 2022
+*/
 #ifndef SPS_INPUT_LAYER_H
 #define SPS_INPUT_LAYER_H
 
@@ -15,8 +28,8 @@ namespace Navigator {
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate() override;
-		virtual void OnEvent(Event& event) override;
-		virtual void OnImGuiRender() override;
+		virtual void OnEvent(Event& event) override; //If you want to respond to events
+		virtual void OnImGuiRender() override; //"Main" function
 
 	private:
 		void UpdateWeights();
@@ -29,6 +42,7 @@ namespace Navigator {
 		double m_bfield; //kG
 		double m_theta; //deg
 		double m_beamKE; //MeV
+		//Z, A inputs for reaction nuclei
 		int m_targNums[2];
 		int m_projNums[2];
 		int m_ejectNums[2];

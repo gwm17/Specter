@@ -1,3 +1,11 @@
+/*
+    MassMap.h
+    A represnetation of the AMDC mass table. We provide capability to retrieve the mass of an isotope
+    as well as the isotopic symbol. This sort of code is pretty ubiquitous in flexible nuclear physics
+    analysis.
+
+    GWM -- Feb 2022
+*/
 #ifndef MASS_MAP_H
 #define MASS_MAP_H
 

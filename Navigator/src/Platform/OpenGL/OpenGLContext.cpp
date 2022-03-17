@@ -1,3 +1,9 @@
+/*
+	OpenGLContext.h
+	Implementation of OpenGL rendering context. Entirely based upon the work done by @TheCherno in his game engine series. See his content for more details.
+
+	GWM -- Feb 2022
+*/
 #include "OpenGLContext.h"
 
 #include "GLFW/glfw3.h"
@@ -18,6 +24,7 @@ namespace Navigator {
 
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
+		//Report graphics status
 		NAV_TRACE("Loaded OpenGL with glad Init status {0}", status);
 
 		NAV_INFO("Loaded OpenGL renderer");

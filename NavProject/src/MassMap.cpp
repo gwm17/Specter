@@ -1,8 +1,16 @@
+/*
+    MassMap.h
+    A represnetation of the AMDC mass table. We provide capability to retrieve the mass of an isotope
+    as well as the isotopic symbol. This sort of code is pretty ubiquitous in flexible nuclear physics
+    analysis.
+
+    GWM -- Feb 2022
+*/
 #include "MassMap.h"
 
 /*
-  Read in AMDC mass file, preformated to remove excess info. Here assumes that by default
-  the file is in a local directory etc/
+    Read in AMDC mass file, preformated to remove excess info. Here assumes that by default
+    the file is in a local directory Resources. Navigator build process handles this.
 */
 MassMap::MassMap()
 {

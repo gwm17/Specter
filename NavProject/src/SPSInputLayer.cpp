@@ -1,3 +1,16 @@
+/*
+	SPSInputLayer.cpp
+	An example of what a user created layer might look like. This is how one would extend the base editor to have more
+	functionality, specific to their experiment/setup. In this case, we provide inputs for reaction information so that
+	the kinematic shift of the SE-SPS focal plane can be calculated, and weights for tracing particle trajectories are
+	produced for use in analysis (as NavVariables).
+
+	A reminder that these layers should not be that intense. The more work that is shoved into the UI, the less responsive
+	and more sluggish overall the UI will become. The vast bulk of the analysis work should be left to the PhysicsLayer which has its own
+	thread to work upon.
+
+	GWM -- Feb 2022
+*/
 #include "SPSInputLayer.h"
 #include "imgui.h"
 
@@ -32,9 +45,9 @@ namespace Navigator {
 
 	void SPSInputLayer::OnImGuiRender()
 	{
-		ImGui::SetCurrentContext(ImGui::GetCurrentContext());
 		if (ImGui::Begin("SPS Input"))
 		{
+			//Create widgets for all of our inputs
 			ImGui::InputDouble("Bfield(kG)", &m_bfield, 0.01, 0.1);
 			ImGui::InputDouble("Theta(deg)", &m_theta, 0.1, 1.0);
 			ImGui::InputDouble("BeamKE(MeV)", &m_beamKE, 0.1, 1.0);
@@ -43,8 +56,11 @@ namespace Navigator {
 			ImGui::InputInt2("Ejectile Z,A", m_ejectNums);
 			if (ImGui::Button("Set"))
 			{
+				//We dont want to calculate the weights every frame, so
+				//we lock that calculation behind a button.
 				UpdateWeights();
 			}
+			//Display some info about the internal state
 			ImGui::Text("-------Current Settings-------");
 			ImGui::Text("Reaction Equation: ");
 			ImGui::SameLine();
@@ -57,7 +73,9 @@ namespace Navigator {
 
 	void SPSInputLayer::UpdateWeights()
 	{
-		m_rxnEqn = "";
+		m_rxnEqn = ""; //reset
+
+		//Calculate residual nucleus from reaction
 		for (int i = 0; i < 2; i++)
 			m_residNums[i] = m_targNums[i] + m_projNums[i] - m_ejectNums[i];
 		if (m_residNums[0] < 0 || m_residNums[1] <= 0)
@@ -72,6 +90,7 @@ namespace Navigator {
 			return;
 		}
 
+		//Obtain masses from the AMDC table
 		double targMass = m_masses.FindMass(m_targNums[0], m_targNums[1]);
 		double projMass = m_masses.FindMass(m_projNums[0], m_projNums[1]);
 		double ejectMass = m_masses.FindMass(m_ejectNums[0], m_ejectNums[1]);
@@ -89,7 +108,7 @@ namespace Navigator {
 		temp = m_masses.FindSymbol(m_residNums[0], m_residNums[1]);
 		m_rxnEqn += temp;
 
-		double theta_rad = m_theta * c_deg2rad;
+		double theta_rad = m_theta * c_deg2rad; //convert to radians
 		double bfield_t = m_bfield * 0.1; //convert to tesla
 		double Q = targMass + projMass - ejectMass - residMass;
 		//kinematics a la Iliadis p.590

@@ -1,3 +1,11 @@
+/*
+	OpenGLWindow.h
+	Implementation of a window with OpenGL context. Not really OpenGL specific, other than in creation of GraphicsContext.
+	Bulk of creation can be used in any api/context (glfw compatible with Cocoa, X11, or Windows). Based entirely upon the 
+	work of @TheCherno in his game engine series.
+
+	GWM -- Feb 2022
+*/
 #ifndef OPENGL_WINDOW_H
 #define OPENGL_WINDOW_H
 
