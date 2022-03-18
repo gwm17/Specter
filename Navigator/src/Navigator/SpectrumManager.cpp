@@ -197,6 +197,27 @@ namespace Navigator {
 		param.m_pdata = m_paramMap[param.GetName()];
 	}
 
+	//Bind a NavParameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
+	//Additionally, make a default 1D histogram for the parameter (histogram has same name as parameter)
+	void SpectrumManager::BindParameter(NavParameter& param, int nbins, double minVal, double maxVal)
+	{
+		std::lock_guard<std::mutex> guard(m_managerMutex);
+		auto iter = m_paramMap.find(param.GetName());
+		if (iter == m_paramMap.end())
+		{
+			m_paramMap[param.GetName()].reset(new ParameterData());
+		}
+
+		param.m_pdata = m_paramMap[param.GetName()];
+
+		auto histoIter = m_histoMap.find(param.GetName());
+		if (histoIter == m_histoMap.end())
+		{
+			HistogramParameters histo(param.GetName(), param.GetName(), nbins, minVal, maxVal);
+			m_histoMap[param.GetName()].reset(new Histogram1D(histo));
+		}
+	}
+
 	//Once an analysis pass is done and histograms filled, reset all parameters
 	void SpectrumManager::InvalidateParameters()
 	{

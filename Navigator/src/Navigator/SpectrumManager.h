@@ -55,6 +55,7 @@ namespace Navigator {
 
 		/*Parameter Functions*/
 		void BindParameter(NavParameter& param);
+		void BindParameter(NavParameter& param, int nbins, double maxVal, double minVal);
 		void InvalidateParameters();
 		std::vector<std::string> GetListOfParameters();
 		/*********************/

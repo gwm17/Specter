@@ -50,6 +50,7 @@ namespace Navigator {
         inline void SetValue(double value) { m_pdata->validFlag = true; m_pdata->value = value; }
         inline double GetValue() const { return m_pdata->value; }
         inline const std::string& GetName() const { return m_name; }
+		void SetName(const std::string& name);
 
 		friend class SpectrumManager;
 	private:

@@ -18,11 +18,12 @@ namespace Navigator {
 		manager.BindParameter(delayFRTime);
 		manager.BindParameter(delayBLTime);
 		manager.BindParameter(delayBRTime);
-		manager.BindParameter(x1);
-		manager.BindParameter(x2);
-		manager.BindParameter(xavg);
-		manager.BindParameter(scintLeft);
-		manager.BindParameter(anodeBack);
+		//Bind parameters with some default histograms. Saves us the effort of making them in the UI.
+		manager.BindParameter(x1, 600, -300.0, 300.0);
+		manager.BindParameter(x2, 600, -300.0, 300.0);
+		manager.BindParameter(xavg, 600, -300.0, 300.0);
+		manager.BindParameter(scintLeft, 4096, 0.0, 4096.0);
+		manager.BindParameter(anodeBack, 4096, 0.0, 4096.0);
 
 		manager.BindVariable(x1_weight);
 		manager.BindVariable(x2_weight);

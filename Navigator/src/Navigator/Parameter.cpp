@@ -39,6 +39,18 @@ namespace Navigator {
 
     NavParameter::~NavParameter() {}
 
+	//So that you can make arrays, std::vectors of NavParameters (useful for big detector arrays)
+	//SpectrumManager::BindParameter() still needs to be used after this!
+	void NavParameter::SetName(const std::string& name)
+	{
+		if (m_name != "")
+		{
+			NAV_ERROR("Attempting to change the name of an already bound NavParameter! Set name: {0} New name: {1}", m_name, name);
+			return;
+		}
+		m_name = name;
+	}
+
 	NavVariable::NavVariable() :
 		m_name(""), m_pdata(nullptr)
 	{
