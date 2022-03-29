@@ -85,6 +85,7 @@ project "Navigator"
 	systemversion "latest"
 	defines {
 		"GLFW_INCLUDE_NONE",
+		"IMGUI_IMPL_OPENGL_LOADER_GLAD",
 		"IMPLOT_BACKEND_ENABLE_OPENGL3"
 	}
 
@@ -201,6 +202,9 @@ project "NavProject"
 			"GLAD",
 			"ImGui",
 			"dl"
+		}
+		linkoptions {
+			"-pthread"
 		}
 
 	
