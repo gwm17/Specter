@@ -9,8 +9,8 @@
 #ifndef IMGUI_LAYER_H
 #define IMGUI_LAYER_H
 
-#include "Navigator/NavCore.h"
-#include "Navigator/Layer.h"
+#include "Navigator/Core/NavCore.h"
+#include "Navigator/Core/Layer.h"
 
 namespace Navigator {
 

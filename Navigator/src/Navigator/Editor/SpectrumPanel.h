@@ -8,8 +8,8 @@
 #ifndef SPECTRUM_PANEL_H
 #define SPECTRUM_PANEL_H
 
-#include "Navigator/Histogram.h"
-#include "Navigator/Cut.h"
+#include "Navigator/Core/Histogram.h"
+#include "Navigator/Core/Cut.h"
 #include "imgui.h"
 #include "implot.h"
 

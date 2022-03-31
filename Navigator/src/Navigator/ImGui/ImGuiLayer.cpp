@@ -7,8 +7,8 @@
 	GWM -- Feb 2022
 */
 #include "ImGuiLayer.h"
-#include "Navigator/Application.h"
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/Application.h"
+#include "Navigator/Core/NavCore.h"
 
 #include "imgui.h"
 #include "implot.h"

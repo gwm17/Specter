@@ -13,7 +13,7 @@
 #ifndef SHIFTMAP_H
 #define SHIFTMAP_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 
 namespace Navigator {
 

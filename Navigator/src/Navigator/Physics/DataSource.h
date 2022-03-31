@@ -9,7 +9,7 @@
 #ifndef DATA_SOURCE_H
 #define DATA_SOURCE_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "NavData.h"
 
 namespace Navigator {

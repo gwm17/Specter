@@ -10,7 +10,7 @@
 #define WINDOW_H
 
 #include "NavCore.h"
-#include "Events/Event.h"
+#include "Navigator/Events/Event.h"
 
 namespace Navigator {
 

@@ -8,7 +8,7 @@
 #ifndef OPENGL_RENDERER_API_H
 #define OPENGL_RENDERER_API_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "Navigator/Renderer/RendererAPI.h"
 
 namespace Navigator {

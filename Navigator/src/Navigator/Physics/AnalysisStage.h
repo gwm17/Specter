@@ -8,8 +8,8 @@
 #ifndef ANALYSIS_STAGE_H
 #define ANALYSIS_STAGE_H
 
-#include "Navigator/NavCore.h"
-#include "Navigator/Parameter.h"
+#include "Navigator/Core/NavCore.h"
+#include "Navigator/Core/Parameter.h"
 #include "NavData.h"
 
 namespace Navigator {

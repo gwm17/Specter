@@ -7,7 +7,6 @@
 #ifndef KEY_EVENT_H
 #define KEY_EVENT_H
 
-#include "Navigator/NavCore.h"
 #include "Event.h"
 
 namespace Navigator {

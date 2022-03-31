@@ -11,13 +11,13 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "Navigator/NavCore.h"
-#include "Events/Event.h"
+#include "Navigator/Core/NavCore.h"
+#include "Navigator/Events/Event.h"
 #include "Navigator/Events/AppEvent.h"
 #include "Navigator/Events/PhysicsEvent.h"
-#include "Navigator/LayerStack.h"
-#include "Navigator/Layer.h"
-#include "Navigator/Window.h"
+#include "Navigator/Core/LayerStack.h"
+#include "Navigator/Core/Layer.h"
+#include "Navigator/Core/Window.h"
 #include "Navigator/ImGui/ImGuiLayer.h"
 #include "Navigator/Physics/PhysicsLayer.h"
 #include "glm/vec4.hpp"

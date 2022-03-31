@@ -8,11 +8,11 @@
 #ifndef EDITOR_LAYER_H
 #define EDITOR_LAYER_H
 
-#include "Navigator/Layer.h"
+#include "Navigator/Core/Layer.h"
 #include "Navigator/Events/Event.h"
 #include "Navigator/Events/PhysicsEvent.h"
-#include "Navigator/Histogram.h"
-#include "Navigator/Cut.h"
+#include "Navigator/Core/Histogram.h"
+#include "Navigator/Core/Cut.h"
 #include "SpectrumPanel.h"
 #include "FileDialog.h"
 #include "SpectrumDialog.h"

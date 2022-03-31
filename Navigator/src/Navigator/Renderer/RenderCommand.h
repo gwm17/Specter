@@ -8,7 +8,7 @@
 #ifndef RENDER_COMMAND_H
 #define RENDER_COMMAND_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "RendererAPI.h"
 
 namespace Navigator {

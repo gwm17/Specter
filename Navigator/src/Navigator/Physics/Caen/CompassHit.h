@@ -7,7 +7,7 @@
 #ifndef COMPASS_HIT_H
 #define COMPASS_HIT_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 
 namespace Navigator {
 

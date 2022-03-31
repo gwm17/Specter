@@ -15,7 +15,7 @@
 #ifndef COMPASSFILE_H
 #define COMPASSFILE_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "CompassHit.h"
 #include "Navigator/Physics/ShiftMap.h"
 

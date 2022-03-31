@@ -9,8 +9,8 @@
 #ifndef OPENGL_WINDOW_H
 #define OPENGL_WINDOW_H
 
-#include "Navigator/NavCore.h"
-#include "Navigator/Window.h"
+#include "Navigator/Core/NavCore.h"
+#include "Navigator/Core/Window.h"
 #include "Navigator/Renderer/GraphicsContext.h"
 #include "GLFW/glfw3.h"
 

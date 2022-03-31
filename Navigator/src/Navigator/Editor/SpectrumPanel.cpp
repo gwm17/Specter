@@ -6,7 +6,7 @@
     GWM -- Feb 2022
 */
 #include "SpectrumPanel.h"
-#include "Navigator/SpectrumManager.h"
+#include "Navigator/Core/SpectrumManager.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "IconsFontAwesome5.h"
 

@@ -24,13 +24,13 @@
 
 #include <cstdint>
 
-#include "Navigator/Logger.h"
-#include "Navigator/Application.h"
+#include "Navigator/Core/Logger.h"
+#include "Navigator/Core/Application.h"
 #include "Navigator/Physics/PhysicsLayer.h"
 #include "Navigator/Physics/AnalysisStage.h"
-#include "Navigator/Parameter.h"
-#include "Navigator/SpectrumManager.h"
-#include "Navigator/Layer.h"
+#include "Navigator/Core/Parameter.h"
+#include "Navigator/Core/SpectrumManager.h"
+#include "Navigator/Core/Layer.h"
 #include "Navigator/Events/Event.h"
 
 #endif

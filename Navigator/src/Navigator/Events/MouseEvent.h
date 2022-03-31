@@ -7,7 +7,6 @@
 #ifndef MOUSE_EVENT_H
 #define MOUSE_EVENT_H
 
-#include "Navigator/NavCore.h"
 #include "Event.h"
 
 namespace Navigator {

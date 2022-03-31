@@ -10,9 +10,9 @@
 #include "misc/cpp/imgui_stdlib.h"
 #include "implot.h"
 #include "FileDialog.h"
-#include "Navigator/Application.h"
-#include "Navigator/SpectrumSerializer.h"
-#include "Navigator/SpectrumManager.h"
+#include "Navigator/Core/Application.h"
+#include "Navigator/Core/SpectrumSerializer.h"
+#include "Navigator/Core/SpectrumManager.h"
 
 #include "IconsFontAwesome5.h"
 

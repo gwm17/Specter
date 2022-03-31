@@ -7,8 +7,8 @@
 #ifndef SPECTRUM_DIALOG_H
 #define SPECTRUM_DIALOG_H
 
-#include "Navigator/Histogram.h"
-#include "Navigator/Cut.h"
+#include "Navigator/Core/Histogram.h"
+#include "Navigator/Core/Cut.h"
 
 #include "imgui.h"
 

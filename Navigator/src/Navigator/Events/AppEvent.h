@@ -7,7 +7,6 @@
 #ifndef APP_EVENT_H
 #define APP_EVENT_H
 
-#include "Navigator/NavCore.h"
 #include "Event.h"
 
 namespace Navigator {

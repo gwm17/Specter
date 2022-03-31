@@ -5,7 +5,7 @@
 	GWM -- Feb 2022
 */
 #include "SpectrumDialog.h"
-#include "Navigator/SpectrumManager.h"
+#include "Navigator/Core/SpectrumManager.h"
 
 #include "misc/cpp/imgui_stdlib.h"
 

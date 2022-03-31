@@ -8,7 +8,7 @@
 */
 #include "OpenGLWindow.h"
 #include "OpenGLContext.h"
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "Navigator/Events/AppEvent.h"
 #include "Navigator/Events/KeyEvent.h"
 #include "Navigator/Events/MouseEvent.h"

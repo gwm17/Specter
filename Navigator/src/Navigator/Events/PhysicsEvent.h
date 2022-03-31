@@ -7,7 +7,6 @@
 #ifndef PHYSICS_EVENT_H
 #define PHYSICS_EVENT_H
 
-#include "Navigator/NavCore.h"
 #include "Event.h"
 #include "Navigator/Physics/DataSource.h"
 

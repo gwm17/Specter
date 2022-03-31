@@ -10,8 +10,8 @@
 #ifndef PHYSICS_LAYER_H
 #define PHYSICS_LAYER_H
 
-#include "Navigator/NavCore.h"
-#include "Navigator/Layer.h"
+#include "Navigator/Core/NavCore.h"
+#include "Navigator/Core/Layer.h"
 #include "Navigator/Events/PhysicsEvent.h"
 #include "AnalysisStack.h"
 #include "AnalysisStage.h"

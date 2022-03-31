@@ -19,7 +19,7 @@
 #ifndef COMPASSRUN_H
 #define COMPASSRUN_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "Navigator/Physics/DataSource.h"
 #include "CompassFile.h"
 #include "Navigator/Physics/ShiftMap.h"

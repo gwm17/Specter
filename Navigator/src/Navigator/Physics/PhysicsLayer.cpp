@@ -8,7 +8,7 @@
 	GWM -- Feb 2022
 */
 #include "PhysicsLayer.h"
-#include "Navigator/SpectrumManager.h"
+#include "Navigator/Core/SpectrumManager.h"
 #include "NavData.h"
 
 namespace Navigator {

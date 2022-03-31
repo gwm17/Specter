@@ -9,8 +9,8 @@
 	GWM -- Feb 2022
 */
 #include "Application.h"
-#include "Renderer/RenderCommand.h"
-#include "Editor/EditorLayer.h"
+#include "Navigator/Renderer/RenderCommand.h"
+#include "Navigator/Editor/EditorLayer.h"
 
 namespace Navigator {
 

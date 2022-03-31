@@ -9,7 +9,7 @@
 #define ANALYSIS_STACK_H
 
 #include "AnalysisStage.h"
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 
 namespace Navigator {
 

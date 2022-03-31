@@ -7,7 +7,7 @@
 #ifndef OPEGL_CONTEXT_H
 #define OPEGL_CONTEXT_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "Navigator/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;

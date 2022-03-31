@@ -8,7 +8,7 @@
 #ifndef RENDERER_API_H
 #define RENDERER_API_H
 
-#include "Navigator/NavCore.h"
+#include "Navigator/Core/NavCore.h"
 #include "glm/vec4.hpp"
 
 namespace Navigator {

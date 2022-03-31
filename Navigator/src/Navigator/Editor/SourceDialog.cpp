@@ -8,7 +8,7 @@
 #include "SourceDialog.h"
 #include "Navigator/Events/PhysicsEvent.h"
 #include "Navigator/Events/Event.h"
-#include "Navigator/Application.h"
+#include "Navigator/Core/Application.h"
 
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
