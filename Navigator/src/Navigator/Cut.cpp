@@ -23,13 +23,14 @@ namespace Navigator {
 	Cut1D::Cut1D(const CutParams& params, double min, double max) :
 		Cut(params), m_minVal(min), m_maxVal(max)
 	{
+		m_params.type = CutType::Cut1D;
 	}
 
 	Cut1D::~Cut1D() {}
 
-	bool Cut1D::IsInside(double x, double y) const
+	void Cut1D::IsInside(double x, double y)
 	{
-		return x >= m_minVal && x <= m_maxVal;
+		m_isValid = x >= m_minVal && x <= m_maxVal;
 	}
 
 	//Only within an ImPlot/ImGui context!!!
@@ -43,6 +44,7 @@ namespace Navigator {
     Cut2D::Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints) :
         Cut(params), m_xpoints(xpoints), m_ypoints(ypoints)
 	{
+		m_params.type = CutType::Cut2D;
 	}
 
 	Cut2D::~Cut2D() {}
@@ -54,24 +56,31 @@ namespace Navigator {
         If odd number of intersections, point is inside. Even, point is outside.
         Edge cases of point is a vertex or on a side considered.
 	*/
-	bool Cut2D::IsInside(double x, double y) const
+	void Cut2D::IsInside(double x, double y)
 	{
-        bool result = false;
+        m_isValid = false;
         double slope;
         for(size_t i=0; i<(m_xpoints.size()-1); i++)
         {
-            if(x == m_xpoints[i+1] && y == m_ypoints[i+1])
-                return true;
+			if (x == m_xpoints[i + 1] && y == m_ypoints[i + 1])
+			{
+				m_isValid = true;
+				return;
+			}
             else if((m_ypoints[i+1] > y) !=  (m_ypoints[i] > y))
             {
                 slope = (x - m_xpoints[i+1])*(m_ypoints[i] - m_ypoints[i+1]) - (m_xpoints[i] - m_xpoints[i+1])*(y - m_ypoints[i+1]);
-                if(slope == 0.0)
-                    return true;
-                else if ((slope < 0.0) != (m_ypoints[i] < m_ypoints[i+1]))
-                    result = !result;
+				if (slope == 0.0)
+				{
+					m_isValid = true;
+					return;
+				}
+				else if ((slope < 0.0) != (m_ypoints[i] < m_ypoints[i + 1]))
+				{
+					m_isValid = !m_isValid;
+				}
             }
         }
-		return result;
 	}
 
     //Only in ImPlot/ImGui context!!!!

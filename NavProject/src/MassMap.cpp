@@ -14,7 +14,7 @@
 */
 MassMap::MassMap()
 {
-    std::ifstream massfile("Resources/amdc2016_mass.txt");
+    std::ifstream massfile("Assets/amdc2016_mass.txt");
     if (massfile.is_open())
     {
         std::string junk, A, element;

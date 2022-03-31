@@ -39,7 +39,7 @@ namespace Navigator {
 		output << "begin_cuts" << std::endl;
 		for (auto& cut : cutList)
 		{
-			if (cut.y_par == "None")
+			if (cut.type == CutType::Cut1D)
 			{
 				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
 				output << "\tbegin_cut1D" << std::endl;
@@ -49,7 +49,7 @@ namespace Navigator {
 				output << "\t\tmaxValue: " << xpoints[1] << std::endl;
 				output << "\tend_cut1D" << std::endl;
 			}
-			else
+			else if (cut.type == CutType::Cut2D)
 			{
 				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
 				std::vector<double> ypoints = manager.GetCutYPoints(cut.name);
@@ -77,7 +77,7 @@ namespace Navigator {
 		output << "begin_histograms" << std::endl;
 		for (auto& params : histoList)
 		{
-			if (params.y_par == "None")
+			if (params.type == SpectrumType::Histo1D)
 			{
 				output << "\tbegin_histogram1D" << std::endl;
 				output << "\t\tname: " << params.name << std::endl;
@@ -99,7 +99,7 @@ namespace Navigator {
 				output << "\t\tend_cutsapplied" << std::endl;
 				output << "\tend_histogram1D" << std::endl;
 			}
-			else
+			else if (params.type == SpectrumType::Histo2D)
 			{
 				output << "\tbegin_histogram2D" << std::endl;
 				output << "\t\tname: " << params.name << std::endl;
@@ -125,6 +125,34 @@ namespace Navigator {
 				output << "\t\tend_cutsapplied" << std::endl;
 				output << "\tend_histogram2D" << std::endl;
 			}
+			else if (params.type == SpectrumType::Summary)
+			{
+				output << "\tbegin_histogramSummary" << std::endl;
+				output << "\t\tname: " << params.name << std::endl;
+				output << "\t\tNxbins: " << params.nbins_x << std::endl;
+				output << "\t\tXMin: " << params.min_x << std::endl;
+				output << "\t\tXMax: " << params.max_x << std::endl;
+				output << "\t\tbegin_subhistos" << std::endl;
+				std::vector<std::string> subhistos = manager.GetSubHistograms(params.name);
+				for (auto& name : subhistos)
+				{
+					output << "\t\t\t" << name << std::endl;
+				}
+				output << "\t\tend_subhistos" << std::endl;
+				output << "\t\tbegin_cutsdrawn" << std::endl;
+				for (const auto& name : params.cutsDrawnUpon)
+				{
+					output << "\t\t\t" << name << std::endl;
+				}
+				output << "\t\tend_cutsdrawn" << std::endl;
+				output << "\t\tbegin_cutsapplied" << std::endl;
+				for (const auto& name : params.cutsAppliedTo)
+				{
+					output << "\t\t\t" << name << std::endl;
+				}
+				output << "\t\tend_cutsapplied" << std::endl;
+				output << "\tend_histogram1D" << std::endl;
+			}
 		}
 		output << "end_histograms" << std::endl;
 
@@ -149,6 +177,7 @@ namespace Navigator {
 		CutParams cut_data, reset_cut;
 		std::vector<double> cut_xdata;
 		std::vector<double> cut_ydata;
+		std::vector<std::string> subhistos;
 		HistogramParameters hist_data, reset_hist;
 
 		while (input >> check)
@@ -162,6 +191,7 @@ namespace Navigator {
 					cut_ydata.clear();
 					if (check == "begin_cut1D")
 					{
+						cut_data.type = CutType::Cut1D;
 						input >> check >> cut_data.name;
 						input >> check >> cut_data.x_par;
 						input >> check >> value_doub;
@@ -173,6 +203,7 @@ namespace Navigator {
 					}
 					else if (check == "begin_cut2D")
 					{
+						cut_data.type = CutType::Cut2D;
 						input >> check >> cut_data.name;
 						input >> check >> cut_data.x_par;
 						input >> check >> cut_data.y_par;
@@ -214,6 +245,7 @@ namespace Navigator {
 					hist_data = reset_hist;
 					if (check == "begin_histogram1D")
 					{
+						hist_data.type = SpectrumType::Histo1D;
 						input >> check >> hist_data.name;
 						input >> check >> hist_data.x_par;
 						input >> check >> hist_data.nbins_x;
@@ -246,6 +278,7 @@ namespace Navigator {
 					}
 					else if (check == "begin_histogram2D")
 					{
+						hist_data.type = SpectrumType::Histo2D;
 						input >> check >> hist_data.name;
 						input >> check >> hist_data.x_par;
 						input >> check >> hist_data.y_par;
@@ -279,6 +312,50 @@ namespace Navigator {
 						}
 						input >> check;
 						manager.AddHistogram(hist_data);
+					}
+					else if (check == "begin_histogramSummary")
+					{
+						subhistos.clear();
+						hist_data.type = SpectrumType::Summary;
+						input >> check >> hist_data.name;
+						input >> check >> hist_data.nbins_x;
+						input >> check >> hist_data.min_x;
+						input >> check >> hist_data.max_x;
+						while (input >> check)
+						{
+							if (check == "begin_subhistos")
+								continue;
+							else if (check == "end_subhistos")
+								break;
+							else
+							{
+								subhistos.push_back(check);
+							}
+						}
+						while (input >> check)
+						{
+							if (check == "begin_cutsdrawn")
+								continue;
+							else if (check == "end_cutsdrawn")
+								break;
+							else
+							{
+								hist_data.cutsDrawnUpon.push_back(check);
+							}
+						}
+						while (input >> check)
+						{
+							if (check == "begin_cutsapplied")
+								continue;
+							else if (check == "end_cutsapplied")
+								break;
+							else
+							{
+								hist_data.cutsAppliedTo.push_back(check);
+							}
+						}
+						input >> check;
+						manager.AddHistogramSummary(hist_data, subhistos);
 					}
 					else if (check == "end_histograms")
 						break;

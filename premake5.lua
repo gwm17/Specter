@@ -161,10 +161,6 @@ project "NavProject"
 
 	systemversion "latest"
 
-	postbuildcommands {
-		(" {COPYDIR} Resources %{cfg.targetdir} ")
-	}
-
 	filter "system:macosx"
 		defines "NAV_APPLE"
 		sysincludedirs {
@@ -191,8 +187,14 @@ project "NavProject"
 		linkoptions {
 			"-pthread"
 		}
+		postbuildcommands {
+			(" {COPYDIR} Assets %{cfg.targetdir} ")
+		}
 	filter "system:windows"
 		defines "NAV_WINDOWS"
+		postbuildcommands {
+			(" {COPYDIR} Assets %{cfg.targetdir}/Assets ")
+		}
 	filter "system:linux"
 		defines "NAV_LINUX"
 		links {
@@ -205,6 +207,9 @@ project "NavProject"
 		}
 		linkoptions {
 			"-pthread"
+		}
+		postbuildcommands {
+			(" {COPYDIR} Assets %{cfg.targetdir} ")
 		}
 
 	

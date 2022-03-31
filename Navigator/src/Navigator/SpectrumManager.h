@@ -39,6 +39,7 @@ namespace Navigator {
 
 		/*Histogram Functions*/
 		void AddHistogram(const HistogramParameters& params);
+		void AddHistogramSummary(const HistogramParameters& params, const std::vector<std::string>& subhistos);
 		void RemoveHistogram(const std::string& name);
 		void AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname);
 		void AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname);
@@ -49,6 +50,7 @@ namespace Navigator {
 		const HistogramParameters& GetHistogramParams(const std::string& name);
 		float* GetColorScaleRange(const std::string& name);
         std::vector<double> GetBinData(const std::string& name);
+		std::vector<std::string> GetSubHistograms(const std::string& name);
 		StatResults AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region);
 		std::vector<HistogramParameters> GetListOfHistograms();
 		/********************/
@@ -86,7 +88,9 @@ namespace Navigator {
 		//Only used from within manager
 		void RemoveCutFromHistograms(const std::string& cutname);
 		void DrawCut(const std::string& name);
-		bool IsInsideCut(const std::string& name);
+		void CheckCuts();
+		bool IsCutValid(const std::string& name);
+		void ResetCutValidities();
 
 		static SpectrumManager* s_instance;
 

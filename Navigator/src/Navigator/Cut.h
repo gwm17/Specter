@@ -22,6 +22,13 @@
 
 namespace Navigator {
 
+	enum class CutType
+	{
+		Cut1D,
+		Cut2D,
+		None
+	};
+
 	struct NAV_API CutParams
 	{
         CutParams() {}
@@ -30,6 +37,7 @@ namespace Navigator {
 		{
 		}
 
+		CutType type = CutType::None;
 		std::string name = "None";
 		std::string x_par = "None";
 		std::string y_par = "None";
@@ -40,25 +48,27 @@ namespace Navigator {
 	public:
         
 		Cut(const CutParams& params) :
-			m_params(params)
+			m_params(params), m_isValid(false)
 		{
 		}
 
 		virtual ~Cut() {}
 
-		virtual bool IsInside(double x, double y=0.0) const = 0;
+		virtual void IsInside(double x, double y=0.0) = 0;
 		virtual void Draw() const = 0;
-		virtual bool Is1D() const = 0;
-		virtual bool Is2D() const = 0;
 		virtual std::vector<double> GetXValues() const = 0;
 		virtual std::vector<double> GetYValues() const = 0;
 
+		inline const bool IsValid() const { return m_isValid; }
+		inline void ResetValidity() { m_isValid = false; }
+		inline CutType GetType() const { return m_params.type;  }
 		inline const std::string& GetName() const { return m_params.name; }
 		inline const std::string& GetXParameter() const { return m_params.x_par; }
 		inline const std::string& GetYParameter() const { return m_params.y_par;  }
         inline const CutParams& GetCutParams() const { return m_params; }
 	protected:
 		CutParams m_params;
+		bool m_isValid;
 	};
 
 	class NAV_API Cut1D : public Cut
@@ -66,10 +76,8 @@ namespace Navigator {
 	public:
 		Cut1D(const CutParams& params, double min, double max);
 		virtual ~Cut1D();
-		virtual bool IsInside(double x, double y=0.0) const override;
+		virtual void IsInside(double x, double y=0.0) override;
 		virtual void Draw() const override;
-		virtual bool Is1D() const override { return true; }
-		virtual bool Is2D() const override { return false; }
 		virtual std::vector<double> GetXValues() const override { return std::vector<double>({ m_minVal, m_maxVal }); }
 		virtual std::vector<double> GetYValues() const override { return std::vector<double>(); }
 
@@ -82,10 +90,8 @@ namespace Navigator {
 	public:
 		Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
 		virtual ~Cut2D();
-		virtual bool IsInside(double x, double y) const override;
+		virtual void IsInside(double x, double y) override;
 		virtual void Draw() const override;
-		virtual bool Is1D() const override { return false; }
-		virtual bool Is2D() const override { return true; }
 		virtual std::vector<double> GetXValues() const override { return m_xpoints; }
 		virtual std::vector<double> GetYValues() const override { return m_ypoints; }
 

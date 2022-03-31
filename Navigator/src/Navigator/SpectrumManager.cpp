@@ -35,6 +35,12 @@ namespace Navigator {
 			m_histoMap[params.name].reset(new Histogram2D(params));
 	}
 
+	void SpectrumManager::AddHistogramSummary(const HistogramParameters& params, const std::vector<std::string>& subhistos)
+	{
+		std::lock_guard<std::mutex> guard(m_managerMutex);
+		m_histoMap[params.name].reset(new HistogramSummary(params, subhistos));
+	}
+
 	void SpectrumManager::RemoveHistogram(const std::string& name)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
@@ -61,13 +67,17 @@ namespace Navigator {
 	void SpectrumManager::UpdateHistograms()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
+
+		//Set state of all cuts for the event
+		CheckCuts();
+
 		bool cutFlag;
 		for (auto& pair : m_histoMap)
 		{
 			cutFlag = true;
-			for (auto& cutname : pair.second->GetParameters().cutsAppliedTo) //check the event against cuts
+			for (auto& cutname : pair.second->GetParameters().cutsAppliedTo) //check the associated cuts
 			{
-				if (!IsInsideCut(cutname))
+				if (!IsCutValid(cutname))
 				{
 					cutFlag = false;
 					break;
@@ -76,20 +86,44 @@ namespace Navigator {
 			if (!cutFlag)
 				continue;
 
-			if (pair.second->Is1D())
+			switch (pair.second->GetType())
 			{
-				auto iterX = m_paramMap.find(pair.second->GetXParam());
-				if (iterX != m_paramMap.end() && iterX->second->validFlag)
-					pair.second->FillData(iterX->second->value);
-			}
-			else if (pair.second->Is2D())
-			{
-				auto iterX = m_paramMap.find(pair.second->GetXParam());
-				auto iterY = m_paramMap.find(pair.second->GetYParam());
-				if (iterX != m_paramMap.end() && iterY != m_paramMap.end() &&  iterX->second->validFlag && iterY->second->validFlag)
-					pair.second->FillData(iterX->second->value, iterY->second->value);
+				case SpectrumType::Histo1D:
+				{
+					auto iterX = m_paramMap.find(pair.second->GetXParam());
+					if (iterX != m_paramMap.end() && iterX->second->validFlag)
+						pair.second->FillData(iterX->second->value);
+					break;
+				}
+				case SpectrumType::Histo2D:
+				{
+					auto iterX = m_paramMap.find(pair.second->GetXParam());
+					auto iterY = m_paramMap.find(pair.second->GetYParam());
+					if (iterX != m_paramMap.end() && iterY != m_paramMap.end() && iterX->second->validFlag && iterY->second->validFlag)
+						pair.second->FillData(iterX->second->value, iterY->second->value);
+					break;
+				}
+				case SpectrumType::Summary:
+				{
+					const std::vector<std::string>& subhistos = std::static_pointer_cast<HistogramSummary>(pair.second)->GetSubHistograms();
+					for (size_t i = 0; i < subhistos.size(); i++)
+					{
+						auto iterX = m_paramMap.find(subhistos[i]);
+						if (iterX != m_paramMap.end() && iterX->second->validFlag)
+							pair.second->FillData(iterX->second->value, i + 0.5); //avoid floating point conversion issues
+					}
+					break;
+				}
+				case SpectrumType::None:
+				{
+					NAV_WARN("Found a spectrum with None type!");
+					break;
+				}
 			}
 		}
+
+		//Reset the state of all cuts in preparation for next event
+		ResetCutValidities();
 	}
 
 	void SpectrumManager::ClearHistograms()
@@ -153,6 +187,18 @@ namespace Navigator {
 
         return std::vector<double>();
     }
+
+	std::vector<std::string> SpectrumManager::GetSubHistograms(const std::string& name)
+	{
+		std::lock_guard<std::mutex> guard(m_managerMutex);
+		auto iter = m_histoMap.find(name);
+		if (iter != m_histoMap.end() && iter->second->GetType() == SpectrumType::Summary)
+		{
+			auto gram = std::static_pointer_cast<HistogramSummary>(iter->second);
+			return gram->GetSubHistograms();
+		}
+		return std::vector<std::string>();
+	}
 
 	//Pass through for stats
 	StatResults SpectrumManager::AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region)
@@ -349,29 +395,52 @@ namespace Navigator {
 			iter->second->Draw();
 	}
 
-	//Check if event passes a cut. Only used when filling histograms.
-	bool SpectrumManager::IsInsideCut(const std::string& name)
+	//Set the state of the cuts for the current event. Called by the 
+	void SpectrumManager::CheckCuts()
 	{
-		bool result = false;
-		auto iter = m_cutMap.find(name);
-		if (iter != m_cutMap.end())
+		for (auto& iter : m_cutMap)
 		{
-			const std::string& xpar = iter->second->GetXParameter();
-			const std::string& ypar = iter->second->GetYParameter();
-			if (iter->second->Is1D())
+			const std::string& xpar = iter.second->GetXParameter();
+			const std::string& ypar = iter.second->GetYParameter();
+			switch (iter.second->GetType())
 			{
-				auto iterX = m_paramMap.find(xpar);
-				if (iterX != m_paramMap.end() && iterX->second->validFlag)
-					result = iter->second->IsInside(iterX->second->value);
-			}
-			else if (iter->second->Is2D())
-			{
-				auto iterX = m_paramMap.find(xpar);
-				auto iterY = m_paramMap.find(ypar);
-				if (iterX != m_paramMap.end() && iterX->second->validFlag && iterY != m_paramMap.end() && iterY->second->validFlag)
-					result = iter->second->IsInside(iterX->second->value, iterY->second->value);
+				case CutType::Cut1D:
+				{
+					auto iterX = m_paramMap.find(xpar);
+					if (iterX != m_paramMap.end() && iterX->second->validFlag)
+						iter.second->IsInside(iterX->second->value);
+					break;
+				}
+				case CutType::Cut2D:
+				{
+					auto iterX = m_paramMap.find(xpar);
+					auto iterY = m_paramMap.find(ypar);
+					if (iterX != m_paramMap.end() && iterX->second->validFlag && iterY != m_paramMap.end() && iterY->second->validFlag)
+						iter.second->IsInside(iterX->second->value, iterY->second->value);
+					break;
+				}
+				case CutType::None:
+				{
+					NAV_WARN("Found a cut with None type!");
+					break;
+				}
 			}
 		}
-		return result;
+	}
+
+	bool SpectrumManager::IsCutValid(const std::string& name)
+	{
+		auto iter = m_cutMap.find(name);
+		if (iter != m_cutMap.end())
+			return iter->second->IsValid();
+		return false;
+	}
+
+	void SpectrumManager::ResetCutValidities()
+	{
+		for (auto& iter : m_cutMap)
+		{
+			iter.second->ResetValidity();
+		}
 	}
 }

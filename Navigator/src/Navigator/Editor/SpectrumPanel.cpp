@@ -26,7 +26,7 @@ namespace Navigator {
     }
 
 	SpectrumPanel::SpectrumPanel() :
-        m_zoomedFlag(false), m_cutModeFlag(false), m_zoomedGram(),  m_totalSlots(1), m_nRegions(0)
+        m_zoomedFlag(false), m_cutModeFlag(false), m_acceptCutFlag(false), m_zoomedGram(),  m_totalSlots(1), m_nRegions(0)
 	{
         m_tableSizes[0] = 1; m_tableSizes[1] = 1;
 	}
@@ -37,22 +37,25 @@ namespace Navigator {
 	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList)
 	{
         static bool acceptCutFlag = false;
-        bool result = false;
+        m_result = false;
         if (ImGui::Begin("Active View"))
         {
             if (histoList.size() > 0)
             {
-                if (m_zoomedFlag && m_zoomedGram.name != "")
+                if (m_zoomedFlag && m_zoomedGram.type != SpectrumType::None)
                 {
-                    RenderCutButton();
-                    ImGui::SameLine();
+                    if (m_zoomedGram.type == SpectrumType::Histo1D || m_zoomedGram.type == SpectrumType::Histo2D)
+                    {
+                        RenderCutButton();
+                        ImGui::SameLine();
+                    }
                     if(ImGui::Button("Clear"))
                     {
                         SpectrumManager::GetInstance().ClearHistogram(m_zoomedGram.name);
                     }
                     ImGui::SameLine();
                     RenderRemoveRegionButton();
-                    if (m_zoomedGram.y_par != "None")
+                    if (m_zoomedGram.type == SpectrumType::Histo2D || m_zoomedGram.type == SpectrumType::Summary)
                     {
                         float* scale = SpectrumManager::GetInstance().GetColorScaleRange(m_zoomedGram.name);
                         ImGui::DragFloatRange2("Min / Max", &(scale[0]), &(scale[1]), 0.01f);
@@ -67,36 +70,11 @@ namespace Navigator {
                             m_zoomedFlag = false;
                             m_zoomedGram = HistogramParameters();
                         }
-                        else if (m_cutModeFlag && m_newCutParams.y_par == "None")
+                        else if (m_cutModeFlag)
                         {
-                            if (m_newCutX.size() == 2)
-                            {
-                                acceptCutFlag = true;
-                            }
-                            else if (ImPlot::IsPlotHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-                            {
-                                m_newCutX.push_back(ImPlot::GetPlotMousePos().x);
-                            }
-                            ImPlot::PlotVLines(m_newCutParams.name.c_str(), m_newCutX.data(), int(m_newCutX.size()));
-                           
+                            HandleCutMode();
                         }
-                        else if(m_cutModeFlag)
-                        {
-                            if (m_newCutX.size() >= 2 && ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-                            {
-                                acceptCutFlag = true;
-                                m_newCutX.push_back(m_newCutX[0]);
-                                m_newCutY.push_back(m_newCutY[0]);
-                            }
-                            else if (ImPlot::IsPlotHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-                            {
-                                auto point = ImPlot::GetPlotMousePos();
-                                m_newCutX.push_back(point.x);
-                                m_newCutY.push_back(point.y);
-                            }
-                            ImPlot::PlotLine(m_newCutParams.name.c_str(), m_newCutX.data(), m_newCutY.data(), int(m_newCutX.size()));
-                        }
-
+                       
                         if (ImPlot::IsPlotSelected()) {
                             auto select = ImPlot::GetPlotSelection();
                             if (ImGui::IsMouseClicked(ImPlot::GetInputMap().SelectCancel)) {
@@ -118,45 +96,13 @@ namespace Navigator {
                         }
                         ImPlot::EndPlot();
                     }
-                    
-                    if (acceptCutFlag)
-                    {
-                        acceptCutFlag = false;
-                        m_cutModeFlag = false;
-                        ImGui::OpenPopup("Accept Cut");
-                    }
-                    if (ImGui::BeginPopupModal("Accept Cut"))
-                    {
-                        ImGui::Text("Save this Cut?");
-                        if (ImGui::Button("Yes"))
-                        {
-                            if (m_newCutParams.y_par == "None")
-                            {
-                                std::sort(m_newCutX.begin(), m_newCutX.end());
-                                SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX[0], m_newCutX[1]);
-                            }
-                            else
-                            {
-                                SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX, m_newCutY);
-                            }
-                            SpectrumManager::GetInstance().AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram.name);
-                            ImGui::CloseCurrentPopup();
-                            result = true;
-                        }
-                        ImGui::SameLine();
-                        if (ImGui::Button("No"))
-                        {
-                            ImGui::CloseCurrentPopup();
-                            result = false;
-                        }
-                        ImGui::EndPopup();
-                    }
+                    RenderAcceptCutDialog();
                 }
                 else
                 {
                     ImGui::SliderInt2("Rows, Columns", m_tableSizes, 1, 3);
                     ImGui::SameLine();
-                    if(ImGui::Button("Clear All"))
+                    if (ImGui::Button("Clear All"))
                     {
                         SpectrumManager::GetInstance().ClearHistograms();
                     }
@@ -220,8 +166,81 @@ namespace Navigator {
             }
             ImGui::End();
         }
-        return result;
+        return m_result;
 	}
+
+    void SpectrumPanel::HandleCutMode()
+    {
+        switch (m_zoomedGram.type)
+        {
+        case SpectrumType::Histo1D:
+        {
+            if (m_newCutX.size() == 2)
+            {
+                m_acceptCutFlag = true;
+            }
+            else if (ImPlot::IsPlotHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            {
+                m_newCutX.push_back(ImPlot::GetPlotMousePos().x);
+            }
+            ImPlot::PlotVLines(m_newCutParams.name.c_str(), m_newCutX.data(), int(m_newCutX.size()));
+            break;
+        }
+        case SpectrumType::Histo2D:
+        {
+            if (m_newCutX.size() >= 2 && ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+            {
+                m_acceptCutFlag = true;
+                m_newCutX.push_back(m_newCutX[0]);
+                m_newCutY.push_back(m_newCutY[0]);
+            }
+            else if (ImPlot::IsPlotHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            {
+                auto point = ImPlot::GetPlotMousePos();
+                m_newCutX.push_back(point.x);
+                m_newCutY.push_back(point.y);
+            }
+            ImPlot::PlotLine(m_newCutParams.name.c_str(), m_newCutX.data(), m_newCutY.data(), int(m_newCutX.size()));
+            break;
+        }
+        }
+    }
+
+    void SpectrumPanel::RenderAcceptCutDialog()
+    {
+        if (m_acceptCutFlag)
+        {
+            m_acceptCutFlag = false;
+            m_cutModeFlag = false;
+            ImGui::OpenPopup("Accept Cut");
+        }
+        if (ImGui::BeginPopupModal("Accept Cut"))
+        {
+            ImGui::Text("Save this Cut?");
+            if (ImGui::Button("Yes"))
+            {
+                if (m_newCutParams.y_par == "None")
+                {
+                    std::sort(m_newCutX.begin(), m_newCutX.end());
+                    SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX[0], m_newCutX[1]);
+                }
+                else
+                {
+                    SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX, m_newCutY);
+                }
+                SpectrumManager::GetInstance().AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram.name);
+                ImGui::CloseCurrentPopup();
+                m_result = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("No"))
+            {
+                ImGui::CloseCurrentPopup();
+                m_result = false;
+            }
+            ImGui::EndPopup();
+        }
+    }
 
     //Renders Cut button as well as dialog for creating cuts.
     void SpectrumPanel::RenderCutButton()
@@ -237,9 +256,25 @@ namespace Navigator {
         {
             m_newCutParams.x_par = m_zoomedGram.x_par;
             m_newCutParams.y_par = m_zoomedGram.y_par;
+            switch (m_zoomedGram.type)
+            {
+                case SpectrumType::Histo1D:
+                {
+                    m_newCutParams.type = CutType::Cut1D;
+                    ImGui::BulletText("%s", ("X Parameter: " + m_newCutParams.x_par).c_str());
+                    break;
+                }
+                case SpectrumType::Histo2D:
+                {
+                    m_newCutParams.type = CutType::Cut2D;
+                    ImGui::BulletText("%s", ("X Parameter: " + m_newCutParams.x_par).c_str());
+                    ImGui::BulletText("%s", ("Y Parameter: " + m_newCutParams.y_par).c_str());
+                    break;
+                }
+                case SpectrumType::None: m_newCutParams.type = CutType::None; break;
+                case SpectrumType::Summary: m_newCutParams.type = CutType::None; break;
+            }
             ImGui::InputText("Cut Name", &m_newCutParams.name);
-            ImGui::BulletText("%s", ("X Parameter: " + m_newCutParams.x_par).c_str());
-            ImGui::BulletText("%s", ("Y Parameter: " + m_newCutParams.y_par).c_str());
             if (ImGui::Button("Accept & Draw"))
             {
                 m_cutModeFlag = true;

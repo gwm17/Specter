@@ -38,6 +38,8 @@ namespace Navigator {
 		inline const bool IsZoomed() { return m_zoomedFlag;  }
 
 	private:
+		void HandleCutMode();
+		void RenderAcceptCutDialog();
 		void RenderCutButton();
 		void RenderRemoveRegionButton();
 		void RemoveSelectedRegion(const std::string& region);
@@ -45,6 +47,8 @@ namespace Navigator {
 		std::vector<IntegrationRegion> m_integralRegions;
 		bool m_zoomedFlag;
         bool m_cutModeFlag;
+		bool m_acceptCutFlag;
+		bool m_result;
 		HistogramParameters m_zoomedGram;
 		int m_tableSizes[2];
 		int m_totalSlots;

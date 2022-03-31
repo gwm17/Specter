@@ -25,9 +25,16 @@ namespace Navigator {
 
 		inline void SetSpectrumDialog() { m_openFlag = true; }
 	private:
+		void RenderDialog1D(const std::vector<std::string>& paramList);
+		void RenderDialog2D(const std::vector<std::string>& paramList);
+		void RenderDialogSummary(const std::vector<std::string>& paramList);
+		void RenderCutDialog(const std::vector<CutParams>& cutList);
+
 		bool m_openFlag;
+		bool m_openCutFlag;
 		HistogramParameters m_newParams;
 		HistogramParameters m_blank;
+		std::vector<std::string> m_subhistos;
 
 		ImGuiSelectableFlags selectFlags;
 	};

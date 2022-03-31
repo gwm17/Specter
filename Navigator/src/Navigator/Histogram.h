@@ -28,6 +28,17 @@
 
 namespace Navigator {
 
+	enum class SpectrumType
+	{
+		Histo1D,
+		Histo2D,
+		Summary,
+		None
+	};
+
+	std::string ConvertSpectrumTypeToString(SpectrumType type);
+
+
 	struct NAV_API StatResults
 	{
 		double integral = 0.0;
@@ -51,6 +62,7 @@ namespace Navigator {
 		{
 		}
 
+		SpectrumType type = SpectrumType::None;
 		std::string name = "None";
 		std::string x_par = "None";
 		std::string y_par = "None";
@@ -81,11 +93,10 @@ namespace Navigator {
 		virtual void Draw() {}
 		virtual void ClearData() {}
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) { return StatResults();  }
-		inline virtual bool Is1D() const { return false; }
-		inline virtual bool Is2D() const { return false; }
 		inline virtual float* GetColorScaleRange() { return nullptr; }
         inline virtual std::vector<double> GetBinData() { return std::vector<double>(); }
 		inline HistogramParameters& GetParameters() { return m_params; }
+		inline SpectrumType GetType() { return m_params.type; }
 		inline const std::string& GetXParam() const { return m_params.x_par; };
 		inline const std::string& GetYParam() const { return m_params.y_par; };
 		inline const std::string& GetName() const { return m_params.name; }
@@ -106,8 +117,6 @@ namespace Navigator {
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
-		inline virtual bool Is1D() const override { return true; }
-		inline virtual bool Is2D() const override { return false; }
         inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
 
 	private:
@@ -128,8 +137,6 @@ namespace Navigator {
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
-		inline virtual bool Is1D() const override { return false; }
-		inline virtual bool Is2D() const override { return true; }
         inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
 
 		inline virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
@@ -142,6 +149,33 @@ namespace Navigator {
 		double m_binWidthY;
 		double m_binWidthX;
 		double m_maxBinContent;
+		float m_colorScaleRange[2];
+	};
+
+	class NAV_API HistogramSummary : public Histogram
+	{
+	public:
+		HistogramSummary(const HistogramParameters& params, const std::vector<std::string>& subhistos);
+		~HistogramSummary();
+
+		inline const std::vector<std::string>& GetSubHistograms() const { return m_subhistos;  }
+
+		virtual void FillData(double x, double y) override;
+		virtual void ClearData() override;
+		virtual void Draw() override;
+		inline virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
+		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
+		inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
+
+	private:
+		void InitBins();
+
+		std::vector<std::string> m_subhistos;
+		const char** m_labels;
+		std::vector<double> m_binCounts;
+		int m_nBinsTotal;
+		double m_binWidthX;
+		const double m_binWidthY = 1.0;
 		float m_colorScaleRange[2];
 	};
 
