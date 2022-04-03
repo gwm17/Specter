@@ -29,8 +29,7 @@ namespace Navigator {
 	}
 
 	FileDialog::FileDialog() :
-		m_currentPath(std::filesystem::current_path()), m_openFileName(ICON_FA_FILE " Open File"), m_saveFileName(ICON_FA_SAVE " Save File"), m_openDirName(ICON_FA_FOLDER " Open Directory"),
-		m_selectedItem(""), m_openFileFlag(false), m_saveFileFlag(false), m_openDirFlag(false)
+		m_currentPath(std::filesystem::current_path()), m_type(Type::None), m_selectedItem(""), m_openDialogFlag(false)
 	{
 		table_flags = ImGuiTableFlags_BordersH | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_RowBg;
 		select_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_DontClosePopups;
@@ -40,218 +39,227 @@ namespace Navigator {
 
 	//Each type of action has its own render function
 
-	std::string FileDialog::ImGuiRenderOpenFile(const std::string& ext)
+	std::pair<std::string, FileDialog::Type> FileDialog::RenderFileDialog(const std::string& ext)
 	{
-		if (m_openFileFlag)
+		if (m_openDialogFlag)
 		{
-			m_openFileFlag = false;
 			m_selectedItem = "";
+			m_openDialogFlag = false;
 			m_currentPath = std::filesystem::current_path();
-			ImGui::OpenPopup(m_openFileName.c_str());
+			ImGui::OpenPopup("File Dialog");
 		}
+
 		std::string result = "";
-		std::string text = "";
-		if (ImGui::BeginPopupModal(m_openFileName.c_str()))
+		if (ImGui::BeginPopupModal("File Dialog"))
 		{
-			ImGui::Text("%s", ("Current Directory: " + m_currentPath.lexically_normal().string()).c_str());
-			ImGui::SameLine();
-			ImGui::Text("%s", ("Extension Filter: "+ext).c_str());
-			ImGui::InputText("Selected", &m_selectedItem);
-			if (ImGui::Button("Ok"))
+			switch (m_type)
 			{
-				std::filesystem::path filepath = m_currentPath / m_selectedItem;
-				result = filepath.string();
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Cancel"))
-				ImGui::CloseCurrentPopup();
-			if (ImGui::BeginTable("File System", 2, table_flags, ImVec2(-1,-1)))
-			{
-				ImGui::TableSetupColumn("Name");
-				ImGui::TableSetupColumn("Size");
-				ImGui::TableHeadersRow();
-				ImGui::TableNextRow();
-				ImGui::TableNextColumn();
-				if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
+				case Type::OpenFile:
 				{
-					m_selectedItem.clear();
-					m_currentPath.append("..");
+					result = ImGuiRenderOpenFile(ext);
+					break;
 				}
-				ImGui::TableNextColumn();
-				ImGui::Text("N/A");
-				for (auto& entry : std::filesystem::directory_iterator(m_currentPath))
+				case Type::SaveFile: 
 				{
-					if (entry.is_directory())
-					{
-						ImGui::TableNextRow();
-						text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
-						ImGui::TableNextColumn();
-						if (ImGui::Selectable(text.c_str(), false, select_flags))
-						{
-							m_selectedItem.clear();
-							m_currentPath /= entry.path();
-						}
-						ImGui::TableNextColumn();
-						ImGui::Text("N/A");
-					}
-					else if(entry.path().filename().extension() == ext)
-					{
-						ImGui::TableNextRow();
-						text = ICON_FA_FILE " " + entry.path().filename().string();
-						ImGui::TableNextColumn();
-						if (ImGui::Selectable(text.c_str(), false, select_flags))
-							m_selectedItem = entry.path().filename().string();
-						ImGui::TableNextColumn();
-						ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
-					}
+					result = ImGuiRenderSaveFile(ext);
+					break;
 				}
-				ImGui::EndTable();
+				case Type::OpenDir:
+				{
+					result = ImGuiRenderOpenDir();
+					break;
+				}
+				case Type::None: break;
 			}
-			
 			ImGui::EndPopup();
 		}
 
+		return std::make_pair(result, m_type);
+	}
+
+	std::string FileDialog::ImGuiRenderOpenFile(const std::string& ext)
+	{
+		std::string result = "";
+		std::string text = "";
+		
+		ImGui::Text("%s", ("Current Directory: " + m_currentPath.lexically_normal().string()).c_str());
+		ImGui::SameLine();
+		ImGui::Text("%s", ("Extension Filter: "+ext).c_str());
+		ImGui::InputText("Selected", &m_selectedItem);
+		if (ImGui::Button("Ok"))
+		{
+			std::filesystem::path filepath = m_currentPath / m_selectedItem;
+			result = filepath.string();
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+			ImGui::CloseCurrentPopup();
+
+		if (ImGui::BeginTable("File System", 2, table_flags, ImVec2(-1, -1)))
+		{
+			ImGui::TableSetupColumn("Name");
+			ImGui::TableSetupColumn("Size");
+			ImGui::TableHeadersRow();
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
+			{
+				m_selectedItem.clear();
+				m_currentPath.append("..");
+			}
+			ImGui::TableNextColumn();
+			ImGui::Text("N/A");
+			for (auto& entry : std::filesystem::directory_iterator(m_currentPath))
+			{
+				if (entry.is_directory())
+				{
+					ImGui::TableNextRow();
+					text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
+					ImGui::TableNextColumn();
+					if (ImGui::Selectable(text.c_str(), false, select_flags))
+					{
+						m_selectedItem.clear();
+						m_currentPath /= entry.path();
+					}
+					ImGui::TableNextColumn();
+					ImGui::Text("N/A");
+				}
+				else if (entry.path().filename().extension() == ext)
+				{
+					ImGui::TableNextRow();
+					text = ICON_FA_FILE " " + entry.path().filename().string();
+					ImGui::TableNextColumn();
+					if (ImGui::Selectable(text.c_str(), false, select_flags))
+						m_selectedItem = entry.path().filename().string();
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
+				}
+			}
+			ImGui::EndTable();
+		}
 		return result;
 	}
 
 	std::string FileDialog::ImGuiRenderSaveFile(const std::string& ext)
 	{
-		if (m_saveFileFlag)
-		{
-			m_saveFileFlag = false;
-			m_selectedItem = "";
-			m_currentPath = std::filesystem::current_path();
-			ImGui::OpenPopup(m_saveFileName.c_str());
-		}
 		std::string result = "";
 		std::string text = "";
-		if (ImGui::BeginPopupModal(m_saveFileName.c_str()))
+
+		ImGui::Text("%s", ("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
+		ImGui::SameLine();
+		ImGui::Text("%s", ("Extension Filter: "+ext).c_str());
+		ImGui::InputText("Selected", &m_selectedItem);
+		if (ImGui::Button("Ok"))
 		{
-			ImGui::Text("%s", ("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
-			ImGui::SameLine();
-			ImGui::Text("%s", ("Extension Filter: "+ext).c_str());
-			ImGui::InputText("Selected", &m_selectedItem);
-			if (ImGui::Button("Ok"))
+			std::filesystem::path filepath = m_currentPath / m_selectedItem;
+			result = filepath.string();
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+			ImGui::CloseCurrentPopup();
+
+		if (ImGui::BeginTable("File System", 2, table_flags, ImVec2(-1, -1)))
+		{
+			ImGui::TableSetupColumn("Name");
+			ImGui::TableSetupColumn("Size");
+			ImGui::TableHeadersRow();
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
 			{
-				std::filesystem::path filepath = m_currentPath / m_selectedItem;
-				result = filepath.string();
-				ImGui::CloseCurrentPopup();
+				m_selectedItem.clear();
+				m_currentPath.append("..");
 			}
-			ImGui::SameLine();
-			if (ImGui::Button("Cancel"))
-				ImGui::CloseCurrentPopup();
-			if (ImGui::BeginTable("File System", 2, table_flags, ImVec2(-1, -1)))
+			ImGui::TableNextColumn();
+			ImGui::Text("N/A");
+			for (auto& entry : std::filesystem::directory_iterator(m_currentPath))
 			{
-				ImGui::TableSetupColumn("Name");
-				ImGui::TableSetupColumn("Size");
-				ImGui::TableHeadersRow();
-				ImGui::TableNextRow();
-				ImGui::TableNextColumn();
-				if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
+				if (entry.is_directory())
 				{
-					m_selectedItem.clear();
-					m_currentPath.append("..");
+					ImGui::TableNextRow();
+					text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
+					ImGui::TableNextColumn();
+					if (ImGui::Selectable(text.c_str(), false, select_flags))
+					{
+						m_selectedItem.clear();
+						m_currentPath /= entry.path();
+					}
+					ImGui::TableNextColumn();
+					ImGui::Text("N/A");
 				}
-				ImGui::TableNextColumn();
-				ImGui::Text("N/A");
-				for (auto& entry : std::filesystem::directory_iterator(m_currentPath))
+				else if (entry.path().filename().extension() == ext)
 				{
-					if (entry.is_directory())
-					{
-						ImGui::TableNextRow();
-						text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
-						ImGui::TableNextColumn();
-						if (ImGui::Selectable(text.c_str(), false, select_flags))
-						{
-							m_selectedItem.clear();
-							m_currentPath /= entry.path();
-						}
-						ImGui::TableNextColumn();
-						ImGui::Text("N/A");
-					}
-					else if (entry.path().filename().extension() == ext)
-					{
-						ImGui::TableNextRow();
-						text = ICON_FA_FILE " " + entry.path().filename().string();
-						ImGui::TableNextColumn();
-						if (ImGui::Selectable(text.c_str(), false, select_flags))
-							m_selectedItem = entry.path().filename().string();
-						ImGui::TableNextColumn();
-						ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
-					}
+					ImGui::TableNextRow();
+					text = ICON_FA_FILE " " + entry.path().filename().string();
+					ImGui::TableNextColumn();
+					if (ImGui::Selectable(text.c_str(), false, select_flags))
+						m_selectedItem = entry.path().filename().string();
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
 				}
-				ImGui::EndTable();
 			}
-			ImGui::EndPopup();
+			ImGui::EndTable();
 		}
 		return result;
 	}
 
 	std::string FileDialog::ImGuiRenderOpenDir()
 	{
-		if (m_openDirFlag)
-		{
-			m_openDirFlag = false;
-			m_currentPath = std::filesystem::current_path();
-			m_selectedItem = m_currentPath.string();
-			ImGui::OpenPopup(m_openDirName.c_str());
-		}
 		std::string result = "";
 		std::string text = "";
-		if (ImGui::BeginPopupModal(m_openDirName.c_str()))
+		
+		ImGui::Text("%s", ("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
+		ImGui::InputText("Selected", &m_selectedItem);
+		if (ImGui::Button("Ok"))
 		{
-			ImGui::Text("%s", ("Current Directory: "+m_currentPath.lexically_normal().string()).c_str());
-			ImGui::InputText("Selected", &m_selectedItem);
-			if (ImGui::Button("Ok"))
+			result = m_selectedItem;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+			ImGui::CloseCurrentPopup();
+
+		if (ImGui::BeginTable("File System", 2, table_flags, ImVec2(-1, -1)))
+		{
+			ImGui::TableSetupColumn("Name");
+			ImGui::TableSetupColumn("Size");
+			ImGui::TableHeadersRow();
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
 			{
-				result = m_selectedItem;
-				ImGui::CloseCurrentPopup();
+				m_currentPath.append("..");
+				m_selectedItem = m_currentPath.string();
 			}
-			ImGui::SameLine();
-			if (ImGui::Button("Cancel"))
-				ImGui::CloseCurrentPopup();
-			if (ImGui::BeginTable("File System", 2, table_flags, ImVec2(-1, -1)))
+			ImGui::TableNextColumn();
+			ImGui::Text("N/A");
+			for (auto& entry : std::filesystem::directory_iterator(m_currentPath))
 			{
-				ImGui::TableSetupColumn("Name");
-				ImGui::TableSetupColumn("Size");
-				ImGui::TableHeadersRow();
 				ImGui::TableNextRow();
-				ImGui::TableNextColumn();
-				if (ImGui::Selectable(ICON_FA_FOLDER " ..", false, select_flags))
+				if (entry.is_directory())
 				{
-					m_currentPath.append("..");
-					m_selectedItem = m_currentPath.string();
+					text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
+					ImGui::TableNextColumn();
+					if (ImGui::Selectable(text.c_str(), false, select_flags))
+					{
+						m_currentPath /= entry.path();
+						m_selectedItem = m_currentPath.string();
+					}
+					ImGui::TableNextColumn();
+					ImGui::Text("N/A");
 				}
-				ImGui::TableNextColumn();
-				ImGui::Text("N/A");
-				for (auto& entry : std::filesystem::directory_iterator(m_currentPath))
+				else
 				{
-					ImGui::TableNextRow();
-					if (entry.is_directory())
-					{
-						text = ICON_FA_FOLDER " " + std::filesystem::relative(entry.path(), m_currentPath).string();
-						ImGui::TableNextColumn();
-						if (ImGui::Selectable(text.c_str(), false, select_flags))
-						{
-							m_currentPath /= entry.path();
-							m_selectedItem = m_currentPath.string();
-						}
-						ImGui::TableNextColumn();
-						ImGui::Text("N/A");
-					}
-					else
-					{
-						text = ICON_FA_FILE " " + entry.path().filename().string();
-						ImGui::TableNextColumn();
-						ImGui::Text("%s", text.c_str());
-						ImGui::TableNextColumn();
-						ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
-					}
+					text = ICON_FA_FILE " " + entry.path().filename().string();
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", text.c_str());
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", ConvertFileSystemSizeToString(entry.file_size()).c_str());
 				}
-				ImGui::EndTable();
 			}
-			ImGui::EndPopup();
+			ImGui::EndTable();
 		}
 		return result;
 	}

@@ -19,41 +19,37 @@
 
 namespace Navigator {
 
+	
+
 	class NAV_API FileDialog
 	{
 	public:
+
+		enum class Type
+		{
+			OpenFile,
+			SaveFile,
+			OpenDir,
+			None
+		};
+
 		FileDialog();
 		~FileDialog();
 
+		inline void OpenDialog(Type type) { m_type = type; m_openDialogFlag = true; }
+		std::pair<std::string, Type> RenderFileDialog(const std::string& ext = "");
+
+	private:
 		std::string ImGuiRenderOpenFile(const std::string& ext);
 		std::string ImGuiRenderSaveFile(const std::string& ext);
 		std::string ImGuiRenderOpenDir();
-		
-		inline void ResetCurrentDirectory() { m_currentPath = std::filesystem::current_path();  }
 
-		inline void SetOpenFileDialog(bool value) { m_openFileFlag = value; }
-		inline void SetSaveFileDialog(bool value) { m_saveFileFlag = value; }
-		inline void SetOpenDirDialog(bool value) { m_openDirFlag = value; }
-
-		inline bool IsOpenFileOpen() { return m_openFileFlag; }
-		inline bool IsOpenDirOpen() { return m_openDirFlag; }
-		inline bool IsSaveFileOpen() { return m_saveFileFlag;  }
-	
-		inline const std::string& GetOpenFileWindowName() { return m_openFileName; }
-		inline const std::string& GetSaveFileWindowName() { return m_saveFileName; }
-		inline const std::string& GetOpenDirWindowName() { return m_openDirName; }
-		
-	private:
 		std::filesystem::path m_currentPath;
-		std::string m_openFileName;
-		std::string m_saveFileName;
-		std::string m_openDirName;
+		Type m_type;
 
 		std::string m_selectedItem;
 
-		bool m_openFileFlag;
-		bool m_saveFileFlag;
-		bool m_openDirFlag;
+		bool m_openDialogFlag;
 
 		ImGuiTableFlags table_flags;
 		ImGuiSelectableFlags select_flags;

@@ -117,11 +117,11 @@ namespace Navigator {
             {
                 if(ImGui::MenuItem(ICON_FA_FOLDER_OPEN "\tOpen"))
                 {
-                    m_fileDialog.SetOpenFileDialog(true);
+                    m_fileDialog.OpenDialog(FileDialog::Type::OpenFile);
                 }
                 if(ImGui::MenuItem(ICON_FA_SAVE "\tSave"))
                 {
-                    m_fileDialog.SetSaveFileDialog(true);
+                    m_fileDialog.OpenDialog(FileDialog::Type::SaveFile);
                 }
                 if (ImGui::MenuItem(ICON_FA_TIMES_CIRCLE "\tExit"))
                 {
@@ -174,21 +174,29 @@ namespace Navigator {
         }
 
         //Render all of our sub-windows, dialogs, panels, etc
-        std::string open_file_result = m_fileDialog.ImGuiRenderOpenFile(".nav");
-        std::string save_file_result = m_fileDialog.ImGuiRenderSaveFile(".nav");
-        if (!open_file_result.empty())
+        auto fd_result = m_fileDialog.RenderFileDialog(".nav");
+        if (!fd_result.first.empty())
         {
-            SpectrumSerializer serializer(open_file_result);
-            serializer.DeserializeData();
-            UpdateHistogramList();
-            UpdateCutList();
+            switch (fd_result.second)
+            {
+                case FileDialog::Type::OpenFile:
+                {
+                    SpectrumSerializer serializer(fd_result.first);
+                    serializer.DeserializeData();
+                    UpdateHistogramList();
+                    UpdateCutList();
+                    break;
+                }
+                case FileDialog::Type::SaveFile:
+                {
+                    NAV_INFO("Found a Save File! {0}", fd_result.first);
+                    SpectrumSerializer serializer(fd_result.first);
+                    serializer.SerializeData(m_histoList, m_cutList);
+                    break;
+                }
+            }
         }
-        else if (!save_file_result.empty())
-        {
-            NAV_INFO("Found a Save File! {0}", save_file_result);
-            SpectrumSerializer serializer(save_file_result);
-            serializer.SerializeData(m_histoList, m_cutList);
-        }
+        
         
         if(m_spectrumDialog.ImGuiRenderSpectrumDialog(m_histoList, m_cutList, m_paramList))
             UpdateHistogramList();
@@ -355,11 +363,11 @@ namespace Navigator {
             ImGui::SameLine();
             if(ImGui::Button("Open"))
             {
-                m_fileDialog.SetSaveFileDialog(true);
+                m_fileDialog.OpenDialog(FileDialog::Type::SaveFile);
             }
-            std::string result = m_fileDialog.ImGuiRenderSaveFile(".csv");
-            if(!result.empty())
-                filename = result;
+            auto result = m_fileDialog.RenderFileDialog(".csv");
+            if(!result.first.empty() && result.second == FileDialog::Type::SaveFile)
+                filename = result.first;
             if(ImGui::Button("Ok"))
             {
                 ExportHistogram(selectedGram, filename);

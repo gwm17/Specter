@@ -66,11 +66,11 @@ namespace Navigator {
 				ImGui::InputText("Run Directory", &m_chosenLocation);
 				if (ImGui::Button("Choose Location"))
 				{
-					m_fileDialog.SetOpenDirDialog(true);
+					m_fileDialog.OpenDialog(FileDialog::Type::OpenDir);
 				}
-				auto temp = m_fileDialog.ImGuiRenderOpenDir();
-				if (temp != "")
-					m_chosenLocation = temp;
+				auto temp = m_fileDialog.RenderFileDialog();
+				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
+					m_chosenLocation = temp.first;
 			}
 			ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
 
