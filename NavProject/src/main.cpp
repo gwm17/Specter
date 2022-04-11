@@ -16,6 +16,7 @@ public:
 		Navigator::Application()
 	{
 		PushLayer(new Navigator::SPSInputLayer());
+		//PushLayer(new Navigator::TestServerLayer());
 		PushAnalysisStage(new Navigator::SPSAnalysisStage());
 	}
 };

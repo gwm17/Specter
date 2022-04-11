@@ -23,6 +23,9 @@ namespace Navigator {
 
 	bool PhysicsEventBuilder::AddDatumToEvent(const NavData& datum)
 	{
+		if (datum.timestamp == 0) //Ignore empty data (need a valid timestamp)
+			return false;
+
 		if (m_eventStartTime == 0) //first ever event
 		{
 			m_eventStartTime = datum.timestamp;

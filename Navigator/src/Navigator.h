@@ -32,5 +32,6 @@
 #include "Navigator/Core/SpectrumManager.h"
 #include "Navigator/Core/Layer.h"
 #include "Navigator/Events/Event.h"
+#include "Navigator/Utils/TestServerLayer.h"
 
 #endif

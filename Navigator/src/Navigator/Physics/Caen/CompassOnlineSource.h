@@ -1,7 +1,9 @@
 /*
 	CompassOnlineSource.h
 	A data source for online CAEN CoMPASS Data. Creates a tcp socket, connects to the remote source, and pulls data to a buffer. Data is then converted
-	from the CAEN CoMPASS format to the native NavData format. Uses asio as the networking library (see asio docs).
+	from the CAEN CoMPASS format to the native NavData format. Uses asio as the networking library (see asio docs). Note that here we use syncrhonous since we
+	need to know if the buffer is/was filled, however we use non-blocking since we don't want the entire process to hang on attempting a connection or waiting
+	for data to come over the pipe. We handle the case of an un-filled buffer internally.
 
 	IMPORTANT
 	Navigator wants a unqiue ID on each hit. To do this we use the idiom:
@@ -34,7 +36,7 @@ namespace Navigator {
 		void FillBuffer();
 		void GetHit();
 		std::vector<char> m_buffer;
-		static constexpr size_t m_bufferSize = 1000000; //Max amount of data we allow the source to buffer in. I don't think this should ever be maxed?
+		static constexpr size_t m_bufferSize = 24000; //Max amount of data we allow the source to buffer in. I don't think this should ever be maxed?
 		const int m_nchannels_per_board = 16; //IMPORTANT: Used for ID'ing channels uniquely. If you use boards with 32 or 8 or 64 channels you must change this! If you mix boards with
 											  //different numbers of channels, you will have to find a different id solution.
 		char* m_bufferIter;

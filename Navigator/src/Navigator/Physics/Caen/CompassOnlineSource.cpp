@@ -1,7 +1,9 @@
 /*
 	CompassOnlineSource.cpp
 	A data source for online CAEN CoMPASS Data. Creates a tcp socket, connects to the remote source, and pulls data to a buffer. Data is then converted
-	from the CAEN CoMPASS format to the native NavData format. Uses asio as the networking library (see asio docs).
+	from the CAEN CoMPASS format to the native NavData format. Uses asio as the networking library (see asio docs). Note that here we use syncrhonous since we
+	need to know if the buffer is/was filled, however we use non-blocking since we don't want the entire process to hang on attempting a connection or waiting
+	for data to come over the pipe. We handle the case of an un-filled buffer internally.
 
 	IMPORTANT
 	Navigator wants a unqiue ID on each hit. To do this we use the idiom:
@@ -35,6 +37,7 @@ namespace Navigator {
 			asio::ip::tcp::resolver resolver(m_socketContext);
 			auto end_points = resolver.resolve(hostname, port);
 			asio::connect(m_socket, end_points);
+			m_socket.non_blocking(true); //Set the connection as non-blocking
 		}
 		catch (asio::system_error& error)
 		{
@@ -86,6 +89,10 @@ namespace Navigator {
 		{
 			NAV_WARN("CompassOnlineSource invalidated by host. Invalidating and detaching source.");
 			m_validFlag = false;
+		}
+		else if (code == asio::error::would_block) //Ignore cases where the socket would have blocked
+		{
+			return;
 		}
 		else if (code)
 		{
