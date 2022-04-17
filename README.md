@@ -22,7 +22,7 @@ Note: Mac and Windows technichally can be built using tools other than the platf
 related headers can be found.
 
 Note: On Linux distributions, typically Mesa OpenGL and X-window related header files are not installed by default. These can typically be installed using whatever package manager your distribution uses. For example,
-on Debian family distributions the necessary files can be installed using `sudo apt install libgl1-mesa libgl1-mesa-dev libglu1-mesa libglu1-mesa-dev xorg-dev mesa-utils` which should fill out all of
+on Debian family distributions the necessary files can be installed using `sudo apt install libgl1 libgl1-mesa-dev libglu1-mesa libglu1-mesa-dev xorg-dev mesa-utils` which should fill out all of
 the dependencies. If this doesn't seem to work, check your distribution related documentation for OpenGL dependencies.
 
 ## Running Navigator
