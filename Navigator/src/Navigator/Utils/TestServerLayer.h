@@ -34,6 +34,7 @@ namespace Navigator {
 	private:
 		void HandleWrite(const asio::error_code& ec, size_t bytes);
 		void CreateBinaryBuffer();
+		void CreateBinaryBufferFragmented();
 
 		asio::ip::tcp::socket m_socket;
 		std::vector<char> m_buffer;

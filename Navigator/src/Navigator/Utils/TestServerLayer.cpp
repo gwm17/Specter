@@ -19,7 +19,7 @@ namespace Navigator {
 	/* TCPConnection */
 
 	TCPConnection::TCPConnection(asio::io_context& context) :
-		m_socket(context), m_buffer(24)
+		m_socket(context), m_buffer(36)
 	{
 	}
 
@@ -27,15 +27,20 @@ namespace Navigator {
 	void TCPConnection::Start()
 	{
 		CreateBinaryBuffer(); //Generate Buffer
-
+		//CreateBinaryBufferFragmented(); //Generate fragmented buffer
 		//Actually write the buffer to the socket. Use std::bind to set a callback function for error handling or any other server side actions
-		asio::async_write(m_socket, asio::buffer(m_buffer),
+		asio::async_write(m_socket, asio::buffer(m_buffer, m_buffer.size()),
 			std::bind(&TCPConnection::HandleWrite, this, std::placeholders::_1, std::placeholders::_2)); 
 	}
 
 	//Server-side connection actions upon attempting write, only on for debugging
 	void TCPConnection::HandleWrite(const asio::error_code& ec, size_t bytes)
 	{
+		/*
+		static int i = 0;
+		if(!ec)
+			NAV_INFO("Number written: {0}", ++i);
+		*/
 		//NAV_INFO("Writer result: Asio Error -- {0} Amount transferred={1}", ec.message(), bytes);
 	}
 
@@ -53,6 +58,7 @@ namespace Navigator {
 		m_hit.sgate = 0;
 		m_hit.flags = 0;
 		m_hit.Ns = 0;
+
 
 		char* data_pointer;
 		int buffer_position = 0;
@@ -98,7 +104,167 @@ namespace Navigator {
 			m_buffer[buffer_position] = *(data_pointer + i);
 			buffer_position++;
 		}
+	}
 
+	/*
+		Create C-style binary buffer from the data struct. This is to mimic the raw data source,
+		which will have no padding, or any other normal struct related features (and note that the intrisic
+		ordering from compass ensures that padding would be placed). Here we also fragment a hit (split over 2 buffers)
+		to test ability to handle real life conditions
+
+		Note -- as implemented highlights one issue with CAEN CoMPASS sources. No headers are left in the stream,
+		so one must be CERTAIN to attach Navigator to the socket before running, otherwise fragments could lead to 
+		scrambled unpacking order. (i.e. sometimes this will work for the test and sometimes it won't)
+	*/
+	void TCPConnection::CreateBinaryBufferFragmented()
+	{
+		static std::atomic<bool> even = true;
+		m_hit.board = 8;
+		m_hit.channel = 1;
+		m_hit.timestamp = m_hit.timestamp + s_timestep;
+		m_hit.lgate = 512;
+		m_hit.sgate = 0;
+		m_hit.flags = 0;
+		m_hit.Ns = 0;
+
+		
+		char* data_pointer;
+		int buffer_position = 0;
+		if (even)
+		{
+			data_pointer = (char*)&m_hit.board;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.channel;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.timestamp;
+			for (int i = 0; i < 8; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.lgate;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.sgate;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.flags;
+			for (int i = 0; i < 4; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.Ns;
+			for (int i = 0; i < 4; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.board;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.channel;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			m_hit.timestamp += s_timestep;
+			data_pointer = (char*)&m_hit.timestamp;
+			for (int i = 0; i < 8; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			even = false;
+		}
+		else
+		{
+			data_pointer = (char*)&m_hit.lgate;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.sgate;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.flags;
+			for (int i = 0; i < 4; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.Ns;
+			for (int i = 0; i < 4; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.board;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.channel;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.timestamp;
+			for (int i = 0; i < 8; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.lgate;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.sgate;
+			for (int i = 0; i < 2; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.flags;
+			for (int i = 0; i < 4; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			data_pointer = (char*)&m_hit.Ns;
+			for (int i = 0; i < 4; i++)
+			{
+				m_buffer[buffer_position] = *(data_pointer + i);
+				buffer_position++;
+			}
+			even = true;
+		}
 	}
 
 	/* TCPServer */
