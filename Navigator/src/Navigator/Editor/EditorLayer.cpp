@@ -17,7 +17,12 @@
 #include "IconsFontAwesome5.h"
 
 namespace Navigator {
-    
+
+    bool SortByString(const std::string& p1, const std::string& p2)
+    {
+        return p1 < p2;
+    }
+
     EditorLayer::EditorLayer() :
         Layer("EditorLayer"), m_removeHistogram(false), m_removeCut(false), m_exportHistogram(false)
     {
@@ -45,16 +50,19 @@ namespace Navigator {
     void EditorLayer::UpdateHistogramList()
     {
         m_histoList = SpectrumManager::GetInstance().GetListOfHistograms();
+        std::sort(m_histoList.begin(), m_histoList.end(), SortByName<HistogramParameters>);
     }
 
     void EditorLayer::UpdateCutList()
     {
         m_cutList = SpectrumManager::GetInstance().GetListOfCuts();
+        std::sort(m_cutList.begin(), m_cutList.end(), SortByName<CutParams>);
     }
 
     void EditorLayer::UpdateParameterList()
     {
         m_paramList = SpectrumManager::GetInstance().GetListOfParameters();
+        std::sort(m_paramList.begin(), m_paramList.end(), SortByString);
     }
 
     //The main function

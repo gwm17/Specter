@@ -17,6 +17,7 @@ namespace Navigator {
 		m_openFlag(false), m_openCutFlag(false)
 	{
 		selectFlags = ImGuiSelectableFlags_DontClosePopups;
+		tableFlags = ImGuiTableFlags_BordersH | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_RowBg;
 	}
 
 	SpectrumDialog::~SpectrumDialog()
@@ -171,7 +172,6 @@ namespace Navigator {
 
 	void SpectrumDialog::RenderDialogSummary(const std::vector<std::string>& paramList)
 	{
-		static std::string selectedParam = "";
 		if (ImGui::BeginTable("SpecParamsTable", 3))
 		{
 			ImGui::TableNextRow();
@@ -193,30 +193,55 @@ namespace Navigator {
 		}
 		if (ImGui::Button("Add Parameter"))
 		{
-			selectedParam = "";
+			m_subhistos.clear();
 			ImGui::OpenPopup("Param List");
 		}
-		if (ImGui::BeginPopup("Param List"))
+		if (ImGui::BeginPopupModal("Param List"))
 		{
-			if (ImGui::BeginCombo("Parameter", selectedParam.c_str()))
-			{
-				for (auto& param : paramList)
-				{
-					if (ImGui::Selectable(param.c_str(), param == selectedParam, selectFlags))
-						selectedParam = param;
-				}
-				ImGui::EndCombo();
-			}
 			if (ImGui::Button("Ok"))
 			{
-				m_subhistos.push_back(selectedParam);
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Cancel"))
 			{
+				m_subhistos.clear();
 				ImGui::CloseCurrentPopup();
 			}
+
+			auto check_func = [this](const std::string& name)
+			{
+				for (auto& par : m_subhistos)
+				{
+					if (name == par)
+						return true;
+				}
+				return false;
+			};
+
+			if (ImGui::BeginTable("Parameters", 1, tableFlags, ImVec2(-1, -1)))
+			{
+				for (auto& param : paramList)
+				{
+					ImGui::TableNextRow();
+					ImGui::TableNextColumn();
+					if (ImGui::Selectable(param.c_str(), check_func(param), selectFlags))
+					{
+						if (!check_func(param))
+						{
+							m_subhistos.push_back(param);
+						}
+						else
+						{
+							auto iter = std::remove(m_subhistos.begin(), m_subhistos.end(), param);
+							m_subhistos.erase(iter, m_subhistos.end());
+						}
+					}
+				}
+
+				ImGui::EndTable();
+			}
+			
 			ImGui::EndPopup();
 		}
 	}

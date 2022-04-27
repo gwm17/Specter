@@ -36,7 +36,7 @@ namespace Navigator {
         virtual void OnUpdate() override;
         virtual void OnEvent(Event& event) override;
 
-        
+
     private:
         void RemoveCutDialog();
         void RemoveHistogramDialog();
@@ -69,6 +69,12 @@ namespace Navigator {
         bool m_removeCut;
         bool m_exportHistogram;
     };
+
+    template<typename T>
+    bool SortByName(const T& p1, const T& p2)
+    {
+        return p1.name < p2.name;
+    }
 
 }
 

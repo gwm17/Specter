@@ -37,6 +37,7 @@ namespace Navigator {
 		std::vector<std::string> m_subhistos;
 
 		ImGuiSelectableFlags selectFlags;
+		ImGuiTableFlags tableFlags;
 	};
 
 }
