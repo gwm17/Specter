@@ -2,10 +2,10 @@
 	Cut.h
 	Cut related classes. A cut here is defined as a filter upon a histogram based on some range for a parameter or set of parameters.
 
-	CutParams is the underlying data that defines a cut (excluding the actual points).
+	CutArgs is the underlying data that defines a cut (excluding the actual points).
 
 	Cut is the base class for all cut objects. Should not be used in practice. All cut objects have functions which can query what kind of cut it is. If one has the cut object,
-	Is1D() or Is2D() can be called. If one has the CutParams, a 1D cut will have y_par set to "None" while a 2D cut will have a valid parameter name.
+	Is1D() or Is2D() can be called. If one has the CutArgs, a 1D cut will have y_par set to "None" while a 2D cut will have a valid parameter name.
 
 	Cut1D is a one-dimensional (single parameter cut) while Cut2D is a two-dimensional (two parameter cut). There are a few differences between 1D and 2D cuts. 
 	A Cut1D only contains two values, a min and a max. The parameter is checked that it falls within these bounds.
@@ -29,10 +29,10 @@ namespace Navigator {
 		None
 	};
 
-	struct NAV_API CutParams
+	struct NAV_API CutArgs
 	{
-        CutParams() {}
-		CutParams(const std::string& n, const std::string& x, const std::string& y = "None") :
+        CutArgs() {}
+		CutArgs(const std::string& n, const std::string& x, const std::string& y = "None") :
 			name(n), x_par(x), y_par(y)
 		{
 		}
@@ -47,7 +47,7 @@ namespace Navigator {
 	{
 	public:
         
-		Cut(const CutParams& params) :
+		Cut(const CutArgs& params) :
 			m_params(params), m_isValid(false)
 		{
 		}
@@ -65,16 +65,16 @@ namespace Navigator {
 		inline const std::string& GetName() const { return m_params.name; }
 		inline const std::string& GetXParameter() const { return m_params.x_par; }
 		inline const std::string& GetYParameter() const { return m_params.y_par;  }
-        inline const CutParams& GetCutParams() const { return m_params; }
+        inline const CutArgs& GetCutArgs() const { return m_params; }
 	protected:
-		CutParams m_params;
+		CutArgs m_params;
 		bool m_isValid;
 	};
 
 	class NAV_API Cut1D : public Cut
 	{
 	public:
-		Cut1D(const CutParams& params, double min, double max);
+		Cut1D(const CutArgs& params, double min, double max);
 		virtual ~Cut1D();
 		virtual void IsInside(double x, double y=0.0) override;
 		virtual void Draw() const override;
@@ -88,7 +88,7 @@ namespace Navigator {
 	class NAV_API Cut2D : public Cut
 	{
 	public:
-		Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
+		Cut2D(const CutArgs& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
 		virtual ~Cut2D();
 		virtual void IsInside(double x, double y) override;
 		virtual void Draw() const override;

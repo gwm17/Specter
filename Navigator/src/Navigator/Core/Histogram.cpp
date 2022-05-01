@@ -5,11 +5,11 @@
 	thousands to millions of events. In the ImPlot paradigm we would need to loop over all of this data and bin it, not to mention explicitly store all of this data in memory for every histogram. I point this
 	out not to say that ImPlot histograms are bad intrinsically, because they definitely have a use for smaller data sets, but rather to explain why for this program I have re-invented the wheel somewhat.
 
-	HistogramParameters are the underlying data which define a histogram. This is grouped in a struct to easily pass these around for use in contexts like the Editor.
+	HistogramArgs are the underlying data which define a histogram. This is grouped in a struct to easily pass these around for use in contexts like the Editor.
 	Every histogram has a set of histogram parameters.
 
 	Histogram is the base class of all histograms. Should not be used in practice. Every histogram contains functions to query what type of underlying histogram it is. If one has
-	the Histogram object, Is1D() or Is2D() can be called. If one only has the HistogramParameters, the values of x_par and y_par can be inspected. In particular, a 1D histogram will have
+	the Histogram object, Is1D() or Is2D() can be called. If one only has the HistogramArgs, the values of x_par and y_par can be inspected. In particular, a 1D histogram will have
 	y_par set to "None", while a 2D histogram should have a valid parameter name for y_par.
 
 	Histogram1D is a one dimensional (single parameter) histogram. Histogram2D is a two dimensional (two parameter) histogram. The only real difference between these in practice, other than
@@ -46,7 +46,7 @@ namespace Navigator {
 	/*
 		1D Histogram class
 	*/
-	Histogram1D::Histogram1D(const HistogramParameters& params) :
+	Histogram1D::Histogram1D(const HistogramArgs& params) :
 		Histogram(params)
 	{
 		InitBins();
@@ -136,7 +136,7 @@ namespace Navigator {
 		2D Histogram class
 		Note for 2D: Rendering is done from top left to bottom right. So ybins run from top to bottom (ymin is last row, ymax is first row)
 	*/
-	Histogram2D::Histogram2D(const HistogramParameters& params) :
+	Histogram2D::Histogram2D(const HistogramArgs& params) :
 		Histogram(params)
 	{
 		m_colorScaleRange[0] = 0.0f;
@@ -278,7 +278,7 @@ namespace Navigator {
 		-- Literally everything hahaha
 	*/
 
-	HistogramSummary::HistogramSummary(const HistogramParameters& params, const std::vector<std::string>& subhistos) :
+	HistogramSummary::HistogramSummary(const HistogramArgs& params, const std::vector<std::string>& subhistos) :
 		Histogram(params), m_subhistos(subhistos), m_labels(nullptr)
 	{
 		m_colorScaleRange[0] = 0.0f;

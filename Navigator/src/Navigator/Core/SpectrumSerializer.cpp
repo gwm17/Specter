@@ -25,7 +25,7 @@ namespace Navigator {
 
 	SpectrumSerializer::~SpectrumSerializer() {}
 
-	void SpectrumSerializer::SerializeData(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList)
+	void SpectrumSerializer::SerializeData(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList)
 	{
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 
@@ -174,11 +174,11 @@ namespace Navigator {
 
 		std::string check;
 		double value_doub;
-		CutParams cut_data, reset_cut;
+		CutArgs cut_data, reset_cut;
 		std::vector<double> cut_xdata;
 		std::vector<double> cut_ydata;
 		std::vector<std::string> subhistos;
-		HistogramParameters hist_data, reset_hist;
+		HistogramArgs hist_data, reset_hist;
 
 		while (input >> check)
 		{

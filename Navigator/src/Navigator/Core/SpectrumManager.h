@@ -38,8 +38,8 @@ namespace Navigator {
 		}
 
 		/*Histogram Functions*/
-		void AddHistogram(const HistogramParameters& params);
-		void AddHistogramSummary(const HistogramParameters& params, const std::vector<std::string>& subhistos);
+		void AddHistogram(const HistogramArgs& params);
+		void AddHistogramSummary(const HistogramArgs& params, const std::vector<std::string>& subhistos);
 		void RemoveHistogram(const std::string& name);
 		void AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname);
 		void AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname);
@@ -47,12 +47,12 @@ namespace Navigator {
 		void ClearHistograms();
 		void ClearHistogram(const std::string& name);
 		void DrawHistogram(const std::string& name);
-		const HistogramParameters& GetHistogramParams(const std::string& name);
+		const HistogramArgs& GetHistogramParams(const std::string& name);
 		float* GetColorScaleRange(const std::string& name);
         std::vector<double> GetBinData(const std::string& name);
 		std::vector<std::string> GetSubHistograms(const std::string& name);
 		StatResults AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region);
-		std::vector<HistogramParameters> GetListOfHistograms();
+		std::vector<HistogramArgs> GetListOfHistograms();
 		/********************/
 
 		/*Parameter Functions*/
@@ -68,12 +68,12 @@ namespace Navigator {
 		/********************/
 
 		/*Cut Functions*/
-		inline void AddCut(const CutParams& params, double min, double max)
+		inline void AddCut(const CutArgs& params, double min, double max)
 		{
 			std::lock_guard<std::mutex> guard(m_managerMutex);
 			m_cutMap[params.name].reset(new Cut1D(params, min, max));
 		}
-		inline void AddCut(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
+		inline void AddCut(const CutArgs& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
 		{
 			std::lock_guard<std::mutex> guard(m_managerMutex);
 			m_cutMap[params.name].reset(new Cut2D(params, xpoints, ypoints));
@@ -81,7 +81,7 @@ namespace Navigator {
 		void RemoveCut(const std::string& name);
 		std::vector<double> GetCutXPoints(const std::string& name);
 		std::vector<double> GetCutYPoints(const std::string& name);
-		std::vector<CutParams> GetListOfCuts();
+		std::vector<CutArgs> GetListOfCuts();
 		/**************/
 
 	private:
@@ -100,7 +100,7 @@ namespace Navigator {
 		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_paramMap;
 		std::unordered_map<std::string, std::shared_ptr<std::atomic<double>>> m_varMap;
 
-		HistogramParameters m_nullHistoResult; //For handling bad query
+		HistogramArgs m_nullHistoResult; //For handling bad query
 
 		std::mutex m_managerMutex; //synchronization
 	};

@@ -50,13 +50,13 @@ namespace Navigator {
     void EditorLayer::UpdateHistogramList()
     {
         m_histoList = SpectrumManager::GetInstance().GetListOfHistograms();
-        std::sort(m_histoList.begin(), m_histoList.end(), SortByName<HistogramParameters>);
+        std::sort(m_histoList.begin(), m_histoList.end(), SortByName<HistogramArgs>);
     }
 
     void EditorLayer::UpdateCutList()
     {
         m_cutList = SpectrumManager::GetInstance().GetListOfCuts();
-        std::sort(m_cutList.begin(), m_cutList.end(), SortByName<CutParams>);
+        std::sort(m_cutList.begin(), m_cutList.end(), SortByName<CutArgs>);
     }
 
     void EditorLayer::UpdateParameterList()
@@ -348,11 +348,11 @@ namespace Navigator {
     void EditorLayer::ExportHistogramDialog()
     {
         static std::string filename = "";
-        static HistogramParameters selectedGram = HistogramParameters();
+        static HistogramArgs selectedGram = HistogramArgs();
         if(m_exportHistogram)
         {
             filename = "";
-            selectedGram = HistogramParameters();
+            selectedGram = HistogramArgs();
             m_exportHistogram = false;
             ImGui::OpenPopup("Export Histogram");
         }
@@ -388,7 +388,7 @@ namespace Navigator {
         }
     }
 
-    void EditorLayer::ExportHistogram(HistogramParameters selectedGram, const std::string& filename)
+    void EditorLayer::ExportHistogram(HistogramArgs selectedGram, const std::string& filename)
     {
         std::ofstream output(filename);
         if(!output.is_open())

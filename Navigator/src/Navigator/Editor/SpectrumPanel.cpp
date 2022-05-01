@@ -34,7 +34,7 @@ namespace Navigator {
 	SpectrumPanel::~SpectrumPanel() {}
 
     //Main render function. Handles generating subplot regions as well as the zoomed in region
-	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList)
+	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
 	{
         static bool acceptCutFlag = false;
         m_result = false;
@@ -68,7 +68,7 @@ namespace Navigator {
                         if (!m_cutModeFlag && ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
                             m_zoomedFlag = false;
-                            m_zoomedGram = HistogramParameters();
+                            m_zoomedGram = HistogramArgs();
                         }
                         else if (m_cutModeFlag)
                         {
@@ -183,7 +183,7 @@ namespace Navigator {
             {
                 m_newCutX.push_back(ImPlot::GetPlotMousePos().x);
             }
-            ImPlot::PlotVLines(m_newCutParams.name.c_str(), m_newCutX.data(), int(m_newCutX.size()));
+            ImPlot::PlotVLines(m_newCutArgs.name.c_str(), m_newCutX.data(), int(m_newCutX.size()));
             break;
         }
         case SpectrumType::Histo2D:
@@ -200,7 +200,7 @@ namespace Navigator {
                 m_newCutX.push_back(point.x);
                 m_newCutY.push_back(point.y);
             }
-            ImPlot::PlotLine(m_newCutParams.name.c_str(), m_newCutX.data(), m_newCutY.data(), int(m_newCutX.size()));
+            ImPlot::PlotLine(m_newCutArgs.name.c_str(), m_newCutX.data(), m_newCutY.data(), int(m_newCutX.size()));
             break;
         }
         }
@@ -219,16 +219,16 @@ namespace Navigator {
             ImGui::Text("Save this Cut?");
             if (ImGui::Button("Yes"))
             {
-                if (m_newCutParams.y_par == "None")
+                if (m_newCutArgs.y_par == "None")
                 {
                     std::sort(m_newCutX.begin(), m_newCutX.end());
-                    SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX[0], m_newCutX[1]);
+                    SpectrumManager::GetInstance().AddCut(m_newCutArgs, m_newCutX[0], m_newCutX[1]);
                 }
                 else
                 {
-                    SpectrumManager::GetInstance().AddCut(m_newCutParams, m_newCutX, m_newCutY);
+                    SpectrumManager::GetInstance().AddCut(m_newCutArgs, m_newCutX, m_newCutY);
                 }
-                SpectrumManager::GetInstance().AddCutToHistogramDraw(m_newCutParams.name, m_zoomedGram.name);
+                SpectrumManager::GetInstance().AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
                 ImGui::CloseCurrentPopup();
                 m_result = true;
             }
@@ -247,34 +247,34 @@ namespace Navigator {
     {
         if (ImGui::Button(ICON_FA_CUT " Draw Cut"))
         {
-            m_newCutParams = CutParams();
+            m_newCutArgs = CutArgs();
             m_newCutX.resize(0);
             m_newCutY.resize(0);
             ImGui::OpenPopup(ICON_FA_CUT " New Cut Dialog");
         }
         if (ImGui::BeginPopupModal(ICON_FA_CUT " New Cut Dialog"))
         {
-            m_newCutParams.x_par = m_zoomedGram.x_par;
-            m_newCutParams.y_par = m_zoomedGram.y_par;
+            m_newCutArgs.x_par = m_zoomedGram.x_par;
+            m_newCutArgs.y_par = m_zoomedGram.y_par;
             switch (m_zoomedGram.type)
             {
                 case SpectrumType::Histo1D:
                 {
-                    m_newCutParams.type = CutType::Cut1D;
-                    ImGui::BulletText("%s", ("X Parameter: " + m_newCutParams.x_par).c_str());
+                    m_newCutArgs.type = CutType::Cut1D;
+                    ImGui::BulletText("%s", ("X Parameter: " + m_newCutArgs.x_par).c_str());
                     break;
                 }
                 case SpectrumType::Histo2D:
                 {
-                    m_newCutParams.type = CutType::Cut2D;
-                    ImGui::BulletText("%s", ("X Parameter: " + m_newCutParams.x_par).c_str());
-                    ImGui::BulletText("%s", ("Y Parameter: " + m_newCutParams.y_par).c_str());
+                    m_newCutArgs.type = CutType::Cut2D;
+                    ImGui::BulletText("%s", ("X Parameter: " + m_newCutArgs.x_par).c_str());
+                    ImGui::BulletText("%s", ("Y Parameter: " + m_newCutArgs.y_par).c_str());
                     break;
                 }
-                case SpectrumType::None: m_newCutParams.type = CutType::None; break;
-                case SpectrumType::Summary: m_newCutParams.type = CutType::None; break;
+                case SpectrumType::None: m_newCutArgs.type = CutType::None; break;
+                case SpectrumType::Summary: m_newCutArgs.type = CutType::None; break;
             }
-            ImGui::InputText("Cut Name", &m_newCutParams.name);
+            ImGui::InputText("Cut Name", &m_newCutArgs.name);
             if (ImGui::Button("Accept & Draw"))
             {
                 m_cutModeFlag = true;

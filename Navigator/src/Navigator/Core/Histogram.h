@@ -5,11 +5,11 @@
 	thousands to millions of events. In the ImPlot paradigm we would need to loop over all of this data and bin it, not to mention explicitly store all of this data in memory for every histogram. I point this
 	out not to say that ImPlot histograms are bad intrinsically, because they definitely have a use for smaller data sets, but rather to explain why for this program I have re-invented the wheel somewhat. 
 
-	HistogramParameters are the underlying data which define a histogram. This is grouped in a struct to easily pass these around for use in contexts like the Editor.
+	HistogramArgs are the underlying data which define a histogram. This is grouped in a struct to easily pass these around for use in contexts like the Editor.
 	Every histogram has a set of histogram parameters.
 
 	Histogram is the base class of all histograms. Should not be used in practice. Every histogram contains functions to query what type of underlying histogram it is. If one has
-	the Histogram object, Is1D() or Is2D() can be called. If one only has the HistogramParameters, the values of x_par and y_par can be inspected. In particular, a 1D histogram will have
+	the Histogram object, Is1D() or Is2D() can be called. If one only has the HistogramArgs, the values of x_par and y_par can be inspected. In particular, a 1D histogram will have
 	y_par set to "None", while a 2D histogram should have a valid parameter name for y_par.
 
 	Histogram1D is a one dimensional (single parameter) histogram. Histogram2D is a two dimensional (two parameter) histogram. The only real difference between these in practice, other than
@@ -48,16 +48,16 @@ namespace Navigator {
 		double sigma_y = 0.0;
 	};
 
-	struct NAV_API HistogramParameters
+	struct NAV_API HistogramArgs
 	{
-		HistogramParameters() {}
+		HistogramArgs() {}
 
-		HistogramParameters(const std::string& n, const std::string& x, int bins, double min, double max) :
+		HistogramArgs(const std::string& n, const std::string& x, int bins, double min, double max) :
 			name(n), x_par(x), nbins_x(bins), min_x(min), max_x(max)
 		{
 		}
 
-		HistogramParameters(const std::string& n, const std::string& x, const std::string& y, int binsx, double minx, double maxx, int binsy, double miny, double maxy) :
+		HistogramArgs(const std::string& n, const std::string& x, const std::string& y, int binsx, double minx, double maxx, int binsy, double miny, double maxy) :
 			name(n), x_par(x), y_par(y), nbins_x(binsx), min_x(minx), max_x(maxx), nbins_y(binsy), min_y(miny), max_y(maxy)
 		{
 		}
@@ -83,7 +83,7 @@ namespace Navigator {
 			m_initFlag(false)
 		{
 		}
-		Histogram(const HistogramParameters& params) :
+		Histogram(const HistogramArgs& params) :
 			m_params(params), m_initFlag(false)
 		{
 		}
@@ -95,7 +95,7 @@ namespace Navigator {
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) { return StatResults();  }
 		inline virtual float* GetColorScaleRange() { return nullptr; }
         inline virtual std::vector<double> GetBinData() { return std::vector<double>(); }
-		inline HistogramParameters& GetParameters() { return m_params; }
+		inline HistogramArgs& GetParameters() { return m_params; }
 		inline SpectrumType GetType() { return m_params.type; }
 		inline const std::string& GetXParam() const { return m_params.x_par; };
 		inline const std::string& GetYParam() const { return m_params.y_par; };
@@ -104,14 +104,14 @@ namespace Navigator {
         inline void AddCutToBeApplied(const std::string& name) { m_params.cutsAppliedTo.push_back(name); }
 
 	protected:
-		HistogramParameters m_params;
+		HistogramArgs m_params;
 		bool m_initFlag;
 	};
 
 	class NAV_API Histogram1D : public Histogram
 	{
 	public:
-		Histogram1D(const HistogramParameters& params);
+		Histogram1D(const HistogramArgs& params);
 		virtual ~Histogram1D();
 		virtual void FillData(double x, double y=0.0) override;
 		virtual void Draw() override;
@@ -131,7 +131,7 @@ namespace Navigator {
 	class NAV_API Histogram2D : public Histogram
 	{
 	public:
-		Histogram2D(const HistogramParameters& params);
+		Histogram2D(const HistogramArgs& params);
 		virtual ~Histogram2D();
 		virtual void FillData(double x, double y) override;
 		virtual void Draw() override;
@@ -155,7 +155,7 @@ namespace Navigator {
 	class NAV_API HistogramSummary : public Histogram
 	{
 	public:
-		HistogramSummary(const HistogramParameters& params, const std::vector<std::string>& subhistos);
+		HistogramSummary(const HistogramArgs& params, const std::vector<std::string>& subhistos);
 		~HistogramSummary();
 
 		inline const std::vector<std::string>& GetSubHistograms() const { return m_subhistos;  }

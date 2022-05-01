@@ -33,7 +33,7 @@ namespace Navigator {
 		SpectrumPanel();
 		~SpectrumPanel();
 	
-		bool OnImGuiRender(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList);
+		bool OnImGuiRender(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList);
 		inline const std::string& GetZoomedOnHistogram() { return m_zoomedGram.name;  }
 		inline const bool IsZoomed() { return m_zoomedFlag;  }
 
@@ -43,17 +43,17 @@ namespace Navigator {
 		void RenderCutButton();
 		void RenderRemoveRegionButton();
 		void RemoveSelectedRegion(const std::string& region);
-		std::vector<HistogramParameters> m_selectedGrams;
+		std::vector<HistogramArgs> m_selectedGrams;
 		std::vector<IntegrationRegion> m_integralRegions;
 		bool m_zoomedFlag;
         bool m_cutModeFlag;
 		bool m_acceptCutFlag;
 		bool m_result;
-		HistogramParameters m_zoomedGram;
+		HistogramArgs m_zoomedGram;
 		int m_tableSizes[2];
 		int m_totalSlots;
 		int m_nRegions;
-		CutParams m_newCutParams;
+		CutArgs m_newCutArgs;
 		std::vector<double> m_newCutX;
 		std::vector<double> m_newCutY;
 	};

@@ -44,7 +44,7 @@ namespace Navigator {
         void UpdateHistogramList();
         void UpdateCutList();
         void UpdateParameterList(); //Currently not really used, only once. Params all made at construction time of PhysicsLayer
-        void ExportHistogram(HistogramParameters selectedGram, const std::string& filename);
+        void ExportHistogram(HistogramArgs selectedGram, const std::string& filename);
 
         EventCallbackFunc m_callbackFunc;
 
@@ -54,8 +54,8 @@ namespace Navigator {
         SourceDialog m_sourceDialog;
 
 
-        std::vector<HistogramParameters> m_histoList;
-        std::vector<CutParams> m_cutList;
+        std::vector<HistogramArgs> m_histoList;
+        std::vector<CutArgs> m_cutList;
         std::vector<std::string> m_paramList;
 
         //ImGui Settings

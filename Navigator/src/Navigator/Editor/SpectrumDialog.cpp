@@ -24,7 +24,7 @@ namespace Navigator {
 	{
 	}
 
-	bool SpectrumDialog::ImGuiRenderSpectrumDialog(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList, const std::vector<std::string>& paramList)
+	bool SpectrumDialog::ImGuiRenderSpectrumDialog(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
 	{
 		static std::string selectedCut = "";
 		bool result = false;
@@ -246,7 +246,7 @@ namespace Navigator {
 		}
 	}
 
-	void SpectrumDialog::RenderCutDialog(const std::vector<CutParams>& cutList)
+	void SpectrumDialog::RenderCutDialog(const std::vector<CutArgs>& cutList)
 	{
 		static std::string selectedCut = "";
 		if (m_openCutFlag)

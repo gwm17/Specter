@@ -25,7 +25,7 @@ namespace Navigator {
 		SpectrumSerializer(const std::string& filepath);
 		~SpectrumSerializer();
 
-		void SerializeData(const std::vector<HistogramParameters>& histoList, const std::vector<CutParams>& cutList);
+		void SerializeData(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList);
 		void DeserializeData();
 
 		inline const std::string& GetFilename() { return m_filename; }

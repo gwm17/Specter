@@ -26,7 +26,7 @@ namespace Navigator {
 
 	/*************Histogram Functions Begin*************/
 
-	void SpectrumManager::AddHistogram(const HistogramParameters& params)
+	void SpectrumManager::AddHistogram(const HistogramArgs& params)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
 		if (params.y_par == "None") //Check dimensionality
@@ -35,7 +35,7 @@ namespace Navigator {
 			m_histoMap[params.name].reset(new Histogram2D(params));
 	}
 
-	void SpectrumManager::AddHistogramSummary(const HistogramParameters& params, const std::vector<std::string>& subhistos)
+	void SpectrumManager::AddHistogramSummary(const HistogramArgs& params, const std::vector<std::string>& subhistos)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
 		m_histoMap[params.name].reset(new HistogramSummary(params, subhistos));
@@ -153,7 +153,7 @@ namespace Navigator {
 		}
 	}
 
-	const HistogramParameters& SpectrumManager::GetHistogramParams(const std::string& name)
+	const HistogramArgs& SpectrumManager::GetHistogramParams(const std::string& name)
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
@@ -213,10 +213,10 @@ namespace Navigator {
 
 	//This function allows us to obtain the key histogram info in a list, avoiding excessive manager calls and thread-locks
 	//in something like the Editor.
-	std::vector<HistogramParameters> SpectrumManager::GetListOfHistograms()
+	std::vector<HistogramArgs> SpectrumManager::GetListOfHistograms()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
-		std::vector<HistogramParameters> list;
+		std::vector<HistogramArgs> list;
 		list.reserve(m_histoMap.size());
 		for (auto& gram : m_histoMap)
 		{
@@ -259,7 +259,7 @@ namespace Navigator {
 		auto histoIter = m_histoMap.find(param.GetName());
 		if (histoIter == m_histoMap.end())
 		{
-			HistogramParameters histo(param.GetName(), param.GetName(), nbins, minVal, maxVal);
+			HistogramArgs histo(param.GetName(), param.GetName(), nbins, minVal, maxVal);
 			m_histoMap[param.GetName()].reset(new Histogram1D(histo));
 		}
 	}
@@ -346,13 +346,13 @@ namespace Navigator {
 	}
 
 	//Similar to GetListOfHistograms, see that documentation
-	std::vector<CutParams> SpectrumManager::GetListOfCuts()
+	std::vector<CutArgs> SpectrumManager::GetListOfCuts()
 	{
 		std::lock_guard<std::mutex> guard(m_managerMutex);
-		std::vector<CutParams> list;
+		std::vector<CutArgs> list;
 		list.reserve(m_cutMap.size());
 		for (auto& entry : m_cutMap)
-			list.push_back(entry.second->GetCutParams());
+			list.push_back(entry.second->GetCutArgs());
 		return list;
 	}
 

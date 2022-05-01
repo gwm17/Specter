@@ -2,10 +2,10 @@
 	Cut.cpp
 	Cut related classes. A cut here is defined as a filter upon a histogram based on some range for a parameter or set of parameters.
 
-	CutParams is the underlying data that defines a cut (excluding the actual points).
+	CutArgs is the underlying data that defines a cut (excluding the actual points).
 
 	Cut is the base class for all cut objects. Should not be used in practice. All cut objects have functions which can query what kind of cut it is. If one has the cut object,
-	Is1D() or Is2D() can be called. If one has the CutParams, a 1D cut will have y_par set to "None" while a 2D cut will have a valid parameter name.
+	Is1D() or Is2D() can be called. If one has the CutArgs, a 1D cut will have y_par set to "None" while a 2D cut will have a valid parameter name.
 
 	Cut1D is a one-dimensional (single parameter cut) while Cut2D is a two-dimensional (two parameter cut). There are a few differences between 1D and 2D cuts.
 	A Cut1D only contains two values, a min and a max. The parameter is checked that it falls within these bounds.
@@ -20,7 +20,7 @@
 namespace Navigator {
 
 	/*1D Cuts -- Can be made on and applied to either 1D or 2D histograms*/
-	Cut1D::Cut1D(const CutParams& params, double min, double max) :
+	Cut1D::Cut1D(const CutArgs& params, double min, double max) :
 		Cut(params), m_minVal(min), m_maxVal(max)
 	{
 		m_params.type = CutType::Cut1D;
@@ -41,7 +41,7 @@ namespace Navigator {
 	}
 
 	/*2D Cuts -- Can only be made on 2D histogram, but applied to either 1D or 2D histograms*/
-    Cut2D::Cut2D(const CutParams& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints) :
+    Cut2D::Cut2D(const CutArgs& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints) :
         Cut(params), m_xpoints(xpoints), m_ypoints(ypoints)
 	{
 		m_params.type = CutType::Cut2D;
