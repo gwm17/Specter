@@ -78,9 +78,15 @@ namespace Navigator {
 			std::lock_guard<std::mutex> guard(m_managerMutex);
 			m_cutMap[params.name].reset(new Cut2D(params, xpoints, ypoints));
 		}
+		inline void AddCut(const CutArgs& params, const std::vector<std::string>& subhistos, double min, double max)
+		{
+			std::lock_guard<std::mutex> guard(m_managerMutex);
+			m_cutMap[params.name].reset(new CutSummary(params, subhistos, min, max));
+		}
 		void RemoveCut(const std::string& name);
 		std::vector<double> GetCutXPoints(const std::string& name);
 		std::vector<double> GetCutYPoints(const std::string& name);
+		std::vector<std::string> GetCutSubHistograms(const std::string& cutname);
 		std::vector<CutArgs> GetListOfCuts();
 		/**************/
 

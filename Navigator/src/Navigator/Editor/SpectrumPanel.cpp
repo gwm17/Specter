@@ -44,11 +44,8 @@ namespace Navigator {
             {
                 if (m_zoomedFlag && m_zoomedGram.type != SpectrumType::None)
                 {
-                    if (m_zoomedGram.type == SpectrumType::Histo1D || m_zoomedGram.type == SpectrumType::Histo2D)
-                    {
-                        RenderCutButton();
-                        ImGui::SameLine();
-                    }
+                    RenderCutButton();
+                    ImGui::SameLine();
                     if(ImGui::Button("Clear"))
                     {
                         SpectrumManager::GetInstance().ClearHistogram(m_zoomedGram.name);
@@ -203,6 +200,24 @@ namespace Navigator {
             ImPlot::PlotLine(m_newCutArgs.name.c_str(), m_newCutX.data(), m_newCutY.data(), int(m_newCutX.size()));
             break;
         }
+        case SpectrumType::Summary:
+        {
+            if (m_newCutX.size() == 2)
+            {
+                m_acceptCutFlag = true;
+            }
+            else if (ImPlot::IsPlotHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            {
+                m_newCutX.push_back(ImPlot::GetPlotMousePos().x);
+            }
+            ImPlot::PlotVLines(m_newCutArgs.name.c_str(), m_newCutX.data(), int(m_newCutX.size()));
+            break;
+        }
+        case SpectrumType::None:
+        {
+            m_cutModeFlag = false;
+            break;
+        }
         }
     }
 
@@ -219,16 +234,44 @@ namespace Navigator {
             ImGui::Text("Save this Cut?");
             if (ImGui::Button("Yes"))
             {
-                if (m_newCutArgs.y_par == "None")
+                SpectrumManager& manager = SpectrumManager::GetInstance();
+                switch (m_newCutArgs.type)
                 {
-                    std::sort(m_newCutX.begin(), m_newCutX.end());
-                    SpectrumManager::GetInstance().AddCut(m_newCutArgs, m_newCutX[0], m_newCutX[1]);
+                    case CutType::Cut1D:
+                    {
+                        std::sort(m_newCutX.begin(), m_newCutX.end());
+                        manager.AddCut(m_newCutArgs, m_newCutX[0], m_newCutX[1]);
+                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        break;
+                    }
+                    case CutType::Cut2D:
+                    {
+                        manager.AddCut(m_newCutArgs, m_newCutX, m_newCutY);
+                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        break;
+                    }
+                    case CutType::CutSummaryAny:
+                    {
+                        std::sort(m_newCutX.begin(), m_newCutX.end());
+                        std::vector<std::string> subhistos = manager.GetSubHistograms(m_zoomedGram.name);
+                        manager.AddCut(m_newCutArgs, subhistos, m_newCutX[0], m_newCutX[1]);
+                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        break;
+                    }
+                    case CutType::CutSummaryAll:
+                    {
+                        std::sort(m_newCutX.begin(), m_newCutX.end());
+                        std::vector<std::string> subhistos = manager.GetSubHistograms(m_zoomedGram.name);
+                        manager.AddCut(m_newCutArgs, subhistos, m_newCutX[0], m_newCutX[1]);
+                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        break;
+                    }
+                    case CutType::None:
+                    {
+                        NAV_ERROR("Trying to add None type cut to manager at SpectrumPanel::RenderAcceptCutDialog!");
+                        break;
+                    }
                 }
-                else
-                {
-                    SpectrumManager::GetInstance().AddCut(m_newCutArgs, m_newCutX, m_newCutY);
-                }
-                SpectrumManager::GetInstance().AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
                 ImGui::CloseCurrentPopup();
                 m_result = true;
             }
@@ -271,8 +314,16 @@ namespace Navigator {
                     ImGui::BulletText("%s", ("Y Parameter: " + m_newCutArgs.y_par).c_str());
                     break;
                 }
+                case SpectrumType::Summary:
+                {
+                    if (ImGui::RadioButton("CutSummaryAny", m_newCutArgs.type == CutType::CutSummaryAny))
+                        m_newCutArgs.type = CutType::CutSummaryAny;
+                    ImGui::SameLine();
+                    if (ImGui::RadioButton("CutSummaryAll", m_newCutArgs.type == CutType::CutSummaryAll))
+                        m_newCutArgs.type = CutType::CutSummaryAll;
+                    break;
+                }
                 case SpectrumType::None: m_newCutArgs.type = CutType::None; break;
-                case SpectrumType::Summary: m_newCutArgs.type = CutType::None; break;
             }
             ImGui::InputText("Cut Name", &m_newCutArgs.name);
             if (ImGui::Button("Accept & Draw"))

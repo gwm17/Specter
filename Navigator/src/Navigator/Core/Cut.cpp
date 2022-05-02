@@ -19,6 +19,19 @@
 
 namespace Navigator {
 
+	std::string ConvertCutTypeToString(CutType type)
+	{
+		switch(type)
+		{
+			case CutType::Cut1D: return "Cut1D";
+			case CutType::Cut2D: return "Cut2D";
+			case CutType::CutSummaryAll: return "CutSummaryAll";
+			case CutType::CutSummaryAny: return "CutSummaryAny";
+			case CutType::None: return "None";
+		}
+		return "None";
+	}
+
 	/*1D Cuts -- Can be made on and applied to either 1D or 2D histograms*/
 	Cut1D::Cut1D(const CutArgs& params, double min, double max) :
 		Cut(params), m_minVal(min), m_maxVal(max)
@@ -89,4 +102,25 @@ namespace Navigator {
         ImPlot::PlotLine(m_params.name.c_str(), m_xpoints.data(), m_ypoints.data(), (int)m_xpoints.size());
     }
 
+	/*CutSummaryAll -- Can only be made on a HistogramSummary but can be applied to any*/
+	CutSummary::CutSummary(const CutArgs& params, const std::vector<std::string>& subhistos, double min, double max) :
+		Cut(params), m_subhistos(subhistos), m_minVal(min), m_maxVal(max)
+	{
+	}
+
+	CutSummary::~CutSummary()
+	{
+	}
+
+	void CutSummary::IsInside(double x, double y)
+	{
+		m_isValid = x >= m_minVal && x <= m_maxVal;
+	}
+
+	//Only within an ImPlot/ImGui context!!!
+	void CutSummary::Draw() const
+	{
+		double points[2] = { m_minVal, m_maxVal };
+		ImPlot::PlotVLines(m_params.name.c_str(), points, 2);
+	}
 }

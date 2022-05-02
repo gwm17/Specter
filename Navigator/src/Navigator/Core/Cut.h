@@ -26,8 +26,12 @@ namespace Navigator {
 	{
 		Cut1D,
 		Cut2D,
+		CutSummaryAny,
+		CutSummaryAll,
 		None
 	};
+
+	std::string ConvertCutTypeToString(CutType type);
 
 	struct NAV_API CutArgs
 	{
@@ -99,6 +103,24 @@ namespace Navigator {
 		std::vector<double> m_xpoints;
 		std::vector<double> m_ypoints;
 	};
+
+	class NAV_API CutSummary : public Cut
+	{
+	public:
+		CutSummary(const CutArgs& params, const std::vector<std::string>& subhistos, double min, double max);
+		virtual ~CutSummary();
+		virtual void IsInside(double x, double y) override;
+		virtual void Draw() const override;
+		virtual std::vector<double> GetXValues() const override { return std::vector<double>({ m_minVal, m_maxVal }); }
+		virtual std::vector<double> GetYValues() const override { return std::vector<double>(); }
+
+		inline const std::vector<std::string>& GetSubHistograms() const { return m_subhistos;  }
+
+	private:
+		double m_minVal, m_maxVal;
+		std::vector<std::string> m_subhistos;
+	};
+
 }
 
 #endif

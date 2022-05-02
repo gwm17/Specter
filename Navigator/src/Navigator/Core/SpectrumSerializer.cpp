@@ -71,6 +71,38 @@ namespace Navigator {
 				output << "\t\tend_yvalues" << std::endl;
 				output << "\tend_cut2D" << std::endl;
 			}
+			else if (cut.type == CutType::CutSummaryAll)
+			{
+				std::vector<std::string> subhistos = manager.GetCutSubHistograms(cut.name);
+				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
+				output << "\tbegin_cutSummaryAll" << std::endl;
+				output << "\t\tname: " << cut.name << std::endl;
+				output << "\t\tminValue: " << xpoints[0] << std::endl;
+				output << "\t\tmaxValue: " << xpoints[1] << std::endl;
+				output << "\t\tbegin_parameters" << std::endl;
+				for (auto& par : subhistos)
+				{
+					output << "\t\t\t" << par << std::endl;
+				}
+				output << "\t\tend_parameters" << std::endl;
+				output << "\tend_cutSummaryAll" << std::endl;
+			}
+			else if (cut.type == CutType::CutSummaryAny)
+			{
+				std::vector<std::string> subhistos = manager.GetCutSubHistograms(cut.name);
+				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
+				output << "\tbegin_cutSummaryAny" << std::endl;
+				output << "\t\tname: " << cut.name << std::endl;
+				output << "\t\tminValue: " << xpoints[0] << std::endl;
+				output << "\t\tmaxValue: " << xpoints[1] << std::endl;
+				output << "\t\tbegin_parameters" << std::endl;
+				for (auto& par : subhistos)
+				{
+					output << "\t\t\t" << par << std::endl;
+				}
+				output << "\t\tend_parameters" << std::endl;
+				output << "\tend_cutSummaryAny" << std::endl;
+			}
 		}
 		output << "end_cuts" << std::endl;
 
@@ -189,6 +221,7 @@ namespace Navigator {
 					cut_data = reset_cut;
 					cut_xdata.clear();
 					cut_ydata.clear();
+					subhistos.clear();
 					if (check == "begin_cut1D")
 					{
 						cut_data.type = CutType::Cut1D;
@@ -227,6 +260,46 @@ namespace Navigator {
 						}
 						input >> check;
 						manager.AddCut(cut_data, cut_xdata, cut_ydata);
+					}
+					else if (check == "begin_cutSummaryAll")
+					{
+						cut_data.type = CutType::CutSummaryAll;
+						input >> check >> cut_data.name;
+						input >> check >> value_doub;
+						cut_xdata.push_back(value_doub);
+						input >> check >> value_doub;
+						cut_xdata.push_back(value_doub);
+						while (input >> check)
+						{
+							if (check == "begin_parameters")
+								continue;
+							else if (check == "end_parameters")
+								break;
+							else
+								subhistos.push_back(check);
+						}
+						input >> check;
+						manager.AddCut(cut_data, subhistos, cut_xdata[0], cut_xdata[1]);
+					}
+					else if (check == "begin_cutSummaryAny")
+					{
+						cut_data.type = CutType::CutSummaryAny;
+						input >> check >> cut_data.name;
+						input >> check >> value_doub;
+						cut_xdata.push_back(value_doub);
+						input >> check >> value_doub;
+						cut_xdata.push_back(value_doub);
+						while (input >> check)
+						{
+							if (check == "begin_parameters")
+								continue;
+							else if (check == "end_parameters")
+								break;
+							else
+								subhistos.push_back(check);
+						}
+						input >> check;
+						manager.AddCut(cut_data, subhistos, cut_xdata[0], cut_xdata[1]);
 					}
 					else if (check == "end_cuts")
 						break;

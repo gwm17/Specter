@@ -345,6 +345,18 @@ namespace Navigator {
 		return null_result;
 	}
 
+	std::vector<std::string> SpectrumManager::GetCutSubHistograms(const std::string& cutname)
+	{
+		std::lock_guard<std::mutex> guard(m_managerMutex);
+		auto iter = m_cutMap.find(cutname);
+		if (iter != m_cutMap.end() && iter->second->GetType() == CutType::CutSummaryAny || iter->second->GetType() == CutType::CutSummaryAll)
+		{
+			auto cut = std::static_pointer_cast<CutSummary>(iter->second);
+			return cut->GetSubHistograms();
+		}
+		return std::vector<std::string>();
+	}
+
 	//Similar to GetListOfHistograms, see that documentation
 	std::vector<CutArgs> SpectrumManager::GetListOfCuts()
 	{
@@ -417,6 +429,36 @@ namespace Navigator {
 					auto iterY = m_paramMap.find(ypar);
 					if (iterX != m_paramMap.end() && iterX->second->validFlag && iterY != m_paramMap.end() && iterY->second->validFlag)
 						iter.second->IsInside(iterX->second->value, iterY->second->value);
+					break;
+				}
+				case CutType::CutSummaryAll:
+				{
+					std::vector<std::string> paramlist = std::static_pointer_cast<CutSummary>(iter.second)->GetSubHistograms();
+					for (auto& param : paramlist)
+					{
+						auto iterX = m_paramMap.find(param);
+						if (iterX != m_paramMap.end() && iterX->second->validFlag)
+						{
+							iter.second->IsInside(iterX->second->value);
+							if (!iter.second->IsValid())
+								break;
+						}
+					}
+					break;
+				}
+				case CutType::CutSummaryAny:
+				{
+					std::vector<std::string> paramlist = std::static_pointer_cast<CutSummary>(iter.second)->GetSubHistograms();
+					for (auto& param : paramlist)
+					{
+						auto iterX = m_paramMap.find(param);
+						if (iterX != m_paramMap.end() && iterX->second->validFlag)
+						{
+							iter.second->IsInside(iterX->second->value);
+							if (iter.second->IsValid())
+								break;
+						}
+					}
 					break;
 				}
 				case CutType::None:
