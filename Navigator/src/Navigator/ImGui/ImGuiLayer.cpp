@@ -44,7 +44,7 @@ namespace Navigator {
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		//Viewports are real wonky on Linux and sometimes on MacOS
 		//Can currently cause assertion failure on checking number of monitors in ImGui sanity checks.
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		ImGui::StyleColorsDark(); //Hacker mode
 		ImPlot::StyleColorsDark();
