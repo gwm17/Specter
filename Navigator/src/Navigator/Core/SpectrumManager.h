@@ -32,7 +32,7 @@ namespace Navigator {
 		//To clear all managed spectra. Note that Parameters are left untouched.
 		inline void RemoveAllSpectra()
 		{
-			std::lock_guard<std::mutex> guard(m_managerMutex);
+			std::scoped_lock<std::mutex> guard(m_managerMutex);
 			m_histoMap.clear();
 			m_cutMap.clear();
 		}
@@ -70,17 +70,17 @@ namespace Navigator {
 		/*Cut Functions*/
 		inline void AddCut(const CutArgs& params, double min, double max)
 		{
-			std::lock_guard<std::mutex> guard(m_managerMutex);
+			std::scoped_lock<std::mutex> guard(m_managerMutex);
 			m_cutMap[params.name].reset(new Cut1D(params, min, max));
 		}
 		inline void AddCut(const CutArgs& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
 		{
-			std::lock_guard<std::mutex> guard(m_managerMutex);
+			std::scoped_lock<std::mutex> guard(m_managerMutex);
 			m_cutMap[params.name].reset(new Cut2D(params, xpoints, ypoints));
 		}
 		inline void AddCut(const CutArgs& params, const std::vector<std::string>& subhistos, double min, double max)
 		{
-			std::lock_guard<std::mutex> guard(m_managerMutex);
+			std::scoped_lock<std::mutex> guard(m_managerMutex);
 			m_cutMap[params.name].reset(new CutSummary(params, subhistos, min, max));
 		}
 		void RemoveCut(const std::string& name);

@@ -28,7 +28,7 @@ namespace Navigator {
 
 	void SpectrumManager::AddHistogram(const HistogramArgs& params)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		if (params.y_par == "None") //Check dimensionality
 			m_histoMap[params.name].reset(new Histogram1D(params));
 		else
@@ -37,19 +37,19 @@ namespace Navigator {
 
 	void SpectrumManager::AddHistogramSummary(const HistogramArgs& params, const std::vector<std::string>& subhistos)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		m_histoMap[params.name].reset(new HistogramSummary(params, subhistos));
 	}
 
 	void SpectrumManager::RemoveHistogram(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		m_histoMap.erase(name);
 	}
 
 	void SpectrumManager::AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(histoname);
 		if (iter != m_histoMap.end())
 			iter->second->AddCutToBeDrawn(cutname);
@@ -57,7 +57,7 @@ namespace Navigator {
 
 	void SpectrumManager::AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(histoname);
 		if (iter != m_histoMap.end())
 			iter->second->AddCutToBeApplied(cutname);
@@ -66,7 +66,7 @@ namespace Navigator {
 	//Use this to fill histograms. Currently can only be filled in bulk; maybe a use case for individual fills?
 	void SpectrumManager::UpdateHistograms()
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 
 		//Set state of all cuts for the event
 		CheckCuts();
@@ -128,14 +128,14 @@ namespace Navigator {
 
 	void SpectrumManager::ClearHistograms()
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		for (auto& pair : m_histoMap)
 			pair.second->ClearData();
 	}
 
 	void SpectrumManager::ClearHistogram(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
 			iter->second->ClearData();
@@ -143,7 +143,7 @@ namespace Navigator {
 
 	void  SpectrumManager::DrawHistogram(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
 		{
@@ -155,7 +155,7 @@ namespace Navigator {
 
 	const HistogramArgs& SpectrumManager::GetHistogramParams(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
 			return iter->second->GetParameters();
@@ -166,7 +166,7 @@ namespace Navigator {
 	//For 2D spectra, we want to allow zooming along the z-axis (color)
 	float* SpectrumManager::GetColorScaleRange(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
 		{
@@ -178,7 +178,7 @@ namespace Navigator {
 
     std::vector<double> SpectrumManager::GetBinData(const std::string& name)
     {
-        std::lock_guard<std::mutex> guard(m_managerMutex);
+        std::scoped_lock<std::mutex> guard(m_managerMutex);
         auto iter = m_histoMap.find(name);
         if (iter != m_histoMap.end())
         {
@@ -190,7 +190,7 @@ namespace Navigator {
 
 	std::vector<std::string> SpectrumManager::GetSubHistograms(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end() && iter->second->GetType() == SpectrumType::Summary)
 		{
@@ -203,7 +203,7 @@ namespace Navigator {
 	//Pass through for stats
 	StatResults SpectrumManager::AnalyzeHistogramRegion(const std::string& name, const ImPlotRect& region)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
 			return iter->second->AnalyzeRegion(region.X.Min, region.X.Max, region.Y.Min, region.Y.Max);
@@ -215,7 +215,7 @@ namespace Navigator {
 	//in something like the Editor.
 	std::vector<HistogramArgs> SpectrumManager::GetListOfHistograms()
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		std::vector<HistogramArgs> list;
 		list.reserve(m_histoMap.size());
 		for (auto& gram : m_histoMap)
@@ -233,7 +233,7 @@ namespace Navigator {
 	//Bind a NavParameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
 	void SpectrumManager::BindParameter(NavParameter& param)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_paramMap.find(param.GetName());
 		if (iter == m_paramMap.end())
 		{
@@ -247,7 +247,7 @@ namespace Navigator {
 	//Additionally, make a default 1D histogram for the parameter (histogram has same name as parameter)
 	void SpectrumManager::BindParameter(NavParameter& param, int nbins, double minVal, double maxVal)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_paramMap.find(param.GetName());
 		if (iter == m_paramMap.end())
 		{
@@ -267,7 +267,7 @@ namespace Navigator {
 	//Once an analysis pass is done and histograms filled, reset all parameters
 	void SpectrumManager::InvalidateParameters()
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		for (auto& param : m_paramMap)
 		{
 			param.second->validFlag = false;
@@ -278,7 +278,7 @@ namespace Navigator {
 	//Similar to GetListOfHistograms, see that documentation
 	std::vector<std::string> SpectrumManager::GetListOfParameters()
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		std::vector<std::string> list;
 		list.reserve(m_paramMap.size());
 		for (auto iter : m_paramMap)
@@ -295,7 +295,7 @@ namespace Navigator {
 
 	void SpectrumManager::BindVariable(NavVariable& var)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_varMap.find(var.GetName());
 		if (iter == m_varMap.end())
 		{
@@ -306,7 +306,7 @@ namespace Navigator {
 
 	std::vector<std::string> SpectrumManager::GetListOfVariables()
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		std::vector<std::string> list;
 		list.reserve(m_varMap.size());
 		for (auto iter : m_varMap)
@@ -320,14 +320,14 @@ namespace Navigator {
 
 	void SpectrumManager::RemoveCut(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		m_cutMap.erase(name);
 		RemoveCutFromHistograms(name); //Once a cut is gone, remove all references to it.
 	}
 
 	std::vector<double> SpectrumManager::GetCutXPoints(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		std::vector<double> null_result;
 		auto iter = m_cutMap.find(name);
 		if (iter != m_cutMap.end())
@@ -337,7 +337,7 @@ namespace Navigator {
 
 	std::vector<double> SpectrumManager::GetCutYPoints(const std::string& name)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		std::vector<double> null_result;
 		auto iter = m_cutMap.find(name);
 		if (iter != m_cutMap.end())
@@ -347,7 +347,7 @@ namespace Navigator {
 
 	std::vector<std::string> SpectrumManager::GetCutSubHistograms(const std::string& cutname)
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_cutMap.find(cutname);
 		if (iter != m_cutMap.end() && iter->second->GetType() == CutType::CutSummaryAny || iter->second->GetType() == CutType::CutSummaryAll)
 		{
@@ -360,7 +360,7 @@ namespace Navigator {
 	//Similar to GetListOfHistograms, see that documentation
 	std::vector<CutArgs> SpectrumManager::GetListOfCuts()
 	{
-		std::lock_guard<std::mutex> guard(m_managerMutex);
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		std::vector<CutArgs> list;
 		list.reserve(m_cutMap.size());
 		for (auto& entry : m_cutMap)

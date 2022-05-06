@@ -75,6 +75,12 @@ namespace Navigator {
 
 	void CompassOnlineSource::FillBuffer()
 	{
+		if (!m_connection.IsOpen()) //Make sure connection is still cool
+		{
+			m_validFlag = false;
+			return;
+		}
+
 		std::vector<char> recieved = m_connection.Read();
 		//If we didn't finish the last buffer toss all of the stuff we used and then append the recieved data
 		//Otherwise, copy over the recieved buffer. Note lack of vector::resize, vector::reserve. Intentional for performance.

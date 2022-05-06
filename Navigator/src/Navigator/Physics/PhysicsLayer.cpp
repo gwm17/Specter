@@ -20,8 +20,11 @@ namespace Navigator {
 
 	PhysicsLayer::~PhysicsLayer() 
 	{
-		DetachDataSource();
-		DestroyPhysThread();
+		if (m_activeFlag)
+		{
+			DetachDataSource();
+			DestroyPhysThread();
+		}
 	}
 
 	void PhysicsLayer::OnAttach()
@@ -67,8 +70,11 @@ namespace Navigator {
 
 	bool PhysicsLayer::OnPhysicsStopEvent(PhysicsStopEvent& event)
 	{
-		DetachDataSource();
-		DestroyPhysThread();
+		if (m_activeFlag)
+		{
+			DetachDataSource();
+			DestroyPhysThread();
+		}
 		return true;
 	}
 
@@ -101,7 +107,7 @@ namespace Navigator {
 
 	void PhysicsLayer::AttachDataSource(PhysicsStartEvent& event)
 	{
-		std::lock_guard<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
+		std::scoped_lock<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
 		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetSourceType()));
 		m_eventBuilder.SetCoincidenceWindow(event.GetCoincidenceWindow());
 		m_eventBuilder.ClearAll(); //Protect against stopping mid-event
@@ -119,7 +125,7 @@ namespace Navigator {
 
 	void PhysicsLayer::DetachDataSource()
 	{
-		std::lock_guard<std::mutex> guard(m_sourceMutex);
+		std::scoped_lock<std::mutex> guard(m_sourceMutex);
 		NAV_INFO("Detaching physics data source...");
 		m_activeFlag = false;
 		m_source.reset(nullptr);
@@ -136,10 +142,9 @@ namespace Navigator {
 		{
 			//Scope to encapsulate access to the data source
 			{
-				std::lock_guard<std::mutex> guard(m_sourceMutex);
+				std::scoped_lock<std::mutex> guard(m_sourceMutex);
 				if (m_source == nullptr || !m_source->IsValid())
 				{
-					m_activeFlag = false;
 					return;
 				}
 				/*
@@ -150,7 +155,6 @@ namespace Navigator {
 				if(!m_source->IsValid())
 				{
 					NAV_INFO("End of data source.");
-					m_activeFlag = false;
 					return;
 				}
 			}
