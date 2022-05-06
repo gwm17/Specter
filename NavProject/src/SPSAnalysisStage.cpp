@@ -11,7 +11,7 @@ namespace Navigator {
 	//Construct each NavParameter with their unique name. Then bind them to the SpectrumManager.
 	SPSAnalysisStage::SPSAnalysisStage() :
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
-		scintLeft("scintLeft"), anodeBack("anodeBack"), x1_weight("x1_weight"), x2_weight("x2_weight")
+		scintLeft("scintLeft"), anodeBack("anodeBack"), cathode("cathode"), xavg_sabreCoinc("xavg_sabreCoinc"), x1_weight("x1_weight"), x2_weight("x2_weight")
 	{
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 		manager.BindParameter(delayFLTime);
@@ -24,6 +24,20 @@ namespace Navigator {
 		manager.BindParameter(xavg, 600, -300.0, 300.0);
 		manager.BindParameter(scintLeft, 4096, 0.0, 4096.0);
 		manager.BindParameter(anodeBack, 4096, 0.0, 4096.0);
+		manager.BindParameter(cathode, 4096, 0.0, 4096);
+		manager.BindParameter(xavg_sabreCoinc, 600, -300.0, 300.0);
+
+		std::vector<std::string> sabre_list;
+		for (int i = 0; i < 127; i++)
+		{
+			sabre_list.push_back("sabre_" + std::to_string(i));
+			sabre.emplace_back(sabre_list[i]);
+			manager.BindParameter(sabre[i]);
+		}
+
+		//If you want to make a histogram default available, you can add one like this.
+		manager.AddHistogramSummary(HistogramArgs("sabre_summary", "", 512, 0.0, 16384), sabre_list);
+		//Note that if you save a config, the config rep of this histogram will supercede this version.
 
 		manager.BindVariable(x1_weight);
 		manager.BindVariable(x2_weight);
@@ -38,8 +52,14 @@ namespace Navigator {
 		//Most analysis stages will start kinda like this. Take the raw event data and
 		//put it into NavParameters using the hit id. Switches are perfect for this. Can also
 		//create mapping classes to use text-file-based id association (commonly called channel maps).
+		bool sabreFlag = false;
 		for(auto& hit : event)
 		{
+			if (hit.id < 127)
+			{
+				sabreFlag = true;
+				sabre[hit.id].SetValue(hit.longEnergy);
+			}
 			switch (hit.id)
 			{
 				case 129:
@@ -72,6 +92,10 @@ namespace Navigator {
 			x2.SetValue((delayBLTime.GetValue() - delayBRTime.GetValue())*0.5*0.5051);
 
 		if (x1.IsValid() && x2.IsValid())
+		{
 			xavg.SetValue(x1_weight.GetValue() * x1.GetValue() + x2_weight.GetValue() * x2.GetValue());
+			if (sabreFlag)
+				xavg_sabreCoinc.SetValue(xavg.GetValue());
+		}
 	}
 }

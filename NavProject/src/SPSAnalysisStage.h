@@ -27,6 +27,10 @@ namespace Navigator {
 		NavParameter xavg;
 		NavParameter scintLeft;
 		NavParameter anodeBack;
+		NavParameter cathode;
+		NavParameter xavg_sabreCoinc;
+
+		std::vector<NavParameter> sabre;
 
 		//Create a few variables
 		NavVariable x1_weight;
