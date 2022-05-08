@@ -26,7 +26,7 @@ namespace Navigator {
 			auto stopTime = Clock::now();
 			int64_t start = std::chrono::time_point_cast<std::chrono::microseconds>(m_startTime).time_since_epoch().count();
 			int64_t stop = std::chrono::time_point_cast<std::chrono::microseconds>(stopTime).time_since_epoch().count();
-			float duration = (stop - start)*0.001;
+			float duration = (stop - start)*0.001f;
 			m_stopped = true;
 
 			NAV_INFO("{1} -- Duration: {0} ms", m_name, duration);

@@ -68,6 +68,7 @@ namespace Navigator {
     //The main function
     void EditorLayer::OnImGuiRender()
     {
+        NAV_PROFILE_FUNCTION();
         static bool startFlag = true; //first render retrieve base 
         if(startFlag)
         {
@@ -276,6 +277,7 @@ namespace Navigator {
 
     void EditorLayer::RemoveHistogramDialog()
     {
+        NAV_PROFILE_FUNCTION();
         static std::string selectedGram = "";
         if (m_removeHistogram)
         {
@@ -311,6 +313,7 @@ namespace Navigator {
 
     void EditorLayer::RemoveCutDialog()
     {
+        NAV_PROFILE_FUNCTION();
         static std::string selectedCut = "";
         if (m_removeCut)
         {
@@ -347,6 +350,7 @@ namespace Navigator {
 
     void EditorLayer::ExportHistogramDialog()
     {
+        NAV_PROFILE_FUNCTION();
         static std::string filename = "";
         static HistogramArgs selectedGram = HistogramArgs();
         if(m_exportHistogram)

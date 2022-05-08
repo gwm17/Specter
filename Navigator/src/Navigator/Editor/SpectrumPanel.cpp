@@ -15,6 +15,7 @@ namespace Navigator {
     //Convert a StatResults struct from analysis to a std::string helper function
     std::string GenerateStatString(const std::string& name, const StatResults& results, bool is2D = true)
     {
+        NAV_PROFILE_FUNCTION();
         std::stringstream stream;
         stream << "Region: " << name << "\n" << "Integral: " << results.integral << "\n";
         if (results.integral == 0.0)
@@ -36,6 +37,7 @@ namespace Navigator {
     //Main render function. Handles generating subplot regions as well as the zoomed in region
 	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
 	{
+        NAV_PROFILE_FUNCTION();
         static bool acceptCutFlag = false;
         m_result = false;
         if (ImGui::Begin("Active View"))

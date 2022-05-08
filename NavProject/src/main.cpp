@@ -30,9 +30,15 @@ int main(int argc, const char** argv)
 	Navigator::Logger::Init();
 	NAV_TRACE("Logger Initialized!");
 
+	NAV_PROFILE_BEGIN_SESSION("Startup", "navprofile_startup.json");
 	auto app = Navigator::CreateApplication();
+	NAV_PROFILE_END_SESSION();
 
+	NAV_PROFILE_BEGIN_SESSION("Runtime", "navprofile_runtime.json");
 	app->Run();
+	NAV_PROFILE_END_SESSION();
 
+	NAV_PROFILE_BEGIN_SESSION("Shutdown", "navprofile_shutdown.json");
 	delete app;
+	NAV_PROFILE_END_SESSION();
 }

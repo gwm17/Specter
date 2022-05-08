@@ -47,6 +47,7 @@ namespace Navigator {
 	
 	void CompassFile::Open(const std::string& filename) 
 	{
+		NAV_PROFILE_FUNCTION();
 		eofFlag = false;
 		hitUsedFlag = true;
 		m_filename = filename;
@@ -106,6 +107,7 @@ namespace Navigator {
 	*/
 	bool CompassFile::GetNextHit()
 	{
+		NAV_PROFILE_FUNCTION();
 		if(!IsOpen()) return true;
 	
 		if((bufferIter == nullptr || bufferIter == bufferEnd) && !IsEOF()) 
@@ -131,8 +133,8 @@ namespace Navigator {
 	*/
 	void CompassFile::GetNextBuffer() 
 	{
-	
-		if(m_file->eof()) 
+		NAV_PROFILE_FUNCTION();
+		if(m_file->eof())
 		{
 			eofFlag = true;
 			return;
@@ -147,7 +149,7 @@ namespace Navigator {
 	
 	void CompassFile::ParseNextHit() 
 	{
-	
+		NAV_PROFILE_FUNCTION();
 		m_currentHit.board = *((uint16_t*)bufferIter);
 		bufferIter += 2;
 		m_currentHit.channel = *((uint16_t*)bufferIter);

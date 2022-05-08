@@ -33,6 +33,7 @@ namespace Navigator {
 	
 	void CompassRun::CollectFiles()
 	{
+		NAV_PROFILE_FUNCTION();
 		int nfiles=0;
 		for(auto& item : std::filesystem::directory_iterator(m_directory))
 		{
@@ -90,7 +91,7 @@ namespace Navigator {
 	*/
 	bool CompassRun::GetHitsFromFiles() 
 	{
-	
+		NAV_PROFILE_FUNCTION();
 		std::pair<CompassHit, bool*> earliestHit = std::make_pair(CompassHit(), nullptr);
 		for(unsigned int i=m_startIndex; i<m_datafiles.size(); i++) 
 		{
@@ -122,6 +123,7 @@ namespace Navigator {
 
 	const NavData& CompassRun::GetData()
 	{
+		NAV_PROFILE_FUNCTION();
 		if(!IsValid())
 		{
 			NAV_ERROR("Trying to access CompassRun data when invalid, bug detected!");

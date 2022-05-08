@@ -14,6 +14,7 @@
 */
 MassMap::MassMap()
 {
+    NAV_PROFILE_FUNCTION();
     std::ifstream massfile("Assets/amdc2016_mass.txt");
     if (massfile.is_open())
     {
@@ -42,6 +43,7 @@ MassMap::~MassMap() {}
 //Returns nuclear mass in MeV
 double MassMap::FindMass(int Z, int A)
 {
+    NAV_PROFILE_FUNCTION();
     std::string key = "(" + std::to_string(Z) + "," + std::to_string(A) + ")";
     auto data = massTable.find(key);
     if (data == massTable.end())
@@ -55,6 +57,7 @@ double MassMap::FindMass(int Z, int A)
 //returns element symbol
 std::string MassMap::FindSymbol(int Z, int A)
 {
+    NAV_PROFILE_FUNCTION();
     auto data = elementTable.find(Z);
     if (data == elementTable.end())
     {

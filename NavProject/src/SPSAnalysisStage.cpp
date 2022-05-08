@@ -13,6 +13,7 @@ namespace Navigator {
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
 		scintLeft("scintLeft"), anodeBack("anodeBack"), cathode("cathode"), xavg_sabreCoinc("xavg_sabreCoinc"), x1_weight("x1_weight"), x2_weight("x2_weight")
 	{
+		NAV_PROFILE_FUNCTION();
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 		manager.BindParameter(delayFLTime);
 		manager.BindParameter(delayFRTime);
@@ -49,6 +50,7 @@ namespace Navigator {
 	void SPSAnalysisStage::AnalyzePhysicsEvent(const NavEvent& event)
 	{
 
+		NAV_PROFILE_FUNCTION();
 		//Most analysis stages will start kinda like this. Take the raw event data and
 		//put it into NavParameters using the hit id. Switches are perfect for this. Can also
 		//create mapping classes to use text-file-based id association (commonly called channel maps).

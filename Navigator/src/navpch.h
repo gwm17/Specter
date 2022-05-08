@@ -16,7 +16,7 @@
 
 #include <cstdint>
 
-
 #include "Navigator/Core/Logger.h"
+#include "Navigator/Utils/Instrumentor.h"
 
 #endif

@@ -20,6 +20,7 @@ namespace Navigator {
 	//Helper function to handle file size printing
 	std::string ConvertFileSystemSizeToString(std::uintmax_t value)
 	{
+		NAV_PROFILE_FUNCTION();
 		int i = 0;
 		double mantissa = (double)value;
 		for (; mantissa >= 1024.0; ++i)
@@ -41,6 +42,7 @@ namespace Navigator {
 
 	std::pair<std::string, FileDialog::Type> FileDialog::RenderFileDialog(const std::string& ext)
 	{
+		NAV_PROFILE_FUNCTION();
 		if (m_openDialogFlag)
 		{
 			m_selectedItem = "";
@@ -79,6 +81,7 @@ namespace Navigator {
 
 	std::string FileDialog::ImGuiRenderOpenFile(const std::string& ext)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::string result = "";
 		std::string text = "";
 		
@@ -143,6 +146,7 @@ namespace Navigator {
 
 	std::string FileDialog::ImGuiRenderSaveFile(const std::string& ext)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::string result = "";
 		std::string text = "";
 
@@ -207,6 +211,7 @@ namespace Navigator {
 
 	std::string FileDialog::ImGuiRenderOpenDir()
 	{
+		NAV_PROFILE_FUNCTION();
 		std::string result = "";
 		std::string text = "";
 		

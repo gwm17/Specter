@@ -20,6 +20,7 @@ namespace Navigator {
 
 	PhysicsLayer::~PhysicsLayer() 
 	{
+		NAV_PROFILE_FUNCTION();
 		if (m_activeFlag)
 		{
 			DetachDataSource();
@@ -43,6 +44,7 @@ namespace Navigator {
 
 	void PhysicsLayer::OnEvent(Event& event)
 	{
+		NAV_PROFILE_FUNCTION();
 		EventDispatcher dispatch(event);
 		dispatch.Dispatch<PhysicsStartEvent>(BIND_EVENT_FUNCTION(PhysicsLayer::OnPhysicsStartEvent));
 		dispatch.Dispatch<PhysicsStopEvent>(BIND_EVENT_FUNCTION(PhysicsLayer::OnPhysicsStopEvent));
@@ -50,6 +52,7 @@ namespace Navigator {
 
 	bool PhysicsLayer::OnPhysicsStartEvent(PhysicsStartEvent& event)
 	{
+		NAV_PROFILE_FUNCTION();
 		//If the Physics thread is active, kill it
 		if(m_activeFlag)
 		{
@@ -70,6 +73,7 @@ namespace Navigator {
 
 	bool PhysicsLayer::OnPhysicsStopEvent(PhysicsStopEvent& event)
 	{
+		NAV_PROFILE_FUNCTION();
 		if (m_activeFlag)
 		{
 			DetachDataSource();
@@ -89,6 +93,7 @@ namespace Navigator {
 
 	void PhysicsLayer::DestroyPhysThread()
 	{
+		NAV_PROFILE_FUNCTION();
 		NAV_INFO("Destroying the analysis thread...");
 		//Join the thread back to the parent (finish up the thread)
 		if(m_physThread != nullptr && m_physThread->joinable())
@@ -107,6 +112,7 @@ namespace Navigator {
 
 	void PhysicsLayer::AttachDataSource(PhysicsStartEvent& event)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
 		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetSourceType()));
 		m_eventBuilder.SetCoincidenceWindow(event.GetCoincidenceWindow());
@@ -125,6 +131,7 @@ namespace Navigator {
 
 	void PhysicsLayer::DetachDataSource()
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_sourceMutex);
 		NAV_INFO("Detaching physics data source...");
 		m_activeFlag = false;
@@ -134,6 +141,7 @@ namespace Navigator {
 
 	void PhysicsLayer::RunSource()
 	{
+		NAV_PROFILE_FUNCTION();
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 
 		NavEvent event;

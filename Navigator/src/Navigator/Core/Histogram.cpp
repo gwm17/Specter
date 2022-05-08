@@ -33,6 +33,7 @@ namespace Navigator {
 
 	std::string ConvertSpectrumTypeToString(SpectrumType type)
 	{
+		NAV_PROFILE_FUNCTION();
 		switch (type)
 		{
 		case SpectrumType::Histo1D: return "Histogram1D";
@@ -56,6 +57,7 @@ namespace Navigator {
 
 	void Histogram1D::InitBins()
 	{
+		NAV_PROFILE_FUNCTION();
 		m_params.type = SpectrumType::Histo1D;
 		if(m_params.nbins_x == 0 || (m_params.min_x >= m_params.max_x))
 		{
@@ -81,6 +83,7 @@ namespace Navigator {
 	//Note: only x is used here, y is simply present to maintain compliance with 2D case and can be ignored
 	void Histogram1D::FillData(double x, double y)
 	{
+		NAV_PROFILE_FUNCTION();
 		if (x < m_params.min_x || x >= m_params.max_x)
 			return;
 		int bin = int((x - m_params.min_x)/(m_binWidth));
@@ -90,6 +93,7 @@ namespace Navigator {
 	//Can only be used within an ImGui / ImPlot context!!
 	void Histogram1D::Draw()
 	{
+		NAV_PROFILE_FUNCTION();
 		ImPlot::SetupAxes(m_params.x_par.c_str(), "Counts",0, ImPlotAxisFlags_LockMin | ImPlotAxisFlags_AutoFit);
 		ImPlot::PlotBars(m_params.name.c_str(), &m_binCenters.data()[0], &m_binCounts.data()[0], m_params.nbins_x, m_binWidth);
 	}
@@ -103,6 +107,7 @@ namespace Navigator {
 	//Again here yvalues can be ignored, only for compliance
 	StatResults Histogram1D::AnalyzeRegion(double x_min, double x_max, double y_min, double y_max)
 	{
+		NAV_PROFILE_FUNCTION();
 		int bin_min, bin_max;
 		StatResults results;
 
@@ -148,6 +153,7 @@ namespace Navigator {
 
 	void Histogram2D::InitBins()
 	{
+		NAV_PROFILE_FUNCTION();
 		m_params.type = SpectrumType::Histo2D;
 		if(m_params.nbins_x <= 0 || m_params.nbins_y <= 0 || m_params.min_x >= m_params.max_x || m_params.min_y >= m_params.max_y)
 		{
@@ -172,6 +178,7 @@ namespace Navigator {
 
 	void Histogram2D::FillData(double x, double y)
 	{
+		NAV_PROFILE_FUNCTION();
 		if (x < m_params.min_x || x >= m_params.max_x || y <= m_params.min_y || y > m_params.max_y)
 			return;
 		int bin_x = int((x - m_params.min_x)/m_binWidthX);
@@ -192,6 +199,7 @@ namespace Navigator {
 	*/
 	void Histogram2D::Draw()
 	{
+		NAV_PROFILE_FUNCTION();
 		ImPlot::SetupAxes(m_params.x_par.c_str(), m_params.y_par.c_str());
 		ImPlot::PushColormap(ImPlotColormap_Viridis);
 		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, m_colorScaleRange[0], m_colorScaleRange[1], NULL,
@@ -208,6 +216,7 @@ namespace Navigator {
 
 	StatResults Histogram2D::AnalyzeRegion(double x_min, double x_max, double y_min, double y_max)
 	{
+		NAV_PROFILE_FUNCTION();
 		int xbin_min, xbin_max, ybin_min, ybin_max;
 		int curbin;
 
@@ -294,6 +303,7 @@ namespace Navigator {
 
 	void HistogramSummary::InitBins()
 	{
+		NAV_PROFILE_FUNCTION();
 		m_params.type = SpectrumType::Summary;
 		if (m_params.nbins_x <= 0 || m_params.min_x >= m_params.max_x)
 		{
@@ -322,6 +332,7 @@ namespace Navigator {
 
 	void HistogramSummary::FillData(double x, double y)
 	{
+		NAV_PROFILE_FUNCTION();
 		if (x < m_params.min_x || x >= m_params.max_x || y <= m_params.min_y || y > m_params.max_y)
 			return;
 		int bin_x = int((x - m_params.min_x) / m_binWidthX);
@@ -333,6 +344,7 @@ namespace Navigator {
 
 	void HistogramSummary::Draw()
 	{
+		NAV_PROFILE_FUNCTION();
 		ImPlot::SetupAxisTicks(ImAxis_Y1, m_params.min_y, m_params.max_y, m_params.nbins_y, m_labels, false);
 		ImPlot::PushColormap(ImPlotColormap_Viridis);
 		ImPlot::PlotHeatmap(m_params.name.c_str(), &m_binCounts.data()[0], m_params.nbins_y, m_params.nbins_x, m_colorScaleRange[0], m_colorScaleRange[1], NULL,
@@ -348,6 +360,7 @@ namespace Navigator {
 
 	StatResults HistogramSummary::AnalyzeRegion(double x_min, double x_max, double y_min, double y_max)
 	{
+		NAV_PROFILE_FUNCTION();
 		int xbin_min, xbin_max, ybin_min, ybin_max;
 		int curbin;
 

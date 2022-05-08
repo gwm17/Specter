@@ -27,6 +27,7 @@ namespace Navigator {
 
 	void SourceDialog::ImGuiRenderSourceDialog()
 	{
+		NAV_PROFILE_FUNCTION();
 		static bool onlineFlag = false;
 		static bool offlineFlag = false;
 		static std::vector<DataSource::SourceType> availTypes = { DataSource::SourceType::CompassOnline, DataSource::SourceType::CompassOffline };

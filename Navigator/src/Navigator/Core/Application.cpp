@@ -14,11 +14,14 @@
 
 namespace Navigator {
 
+
 	Application* Application::s_instance = nullptr;
 
 	Application::Application() :
 		m_runFlag(true)
 	{
+		NAV_PROFILE_FUNCTION();
+
 		s_instance = this;
 
 		m_window = std::unique_ptr<Window>(Window::Create());
@@ -39,6 +42,7 @@ namespace Navigator {
 
 	void Application::OnEvent(Event& event) 
 	{
+		NAV_PROFILE_FUNCTION();
 		EventDispatcher dispatch(event);
 		dispatch.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowCloseEvent));
 		for(auto iter = m_stack.end(); iter != m_stack.begin(); )
@@ -58,18 +62,21 @@ namespace Navigator {
 
 	void Application::PushLayer(Layer* layer)
 	{
+		NAV_PROFILE_FUNCTION();
 		m_stack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
+		NAV_PROFILE_FUNCTION();
 		m_stack.PushOverlay(layer);
 		layer->OnAttach();
 	}
 
 	void Application::Run()
 	{
+		NAV_PROFILE_FUNCTION();
 		while(m_runFlag)
 		{
 			RenderCommand::SetClearColor(m_bckgnd_color);

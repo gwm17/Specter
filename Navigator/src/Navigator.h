@@ -33,5 +33,6 @@
 #include "Navigator/Core/Layer.h"
 #include "Navigator/Events/Event.h"
 #include "Navigator/Utils/TestServerLayer.h"
+#include "Navigator/Utils/Instrumentor.h"
 
 #endif

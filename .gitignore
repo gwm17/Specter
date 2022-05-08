@@ -9,6 +9,7 @@ Makefile
 *.sln
 *.vcxproj
 *.vcxproj.filters
+*.json
 
 Navigator/Makefile
 NavProject/Makefile

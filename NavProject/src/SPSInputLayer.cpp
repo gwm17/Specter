@@ -45,6 +45,7 @@ namespace Navigator {
 
 	void SPSInputLayer::OnImGuiRender()
 	{
+		NAV_PROFILE_FUNCTION();
 		if (ImGui::Begin("SPS Input"))
 		{
 			//Create widgets for all of our inputs
@@ -73,6 +74,7 @@ namespace Navigator {
 
 	void SPSInputLayer::UpdateWeights()
 	{
+		NAV_PROFILE_FUNCTION();
 		m_rxnEqn = ""; //reset
 
 		//Calculate residual nucleus from reaction

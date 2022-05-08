@@ -28,6 +28,7 @@ namespace Navigator {
 
 	void SpectrumManager::AddHistogram(const HistogramArgs& params)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		if (params.y_par == "None") //Check dimensionality
 			m_histoMap[params.name].reset(new Histogram1D(params));
@@ -37,18 +38,21 @@ namespace Navigator {
 
 	void SpectrumManager::AddHistogramSummary(const HistogramArgs& params, const std::vector<std::string>& subhistos)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		m_histoMap[params.name].reset(new HistogramSummary(params, subhistos));
 	}
 
 	void SpectrumManager::RemoveHistogram(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		m_histoMap.erase(name);
 	}
 
 	void SpectrumManager::AddCutToHistogramDraw(const std::string& cutname, const std::string& histoname)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(histoname);
 		if (iter != m_histoMap.end())
@@ -57,6 +61,7 @@ namespace Navigator {
 
 	void SpectrumManager::AddCutToHistogramApplied(const std::string& cutname, const std::string& histoname)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(histoname);
 		if (iter != m_histoMap.end())
@@ -66,6 +71,7 @@ namespace Navigator {
 	//Use this to fill histograms. Currently can only be filled in bulk; maybe a use case for individual fills?
 	void SpectrumManager::UpdateHistograms()
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 
 		//Set state of all cuts for the event
@@ -128,6 +134,7 @@ namespace Navigator {
 
 	void SpectrumManager::ClearHistograms()
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		for (auto& pair : m_histoMap)
 			pair.second->ClearData();
@@ -135,6 +142,7 @@ namespace Navigator {
 
 	void SpectrumManager::ClearHistogram(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
@@ -143,6 +151,7 @@ namespace Navigator {
 
 	void  SpectrumManager::DrawHistogram(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
@@ -155,6 +164,7 @@ namespace Navigator {
 
 	const HistogramArgs& SpectrumManager::GetHistogramParams(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
@@ -166,6 +176,7 @@ namespace Navigator {
 	//For 2D spectra, we want to allow zooming along the z-axis (color)
 	float* SpectrumManager::GetColorScaleRange(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end())
@@ -190,6 +201,7 @@ namespace Navigator {
 
 	std::vector<std::string> SpectrumManager::GetSubHistograms(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_histoMap.find(name);
 		if (iter != m_histoMap.end() && iter->second->GetType() == SpectrumType::Summary)
@@ -233,6 +245,7 @@ namespace Navigator {
 	//Bind a NavParameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
 	void SpectrumManager::BindParameter(NavParameter& param)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_paramMap.find(param.GetName());
 		if (iter == m_paramMap.end())
@@ -247,6 +260,7 @@ namespace Navigator {
 	//Additionally, make a default 1D histogram for the parameter (histogram has same name as parameter)
 	void SpectrumManager::BindParameter(NavParameter& param, int nbins, double minVal, double maxVal)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_paramMap.find(param.GetName());
 		if (iter == m_paramMap.end())
@@ -267,6 +281,7 @@ namespace Navigator {
 	//Once an analysis pass is done and histograms filled, reset all parameters
 	void SpectrumManager::InvalidateParameters()
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		for (auto& param : m_paramMap)
 		{
@@ -295,6 +310,7 @@ namespace Navigator {
 
 	void SpectrumManager::BindVariable(NavVariable& var)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		auto iter = m_varMap.find(var.GetName());
 		if (iter == m_varMap.end())
@@ -320,6 +336,7 @@ namespace Navigator {
 
 	void SpectrumManager::RemoveCut(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		m_cutMap.erase(name);
 		RemoveCutFromHistograms(name); //Once a cut is gone, remove all references to it.
@@ -379,6 +396,7 @@ namespace Navigator {
 	//Can only be called by RemoveCut currently. May be a use case where this should be promoted to public to on the fly mod a gram.
 	void SpectrumManager::RemoveCutFromHistograms(const std::string& cutname)
 	{
+		NAV_PROFILE_FUNCTION();
 		for (auto& gram : m_histoMap)
 		{
 			auto& params = gram.second->GetParameters();
@@ -402,6 +420,7 @@ namespace Navigator {
 	//Obv. only need to draw a cut if its parent histogram is drawn.
 	void SpectrumManager::DrawCut(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		auto iter = m_cutMap.find(name);
 		if (iter != m_cutMap.end())
 			iter->second->Draw();
@@ -410,6 +429,7 @@ namespace Navigator {
 	//Set the state of the cuts for the current event. Called by the 
 	void SpectrumManager::CheckCuts()
 	{
+		NAV_PROFILE_FUNCTION();
 		for (auto& iter : m_cutMap)
 		{
 			const std::string& xpar = iter.second->GetXParameter();
@@ -472,6 +492,7 @@ namespace Navigator {
 
 	bool SpectrumManager::IsCutValid(const std::string& name)
 	{
+		NAV_PROFILE_FUNCTION();
 		auto iter = m_cutMap.find(name);
 		if (iter != m_cutMap.end())
 			return iter->second->IsValid();

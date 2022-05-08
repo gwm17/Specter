@@ -32,6 +32,7 @@ namespace Navigator {
 
 	void ImGuiLayer::OnAttach()
 	{
+		NAV_PROFILE_FUNCTION();
 		IMGUI_CHECKVERSION();
 
 		NAV_INFO("Creating ImGui Context...");
@@ -82,6 +83,7 @@ namespace Navigator {
 
 	void ImGuiLayer::OnDetach()
 	{
+		NAV_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImPlot::DestroyContext();
@@ -90,6 +92,7 @@ namespace Navigator {
 
 	void ImGuiLayer::Begin()
 	{
+		NAV_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 
@@ -98,6 +101,7 @@ namespace Navigator {
 
 	void ImGuiLayer::End()
 	{
+		NAV_PROFILE_FUNCTION();
 		Application& app = Application::Get();
 		ImGuiIO& io = ImGui::GetIO();
 

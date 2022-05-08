@@ -35,6 +35,7 @@ namespace Navigator {
 
 	void CompassOnlineSource::InitConnection(const std::string& hostname, const std::string& port)
 	{
+		NAV_PROFILE_FUNCTION();
 		m_validFlag = false;
 		m_connection.Connect(hostname, port);
 		if (m_connection.IsOpen())
@@ -45,6 +46,7 @@ namespace Navigator {
 
 	const NavData& CompassOnlineSource::GetData()
 	{
+		NAV_PROFILE_FUNCTION();
 		size_t range = m_bufferEnd - m_bufferIter; //how much buffer we have left
 		if (!IsValid())
 		{
@@ -75,6 +77,7 @@ namespace Navigator {
 
 	void CompassOnlineSource::FillBuffer()
 	{
+		NAV_PROFILE_FUNCTION();
 		if (!m_connection.IsOpen()) //Make sure connection is still cool
 		{
 			m_validFlag = false;
@@ -100,6 +103,7 @@ namespace Navigator {
 
 	void CompassOnlineSource::GetHit()
 	{
+		NAV_PROFILE_FUNCTION();
 		m_currentHit.board = *((uint16_t*)m_bufferIter);
 		m_bufferIter += 2;
 		m_currentHit.channel = *((uint16_t*)m_bufferIter);

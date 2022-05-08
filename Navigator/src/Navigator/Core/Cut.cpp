@@ -21,6 +21,7 @@ namespace Navigator {
 
 	std::string ConvertCutTypeToString(CutType type)
 	{
+		NAV_PROFILE_FUNCTION();
 		switch(type)
 		{
 			case CutType::Cut1D: return "Cut1D";
@@ -43,12 +44,14 @@ namespace Navigator {
 
 	void Cut1D::IsInside(double x, double y)
 	{
+		NAV_PROFILE_FUNCTION();
 		m_isValid = x >= m_minVal && x <= m_maxVal;
 	}
 
 	//Only within an ImPlot/ImGui context!!!
 	void Cut1D::Draw() const
 	{
+		NAV_PROFILE_FUNCTION();
 		double points[2] = { m_minVal, m_maxVal };
 		ImPlot::PlotVLines(m_params.name.c_str(), points, 2);
 	}
@@ -71,7 +74,8 @@ namespace Navigator {
 	*/
 	void Cut2D::IsInside(double x, double y)
 	{
-        m_isValid = false;
+		NAV_PROFILE_FUNCTION();
+		m_isValid = false;
         double slope;
         for(size_t i=0; i<(m_xpoints.size()-1); i++)
         {
@@ -99,7 +103,8 @@ namespace Navigator {
     //Only in ImPlot/ImGui context!!!!
     void Cut2D::Draw() const
     {
-        ImPlot::PlotLine(m_params.name.c_str(), m_xpoints.data(), m_ypoints.data(), (int)m_xpoints.size());
+		NAV_PROFILE_FUNCTION();
+		ImPlot::PlotLine(m_params.name.c_str(), m_xpoints.data(), m_ypoints.data(), (int)m_xpoints.size());
     }
 
 	/*CutSummaryAll -- Can only be made on a HistogramSummary but can be applied to any*/
@@ -114,12 +119,14 @@ namespace Navigator {
 
 	void CutSummary::IsInside(double x, double y)
 	{
+		NAV_PROFILE_FUNCTION();
 		m_isValid = x >= m_minVal && x <= m_maxVal;
 	}
 
 	//Only within an ImPlot/ImGui context!!!
 	void CutSummary::Draw() const
 	{
+		NAV_PROFILE_FUNCTION();
 		double points[2] = { m_minVal, m_maxVal };
 		ImPlot::PlotVLines(m_params.name.c_str(), points, 2);
 	}

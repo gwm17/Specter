@@ -26,6 +26,7 @@ namespace Navigator {
 
 	bool SpectrumDialog::ImGuiRenderSpectrumDialog(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
 	{
+		NAV_PROFILE_FUNCTION();
 		static std::string selectedCut = "";
 		bool result = false;
 		if (m_openFlag)
