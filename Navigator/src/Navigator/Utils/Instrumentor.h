@@ -1,3 +1,12 @@
+/*
+	Instrumentor.h
+	Instrumentation classes for generating JSON trace files for use in Google Chrome's tracer. Based entirely upon the work done by @TheCherno in his game engine series. See his Hazel
+	repository for more details.
+
+	To activate the profiling, switch the NAV_PROFILE macro to a value greater than 0. By default the instrumentaion is disabled (duh). Should only be used for development cases.
+
+	GWM -- May 2022
+*/
 #ifndef INSTRUMENTOR_H
 #define INSTRUMENTOR_H
 
