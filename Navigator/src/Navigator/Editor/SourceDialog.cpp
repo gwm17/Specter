@@ -78,8 +78,16 @@ namespace Navigator {
 
 			if (ImGui::Button("Ok"))
 			{
-				PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort);
-				Application::Get().OnEvent(event);
+				if (m_chosenType == DataSource::SourceType::CompassOffline)
+				{
+					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort);
+					Application::Get().OnEvent(event);
+				}
+				else if (m_chosenType == DataSource::SourceType::CompassOnline)
+				{
+					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, true);
+					Application::Get().OnEvent(event);
+				}
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();

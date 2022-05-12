@@ -116,6 +116,7 @@ namespace Navigator {
 		std::scoped_lock<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
 		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetSourceType()));
 		m_eventBuilder.SetCoincidenceWindow(event.GetCoincidenceWindow());
+		m_eventBuilder.SetSortFlag(event.GetSortFlag());
 		m_eventBuilder.ClearAll(); //Protect against stopping mid-event
 		if (m_source->IsValid())
 		{
@@ -144,7 +145,7 @@ namespace Navigator {
 		NAV_PROFILE_FUNCTION();
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 
-		NavEvent event;
+		std::vector<NavEvent> events;
 		NavData datum;
 		while(m_activeFlag)
 		{
@@ -167,17 +168,20 @@ namespace Navigator {
 				}
 			}
 
-			//Pass data from source to event builder. True from AddDatumToEvent indicates event is ready
-			if (m_eventBuilder.AddDatumToEvent(datum))
+			//Pass data from source to event builder. True from AddDatum indicates events are ready
+			if (m_eventBuilder.AddDatum(datum))
 			{
-				event = m_eventBuilder.GetReadyEvent();
-				for (auto& stage : m_physStack)
-					stage->AnalyzePhysicsEvent(event);
-				
-				//Now that the analysis stack has filled all our NavParameters with data, update the histogram counts
-				manager.UpdateHistograms();
-				//Invalidate all parameters to get ready for next event
-				manager.InvalidateParameters();
+				events = m_eventBuilder.GetReadyEvents();
+				for (auto& event : events)
+				{
+					for (auto& stage : m_physStack)
+						stage->AnalyzePhysicsEvent(event);
+
+					//Now that the analysis stack has filled all our NavParameters with data, update the histogram counts
+					manager.UpdateHistograms();
+					//Invalidate all parameters to get ready for next event
+					manager.InvalidateParameters();
+				}
 			}
 		}
 	}

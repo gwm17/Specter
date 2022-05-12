@@ -44,7 +44,6 @@ namespace Navigator {
 		void GetHit();
 
 		std::vector<char> m_currentBuffer;
-		std::vector<char> m_fragment;
 		static constexpr int m_datasize = 24; //size of CoMPASS hit in bytes, change as needed (if for example you have calibrated energies)
 		const int m_nchannels_per_board = 16; //IMPORTANT: Used for ID'ing channels uniquely. If you use boards with 32 or 8 or 64 channels you must change this! If you mix boards with
 											  //different numbers of channels, you will have to find a different id solution.

@@ -13,7 +13,7 @@
 namespace Navigator {
 
 	PhysicsEventBuilder::PhysicsEventBuilder(uint64_t windowSize) :
-		m_coincWindow(windowSize), m_eventStartTime(0)
+		m_sortFlag(false), m_coincWindow(windowSize), m_bufferIndex(0)
 	{
 	}
 
@@ -21,36 +21,45 @@ namespace Navigator {
 	{
 	}
 
-	bool PhysicsEventBuilder::AddDatumToEvent(const NavData& datum)
+	bool PhysicsEventBuilder::AddDatum(const NavData& datum)
 	{
 		NAV_PROFILE_FUNCTION();
 		if (datum.timestamp == 0) //Ignore empty data (need a valid timestamp)
 			return false;
 
-		if (m_eventStartTime == 0) //first ever event
-		{
-			m_eventStartTime = datum.timestamp;
-			m_event.push_back(datum);
+		m_dataBuffer[m_bufferIndex] = datum;
+		m_bufferIndex++;
+		if (m_bufferIndex < s_maxDataBuffer) //If we haven't filled the buffer keep going
 			return false;
-		}
-		else if (datum.timestamp - m_eventStartTime < m_coincWindow) //are we within active window
+		else if (m_sortFlag)
+			std::sort(m_dataBuffer.begin(), m_dataBuffer.end(), [](NavData& i, NavData& j) { return i.timestamp < j.timestamp; });
+		
+		//Generate our ready events
+		m_readyEvents.clear();
+		uint64_t eventStartTime = m_dataBuffer[0].timestamp;
+		NavEvent event;
+		event.push_back(m_dataBuffer[0]);
+		for (auto& data : m_dataBuffer)
 		{
-			m_event.push_back(datum);
-			return false;
+			if (data.timestamp - eventStartTime < m_coincWindow) //are we within active window
+			{
+				event.push_back(data);
+			}
+			else // found one that falls outside
+			{
+				m_readyEvents.push_back(event);
+				event.clear();
+				eventStartTime = data.timestamp;
+				event.push_back(data);
+			}
 		}
-		else // found one that falls outside
-		{
-			m_readyEvent = m_event;
-			m_event.clear();
-			m_eventStartTime = datum.timestamp;
-			m_event.push_back(datum);
-			return true;
-		}
+		m_bufferIndex = 0;
+		return true;
 	}
 
-	const NavEvent& PhysicsEventBuilder::GetReadyEvent() const
+	const std::vector<NavEvent>& PhysicsEventBuilder::GetReadyEvents() const
 	{
-		return m_readyEvent;
+		return m_readyEvents;
 	}
 
 }

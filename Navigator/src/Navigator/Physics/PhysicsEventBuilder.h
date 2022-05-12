@@ -21,20 +21,23 @@ namespace Navigator {
 		PhysicsEventBuilder(uint64_t windowSize);
 		~PhysicsEventBuilder();
 		inline void SetCoincidenceWindow(uint64_t windowSize) { m_coincWindow = windowSize; }
+		inline void SetSortFlag(bool flag) { m_sortFlag = flag; }
 		inline void ClearAll() // reset all internal structures
 		{
-			m_event.clear();
-			m_readyEvent.clear();
-			m_eventStartTime = 0;
+			m_bufferIndex = 0;
+			m_readyEvents.clear();
 		}
-		bool AddDatumToEvent(const NavData& datum);
-		const NavEvent& GetReadyEvent() const;
+		bool AddDatum(const NavData& datum);
+		const std::vector<NavEvent>& GetReadyEvents() const;
 
 	private:
-		NavEvent m_event;
-		NavEvent m_readyEvent;
+		bool m_sortFlag;
+		static constexpr int s_maxDataBuffer = 100;
+		std::array<NavData, s_maxDataBuffer> m_dataBuffer;
+		int m_bufferIndex;
+		std::vector<NavEvent> m_readyEvents;
 		uint64_t m_coincWindow;
-		uint64_t m_eventStartTime;
+
 	};
 
 }

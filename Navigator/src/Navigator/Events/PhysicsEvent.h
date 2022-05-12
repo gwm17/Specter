@@ -16,14 +16,15 @@ namespace Navigator {
 	class NAV_API PhysicsStartEvent : public Event
 	{
 	public:
-		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489") :
-			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window)
+		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", bool sortFlag=false) :
+			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_sortFlag(sortFlag)
 		{}
 
 		inline std::string GetSourceLocation() { return m_sourceLocation; }
         inline std::string GetSourcePort() { return m_port; }
 		inline DataSource::SourceType GetSourceType() { return m_sourceType; }
 		inline uint64_t GetCoincidenceWindow() { return m_coincidenceWindow; }
+		inline bool GetSortFlag() { return m_sortFlag; }
 
 		std::string ToString() const override
 		{
@@ -38,6 +39,7 @@ namespace Navigator {
         std::string m_port;
 		DataSource::SourceType m_sourceType;
 		uint64_t m_coincidenceWindow;
+		bool m_sortFlag;
 	};
 
 	class NAV_API PhysicsStopEvent : public Event
