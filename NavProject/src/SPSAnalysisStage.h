@@ -27,6 +27,7 @@ namespace Navigator {
 		NavParameter xavg;
 		NavParameter scintLeft;
 		NavParameter anodeBack;
+		NavParameter anodeFront;
 		NavParameter cathode;
 		NavParameter xavg_sabreCoinc;
 

@@ -11,7 +11,7 @@ namespace Navigator {
 	//Construct each NavParameter with their unique name. Then bind them to the SpectrumManager.
 	SPSAnalysisStage::SPSAnalysisStage() :
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
-		scintLeft("scintLeft"), anodeBack("anodeBack"), cathode("cathode"), xavg_sabreCoinc("xavg_sabreCoinc"), x1_weight("x1_weight"), x2_weight("x2_weight")
+		scintLeft("scintLeft"), anodeBack("anodeBack"), anodeFront("anodeFront"), cathode("cathode"), xavg_sabreCoinc("xavg_sabreCoinc"), x1_weight("x1_weight"), x2_weight("x2_weight")
 	{
 		NAV_PROFILE_FUNCTION();
 		SpectrumManager& manager = SpectrumManager::GetInstance();
@@ -25,6 +25,7 @@ namespace Navigator {
 		manager.BindParameter(xavg, 600, -300.0, 300.0);
 		manager.BindParameter(scintLeft, 4096, 0.0, 4096.0);
 		manager.BindParameter(anodeBack, 4096, 0.0, 4096.0);
+		manager.BindParameter(anodeFront, 4096, 0.0, 4096.0);
 		manager.BindParameter(cathode, 4096, 0.0, 4096);
 		manager.BindParameter(xavg_sabreCoinc, 600, -300.0, 300.0);
 
@@ -67,6 +68,9 @@ namespace Navigator {
 				case 129:
 					scintLeft.SetValue(hit.longEnergy);
 					break;
+				case 135:
+					cathode.SetValue(hit.longEnergy);
+					break;
 				case 136:
 					delayFLTime.SetValue(hit.timestamp / 1.0e3);
 					break;
@@ -78,6 +82,9 @@ namespace Navigator {
 					break;
 				case 139:
 					delayBRTime.SetValue(hit.timestamp / 1.0e3);
+					break;
+				case 141:
+					anodeFront.SetValue(hit.longEnergy);
 					break;
 				case 143:
 					anodeBack.SetValue(hit.longEnergy);
