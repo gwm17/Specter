@@ -13,6 +13,10 @@
 	library to handle filepathing. Also, removed scalers (for now).
 
 	GWM -- Feb 2022
+
+	Update to reflect new CAEN binary data format with headers to indicate data contents.
+
+	GWM -- May 2022
 */
 #include "CompassRun.h"
 
@@ -139,8 +143,9 @@ namespace Navigator {
 		else
 		{
 			//Convert data from CoMPASS format to universal Navigator format.
-			m_datum.longEnergy = m_hit.lgate;
-			m_datum.shortEnergy = m_hit.sgate;
+			m_datum.longEnergy = m_hit.energy;
+			m_datum.shortEnergy = m_hit.energyShort;
+			m_datum.calEnergy = m_hit.energyCalibrated;
 			m_datum.timestamp = m_hit.timestamp;
 			m_datum.id = m_hit.board * m_nchannels_per_board + m_hit.channel;
 		}

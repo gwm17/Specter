@@ -9,6 +9,7 @@
 #include "Navigator/Events/PhysicsEvent.h"
 #include "Navigator/Events/Event.h"
 #include "Navigator/Core/Application.h"
+#include "Navigator/Physics/Caen/CompassHit.h"
 
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -40,7 +41,8 @@ namespace Navigator {
 			m_chosenType = DataSource::SourceType::None;
 			m_chosenLocation = "";
 			m_chosenPort = "51489";
-			m_chosenWindow = 2000000;
+			m_chosenWindow = 3000000;
+			m_bitflags = 0;
 			ImGui::OpenPopup(ICON_FA_LINK " Attach Source");
 		}
 		if (ImGui::BeginPopupModal(ICON_FA_LINK " Attach Source"))
@@ -61,6 +63,20 @@ namespace Navigator {
 			{
 				ImGui::InputText("Hostname", &m_chosenLocation);
 				ImGui::InputText("Port", &m_chosenPort);
+				if (ImGui::RadioButton("Energy", (m_bitflags & CompassHeaders::Energy) != 0))
+				{
+					m_bitflags = m_bitflags ^ CompassHeaders::Energy;
+				}
+				ImGui::SameLine();
+				if (ImGui::RadioButton("Energy Short", (m_bitflags & CompassHeaders::EnergyShort) != 0))
+				{
+					m_bitflags = m_bitflags ^ CompassHeaders::EnergyShort;
+				}
+				ImGui::SameLine();
+				if (ImGui::RadioButton("Energy Calibrated", (m_bitflags & CompassHeaders::EnergyCalibrated) != 0))
+				{
+					m_bitflags = m_bitflags ^ CompassHeaders::EnergyCalibrated;
+				}
 			}
 			else if (m_chosenType == DataSource::SourceType::CompassOffline)
 			{
@@ -85,7 +101,7 @@ namespace Navigator {
 				}
 				else if (m_chosenType == DataSource::SourceType::CompassOnline)
 				{
-					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, true);
+					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, true, m_bitflags);
 					Application::Get().OnEvent(event);
 				}
 				ImGui::CloseCurrentPopup();

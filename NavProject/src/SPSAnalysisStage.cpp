@@ -61,34 +61,59 @@ namespace Navigator {
 			if (hit.id < 127)
 			{
 				sabreFlag = true;
-				sabre[hit.id].SetValue(hit.longEnergy);
+				if (hit.longEnergy > sabre[hit.id].GetValue())
+					sabre[hit.id].SetValue(hit.longEnergy);
 			}
 			switch (hit.id)
 			{
 				case 129:
-					scintLeft.SetValue(hit.longEnergy);
+				{
+					if (hit.longEnergy > scintLeft.GetValue())
+						scintLeft.SetValue(hit.longEnergy);
 					break;
+				}
 				case 135:
-					cathode.SetValue(hit.longEnergy);
+				{
+					if (hit.longEnergy > cathode.GetValue())
+						cathode.SetValue(hit.longEnergy);
 					break;
+				}
 				case 136:
-					delayFLTime.SetValue(hit.timestamp / 1.0e3);
+				{
+					if (!delayFLTime.IsValid())
+						delayFLTime.SetValue(hit.timestamp / 1.0e3);
 					break;
+				}
 				case 137:
-					delayFRTime.SetValue(hit.timestamp / 1.0e3);
+				{
+					if (!delayFRTime.IsValid())
+						delayFRTime.SetValue(hit.timestamp / 1.0e3);
 					break;
+				}
 				case 138:
-					delayBLTime.SetValue(hit.timestamp / 1.0e3);
+				{
+					if (!delayBLTime.IsValid())
+						delayBLTime.SetValue(hit.timestamp / 1.0e3);
 					break;
+				}
 				case 139:
-					delayBRTime.SetValue(hit.timestamp / 1.0e3);
+				{
+					if (!delayBRTime.IsValid())
+						delayBRTime.SetValue(hit.timestamp / 1.0e3);
 					break;
+				}
 				case 141:
-					anodeFront.SetValue(hit.longEnergy);
+				{
+					if (hit.longEnergy > anodeFront.GetValue())
+						anodeFront.SetValue(hit.longEnergy);
 					break;
+				}
 				case 143:
-					anodeBack.SetValue(hit.longEnergy);
+				{
+					if (hit.longEnergy > anodeBack.GetValue())
+						anodeBack.SetValue(hit.longEnergy);
 					break;
+				}
 			}
 		}
 

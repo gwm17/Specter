@@ -28,6 +28,7 @@ namespace Navigator {
 		std::string m_chosenLocation;
 		std::string m_chosenPort;
 		FileDialog m_fileDialog;
+		uint16_t m_bitflags;
 		int m_chosenWindow;
 	};
 

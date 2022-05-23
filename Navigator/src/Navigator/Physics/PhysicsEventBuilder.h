@@ -32,7 +32,7 @@ namespace Navigator {
 
 	private:
 		bool m_sortFlag;
-		static constexpr int s_maxDataBuffer = 100;
+		static constexpr int s_maxDataBuffer = 1000;
 		std::array<NavData, s_maxDataBuffer> m_dataBuffer;
 		int m_bufferIndex;
 		std::vector<NavEvent> m_readyEvents;

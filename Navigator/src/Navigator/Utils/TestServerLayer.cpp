@@ -54,8 +54,8 @@ namespace Navigator {
 		m_hit.board = 8;
 		m_hit.channel = 1;
 		m_hit.timestamp = m_hit.timestamp + s_timestep;
-		m_hit.lgate = 512;
-		m_hit.sgate = 0;
+		m_hit.energy = 512;
+		m_hit.energyShort = 0;
 		m_hit.flags = 0;
 		m_hit.Ns = 0;
 
@@ -80,13 +80,13 @@ namespace Navigator {
 			m_buffer[buffer_position] = *(data_pointer + i);
 			buffer_position++;
 		}
-		data_pointer = (char*)&m_hit.lgate;
+		data_pointer = (char*)&m_hit.energy;
 		for (int i = 0; i < 2; i++)
 		{
 			m_buffer[buffer_position] = *(data_pointer + i);
 			buffer_position++;
 		}
-		data_pointer = (char*)&m_hit.sgate;
+		data_pointer = (char*)&m_hit.energyShort;
 		for (int i = 0; i < 2; i++)
 		{
 			m_buffer[buffer_position] = *(data_pointer + i);
@@ -122,8 +122,8 @@ namespace Navigator {
 		m_hit.board = 8;
 		m_hit.channel = 1;
 		m_hit.timestamp = m_hit.timestamp + s_timestep;
-		m_hit.lgate = 512;
-		m_hit.sgate = 0;
+		m_hit.energy = 512;
+		m_hit.energyShort = 0;
 		m_hit.flags = 0;
 		m_hit.Ns = 0;
 
@@ -150,25 +150,19 @@ namespace Navigator {
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
-			data_pointer = (char*)&m_hit.lgate;
+			data_pointer = (char*)&m_hit.energy;
 			for (int i = 0; i < 2; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
-			data_pointer = (char*)&m_hit.sgate;
+			data_pointer = (char*)&m_hit.energyShort;
 			for (int i = 0; i < 2; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
 			data_pointer = (char*)&m_hit.flags;
-			for (int i = 0; i < 4; i++)
-			{
-				m_buffer[buffer_position] = *(data_pointer + i);
-				buffer_position++;
-			}
-			data_pointer = (char*)&m_hit.Ns;
 			for (int i = 0; i < 4; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
@@ -197,25 +191,19 @@ namespace Navigator {
 		}
 		else
 		{
-			data_pointer = (char*)&m_hit.lgate;
+			data_pointer = (char*)&m_hit.energy;
 			for (int i = 0; i < 2; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
-			data_pointer = (char*)&m_hit.sgate;
+			data_pointer = (char*)&m_hit.energyShort;
 			for (int i = 0; i < 2; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
 			data_pointer = (char*)&m_hit.flags;
-			for (int i = 0; i < 4; i++)
-			{
-				m_buffer[buffer_position] = *(data_pointer + i);
-				buffer_position++;
-			}
-			data_pointer = (char*)&m_hit.Ns;
 			for (int i = 0; i < 4; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
@@ -239,13 +227,13 @@ namespace Navigator {
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
-			data_pointer = (char*)&m_hit.lgate;
+			data_pointer = (char*)&m_hit.energy;
 			for (int i = 0; i < 2; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
-			data_pointer = (char*)&m_hit.sgate;
+			data_pointer = (char*)&m_hit.energyShort;
 			for (int i = 0; i < 2; i++)
 			{
 				m_buffer[buffer_position] = *(data_pointer + i);
@@ -257,13 +245,6 @@ namespace Navigator {
 				m_buffer[buffer_position] = *(data_pointer + i);
 				buffer_position++;
 			}
-			data_pointer = (char*)&m_hit.Ns;
-			for (int i = 0; i < 4; i++)
-			{
-				m_buffer[buffer_position] = *(data_pointer + i);
-				buffer_position++;
-			}
-			even = true;
 		}
 	}
 

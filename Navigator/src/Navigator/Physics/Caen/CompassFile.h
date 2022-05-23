@@ -11,6 +11,10 @@
 	Modified for Navigator; not really any significant changes. Just some simple changes, removal of unused data.
 
 	GWM -- Feb 2022
+
+	Update to reflect new CAEN binary data format with headers to indicate data contents.
+
+	GWM -- May 2022
 */
 #ifndef COMPASSFILE_H
 #define COMPASSFILE_H
@@ -36,17 +40,17 @@ namespace Navigator {
 		inline bool IsOpen() const { return m_file->is_open(); };
 		inline CompassHit GetCurrentHit() const { return m_currentHit; }
 		inline std::string GetName() const { return  m_filename; }
-		inline bool CheckHitHasBeenUsed() const { return hitUsedFlag; } //query to find out if we've used the current hit
-		inline void SetHitHasBeenUsed() { hitUsedFlag = true; } //flip the flag to indicate the current hit has been used
-		inline bool IsEOF() const { return eofFlag; } //see if we've read all available data
-		inline bool* GetUsedFlagPtr() { return &hitUsedFlag; }
+		inline bool CheckHitHasBeenUsed() const { return m_hitUsedFlag; } //query to find out if we've used the current hit
+		inline void SetHitHasBeenUsed() { m_hitUsedFlag = true; } //flip the flag to indicate the current hit has been used
+		inline bool IsEOF() const { return m_eofFlag; } //see if we've read all available data
+		inline bool* GetUsedFlagPtr() { return &m_hitUsedFlag; }
 		inline void AttachShiftMap(ShiftMap* map) { m_smap = map; }
 		inline unsigned int GetSize() const { return m_size; }
 		inline unsigned int GetNumberOfHits() const { return m_nHits; }
 	
 	
 	private:
-		int GetHitSize();
+		void ReadHeader();
 		void ParseNextHit();
 		void GetNextBuffer();
 	
@@ -55,21 +59,22 @@ namespace Navigator {
 		using FilePointer = std::shared_ptr<std::ifstream>; //to make this class copy/movable
 	
 		std::string m_filename;
-		Buffer hitBuffer;
-		char* bufferIter;
-		char* bufferEnd;
+		Buffer m_hitBuffer;
+		char* m_bufferIter;
+		char* m_bufferEnd;
 		ShiftMap* m_smap; //NOT owned by CompassFile. DO NOT delete
 	
-		bool hitUsedFlag;
-		int bufsize = 200000; //size of the buffer in hits
-		int hitsize = 24; //size of a CompassHit in bytes (without alignment padding)
+		bool m_hitUsedFlag;
+		int m_bufsize = 200000; //size of the buffer in hits
+		int m_hitsize; //size of a CompassHit in bytes (without alignment padding)
+		uint16_t m_header;
 		int m_buffersize;
 	
 		CompassHit m_currentHit;
 		FilePointer m_file;
-		bool eofFlag;
+		bool m_eofFlag;
 		unsigned int m_size; //size of the file in bytes
-		unsigned int m_nHits; //number of hits in the file (m_size/24)
+		unsigned int m_nHits; //number of hits in the file (m_size/m_hitsize)
 	
 	};
 

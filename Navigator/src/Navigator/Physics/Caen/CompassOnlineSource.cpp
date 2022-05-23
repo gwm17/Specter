@@ -25,8 +25,8 @@
 
 namespace Navigator {
 
-	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port) :
-		DataSource(), m_bufferIter(nullptr), m_bufferEnd(nullptr)
+	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header) :
+		DataSource(), m_bufferIter(nullptr), m_bufferEnd(nullptr), m_header(header)
 	{
 		InitConnection(hostname, port);
 	}
@@ -36,6 +36,17 @@ namespace Navigator {
 	void CompassOnlineSource::InitConnection(const std::string& hostname, const std::string& port)
 	{
 		NAV_PROFILE_FUNCTION();
+
+		m_datasize = 16; //base size of CoMPASS data
+		if (Compass_IsEnergy(m_header))
+			m_datasize += 2;
+		if (Compass_IsEnergyShort(m_header))
+			m_datasize += 2;
+		if (Compass_IsEnergyCalibrated(m_header))
+			m_datasize += 8;
+		if (Compass_IsWaves(m_header))
+			NAV_ERROR("Navigator does not support reading CoMPASS wave data for an online source!");
+
 		m_validFlag = false;
 		m_connection.Connect(hostname, port);
 		if (m_connection.IsOpen())
@@ -67,8 +78,9 @@ namespace Navigator {
 			return m_datum;
 		}
 
-		m_datum.longEnergy = m_currentHit.lgate;
-		m_datum.shortEnergy = m_currentHit.sgate;
+		m_datum.longEnergy = m_currentHit.energy;
+		m_datum.shortEnergy = m_currentHit.energyShort;
+		m_datum.calEnergy = m_currentHit.energyCalibrated;
 		m_datum.timestamp = m_currentHit.timestamp;
 		m_datum.id = m_currentHit.board * m_nchannels_per_board + m_currentHit.channel;
 
@@ -101,6 +113,11 @@ namespace Navigator {
 		m_bufferEnd = m_currentBuffer.data() + m_currentBuffer.size();
 	}
 
+	void CompassOnlineSource::ReadHeader()
+	{
+
+	}
+
 	void CompassOnlineSource::GetHit()
 	{
 		NAV_PROFILE_FUNCTION();
@@ -110,13 +127,22 @@ namespace Navigator {
 		m_bufferIter += 2;
 		m_currentHit.timestamp = *((uint64_t*)m_bufferIter);
 		m_bufferIter += 8;
-		m_currentHit.lgate = *((uint16_t*)m_bufferIter);
-		m_bufferIter += 2;
-		m_currentHit.sgate = *((uint16_t*)m_bufferIter);
-		m_bufferIter += 2;
+		if (Compass_IsEnergy(m_header))
+		{
+			m_currentHit.energy = *((uint16_t*)m_bufferIter);
+			m_bufferIter += 2;
+		}
+		if (Compass_IsEnergyCalibrated(m_header))
+		{
+			m_currentHit.energyCalibrated + *((uint16_t*)m_bufferIter);
+			m_bufferIter += 8;
+		}
+		if (Compass_IsEnergyShort(m_header))
+		{
+			m_currentHit.energyShort = *((uint16_t*)m_bufferIter);
+			m_bufferIter += 2;
+		}
 		m_currentHit.flags = *((uint32_t*)m_bufferIter);
-		m_bufferIter += 4;
-		m_currentHit.Ns = *((uint32_t*)m_bufferIter);
 		m_bufferIter += 4;
 	}
 

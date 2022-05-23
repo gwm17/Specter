@@ -20,6 +20,12 @@
 	Maybe we can get them to change this? Headers reeaaally should exist for transfers like this.
 
 	GWM -- April 2022
+
+	Update to reflect new CAEN binary data format with headers to indicate data contents. Note that as prev. mentioned, no headers, so cannot rely on data stream to indicate state. State must be selected 
+	by user at UI when creating source. Cannot support waves atm. No way to predict size of first event to calibrate the number of samples for the stream (or guarantee that they will be constant for duration
+	of Navigator's runtime). Best to use the CoMPASSPlot for waves.
+
+	GWM -- May 2022
 */
 #ifndef COMPASS_ONLINE_SOURCE_H
 #define COMPASS_ONLINE_SOURCE_H
@@ -33,7 +39,7 @@ namespace Navigator {
 	class CompassOnlineSource : public DataSource
 	{
 	public:
-		CompassOnlineSource(const std::string& hostname, const std::string& port);
+		CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header);
 		virtual ~CompassOnlineSource() override;
 
 		virtual const NavData& GetData() override;
@@ -42,9 +48,11 @@ namespace Navigator {
 		void InitConnection(const std::string& hostname, const std::string& port);
 		void FillBuffer();
 		void GetHit();
+		void ReadHeader();
 
 		std::vector<char> m_currentBuffer;
-		static constexpr int m_datasize = 24; //size of CoMPASS hit in bytes, change as needed (if for example you have calibrated energies)
+		uint16_t m_header;
+		int m_datasize; //size of CoMPASS hit in bytes, set by header arg
 		const int m_nchannels_per_board = 16; //IMPORTANT: Used for ID'ing channels uniquely. If you use boards with 32 or 8 or 64 channels you must change this! If you mix boards with
 											  //different numbers of channels, you will have to find a different id solution.
 		char* m_bufferIter;

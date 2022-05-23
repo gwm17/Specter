@@ -3,6 +3,10 @@
 	Events related to physics processes. Again, based on @TheCherno's work.
 
 	GWM -- Feb 2022
+
+	Update to reflect new CAEN binary data format with headers to indicate data contents.
+
+	GWM -- May 2022
 */
 #ifndef PHYSICS_EVENT_H
 #define PHYSICS_EVENT_H
@@ -16,8 +20,9 @@ namespace Navigator {
 	class NAV_API PhysicsStartEvent : public Event
 	{
 	public:
-		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", bool sortFlag=false) :
-			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_sortFlag(sortFlag)
+		//Bitflags is a final option for random crap needed for a source. Currently used for compass online to indicate header state.
+		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", bool sortFlag=false, uint16_t bitflags = 0) :
+			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_sortFlag(sortFlag), m_bitflags(bitflags)
 		{}
 
 		inline std::string GetSourceLocation() { return m_sourceLocation; }
@@ -40,6 +45,7 @@ namespace Navigator {
 		DataSource::SourceType m_sourceType;
 		uint64_t m_coincidenceWindow;
 		bool m_sortFlag;
+		uint16_t m_bitflags;
 	};
 
 	class NAV_API PhysicsStopEvent : public Event

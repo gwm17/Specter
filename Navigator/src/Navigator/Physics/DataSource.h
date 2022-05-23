@@ -38,7 +38,7 @@ namespace Navigator {
 		NavData m_datum;
 	};
 
-	NAV_API DataSource* CreateDataSource(const std::string& loc, const std::string& port, DataSource::SourceType type);
+	NAV_API DataSource* CreateDataSource(const std::string& loc, const std::string& port, DataSource::SourceType type, uint16_t bitflags = 0);
 
 	NAV_API std::string ConvertDataSourceTypeToString(DataSource::SourceType type);
 }

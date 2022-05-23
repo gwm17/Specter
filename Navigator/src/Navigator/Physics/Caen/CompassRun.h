@@ -15,6 +15,10 @@
 	If you use a different set of boards, CHANGE THIS VALUE! If you use mixed boards, you will need to invent a new id scheme altogether.
 
 	GWM -- Feb 2022
+
+	Update to reflect new CAEN binary data format with headers to indicate data contents.
+
+	GWM -- May 2022
 */
 #ifndef COMPASSRUN_H
 #define COMPASSRUN_H
