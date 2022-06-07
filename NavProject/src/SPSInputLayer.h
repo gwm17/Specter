@@ -35,8 +35,8 @@ namespace Navigator {
 		void UpdateWeights();
 
 		//Variables for use in analysis
-		NavVariable x1_weight;
-		NavVariable x2_weight;
+		Variable x1_weight;
+		Variable x2_weight;
 
 		//UI facing inputs
 		double m_bfield; //kG

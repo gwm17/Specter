@@ -242,8 +242,8 @@ namespace Navigator {
 
 	/*************Parameter Functions Begin*************/
 
-	//Bind a NavParameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
-	void SpectrumManager::BindParameter(NavParameter& param)
+	//Bind a Parameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
+	void SpectrumManager::BindParameter(Parameter& param)
 	{
 		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
@@ -256,9 +256,9 @@ namespace Navigator {
 		param.m_pdata = m_paramMap[param.GetName()];
 	}
 
-	//Bind a NavParameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
+	//Bind a Parameter instance to the manager. If the Parameter doesn't exist, make a new one, otherwise attach to extant memory
 	//Additionally, make a default 1D histogram for the parameter (histogram has same name as parameter)
-	void SpectrumManager::BindParameter(NavParameter& param, int nbins, double minVal, double maxVal)
+	void SpectrumManager::BindParameter(Parameter& param, int nbins, double minVal, double maxVal)
 	{
 		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
@@ -308,7 +308,7 @@ namespace Navigator {
 
 	/*************Variable Functions Begin*************/
 
-	void SpectrumManager::BindVariable(NavVariable& var)
+	void SpectrumManager::BindVariable(Variable& var)
 	{
 		NAV_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_managerMutex);

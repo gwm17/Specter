@@ -134,7 +134,7 @@ namespace Navigator {
 		}
 		if (Compass_IsEnergyCalibrated(m_header))
 		{
-			m_currentHit.energyCalibrated + *((uint16_t*)m_bufferIter);
+			m_currentHit.energyCalibrated = *((uint16_t*)m_bufferIter);
 			m_bufferIter += 8;
 		}
 		if (Compass_IsEnergyShort(m_header))

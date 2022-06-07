@@ -72,6 +72,9 @@ namespace Navigator {
 		io.Fonts->AddFontFromFileTTF("Assets/fonts/Roboto-Regular.ttf", 16.0f, &latin_config, io.Fonts->GetGlyphRangesDefault());
 		io.Fonts->AddFontFromFileTTF("Assets/fonts/fa-solid-900.ttf", 16.0f, &config, icon_ranges);
 
+		//ImPlot styling
+		ImPlot::GetStyle().FillAlpha = 0.75;
+
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 

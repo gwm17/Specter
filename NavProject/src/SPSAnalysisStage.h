@@ -18,24 +18,24 @@ namespace Navigator {
 
 	private:
 		//Create a bunch of parameters
-		NavParameter delayFLTime;
-		NavParameter delayFRTime;
-		NavParameter delayBLTime;
-		NavParameter delayBRTime;
-		NavParameter x1;
-		NavParameter x2;
-		NavParameter xavg;
-		NavParameter scintLeft;
-		NavParameter anodeBack;
-		NavParameter anodeFront;
-		NavParameter cathode;
-		NavParameter xavg_sabreCoinc;
+		Parameter delayFLTime;
+		Parameter delayFRTime;
+		Parameter delayBLTime;
+		Parameter delayBRTime;
+		Parameter x1;
+		Parameter x2;
+		Parameter xavg;
+		Parameter scintLeft;
+		Parameter anodeBack;
+		Parameter anodeFront;
+		Parameter cathode;
+		Parameter xavg_sabreCoinc;
 
-		std::vector<NavParameter> sabre;
+		std::vector<Parameter> sabre;
 
 		//Create a few variables
-		NavVariable x1_weight;
-		NavVariable x2_weight;
+		Variable x1_weight;
+		Variable x2_weight;
 	};
 
 }

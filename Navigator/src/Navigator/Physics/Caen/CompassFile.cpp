@@ -91,7 +91,7 @@ namespace Navigator {
 			m_hitsize += 2;
 		if (Compass_IsEnergyCalibrated(m_header))
 			m_hitsize += 8;
-		if (Compass_IsWaves)
+		if (Compass_IsWaves(m_header))
 		{
 			m_hitsize += 5;
 			char* firstHit = new char[m_hitsize]; //Read chunk of first hit

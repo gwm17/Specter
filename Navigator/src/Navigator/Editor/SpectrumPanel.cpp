@@ -87,7 +87,7 @@ namespace Navigator {
                             auto& region = m_integralRegions[i];
                             if (m_zoomedGram.name == region.histogram_name)
                             {
-                                ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1));
+                                ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1), ImPlotDragToolFlags_NoFit);
                                 StatResults results = SpectrumManager::GetInstance().AnalyzeHistogramRegion(m_zoomedGram.name, region.region);
                                 ImPlot::PlotText(GenerateStatString(region.name, results, m_zoomedGram.y_par != "None").c_str(), (region.region.X.Max + region.region.X.Min) * 0.5, 
                                                  (region.region.Y.Min + region.region.Y.Max) * 0.5);

@@ -1,18 +1,18 @@
 /*
 	Parameter.h
-	Contains two data related structures, ParameterData and NavParameter. Parameter here refers to a value which
+	Contains two data related structures, ParameterData and Parameter. Parameter here refers to a value which
 	can be associated with the axis of a histogram. ParameterData is a two component struct which represents the state of a single parameter, which is stored
-	in the global SpectrumManager (see SpectrumManager documentation). NavParameter is an access point class for use within analysis. It provides scoped access to
+	in the global SpectrumManager (see SpectrumManager documentation). Parameter is an access point class for use within analysis. It provides scoped access to
 	the managed data. There are several important caveats to using the parameters this way, which is mostly related to synchronization:
 
-	- NavParameter contains no guarantee of thread safety. THIS IS BY DESIGN. NavParameters should only be created within the context of an AnalysisStage (see AnalysisStage documentation).
+	- Parameter contains no guarantee of thread safety. THIS IS BY DESIGN. Parameters should only be created within the context of an AnalysisStage (see AnalysisStage documentation).
 	  As long as this is true, there is no risk of accessing parameter data outside of the physics thread, and that thread explicitly handles calculation of parameters 
-	  and updating of histograms. DO NOT make a NavParameter outside of the AnalysisStage context.
-	- NavParameters must be bound to the active SpectrumManager. This is done using the BindParameter function of the manager; NavParameters are keyed based on their name string.
-	  If two NavParameters are made that are both named "x1", they are in fact the same parameter. In this way, values can be passed from one AnalysisStage to another. If you make a stage 
-	  called InitialStage with a NavParameter named "x1" where x1 is set to 1.0, and then have a later stage called LaterStage with another NavParameter named x1, it implicitly has the value 1.0
+	  and updating of histograms. DO NOT make a Parameter outside of the AnalysisStage context.
+	- Parameters must be bound to the active SpectrumManager. This is done using the BindParameter function of the manager; Parameters are keyed based on their name string.
+	  If two Parameters are made that are both named "x1", they are in fact the same parameter. In this way, values can be passed from one AnalysisStage to another. If you make a stage 
+	  called InitialStage with a Parameter named "x1" where x1 is set to 1.0, and then have a later stage called LaterStage with another Parameter named x1, it implicitly has the value 1.0
 	  due to it being set in the previous stage.
-	- Each NavParameter has a valid flag. This is a boolean which idicates whether or not the parameter is in a valid state (the data event contianed a value  for this parameter). Before using a parameter
+	- Each Parameter has a valid flag. This is a boolean which idicates whether or not the parameter is in a valid state (the data event contianed a value  for this parameter). Before using a parameter
 	  in a calculation one should check if the parameter is valid using the IsValid() function. When a parameter is set using the SetValue() function, the valid flag is set to true. After the event is completely
 	  processed (all analysis stages have been run and histograms have been updated) the manager should be called to run InvalidateParameters() to set all parameters as invalid (valid flag false).
 
@@ -37,13 +37,13 @@ namespace Navigator {
 	};
 
 	//Interface to parameter data
-	class NAV_API NavParameter
+	class NAV_API Parameter
 	{
 
 	public:
-        NavParameter();
-		NavParameter(const std::string& name);
-		~NavParameter();
+        Parameter();
+		Parameter(const std::string& name);
+		~Parameter();
         
         inline bool IsValid() const { return m_pdata->validFlag; }
         inline void Invalidate() { m_pdata->validFlag = false; }
@@ -61,15 +61,15 @@ namespace Navigator {
 
 	//Similar to  parameters, sometimes you want to have a numeric input (in calculation terms, a constant)
 	//which you can use with your analysis. To be able to expose these numeric values to the UI, we need to implement them
-	//in the manager. To help with this, NavVariables are atomics. So unlike NavParameters they are implicity thread safe on read and write.
+	//in the manager. To help with this, Variables are atomics. So unlike Parameters they are implicity thread safe on read and write.
 	//However, this does not mean they can be modified in the analysis! To the AnalysisStage they should be treated as constant, while the UI
 	//should view them as modifiable. These are real god damn dangerous, but I think the power they offer outweighs the risk, for now.
-	class NAV_API NavVariable
+	class NAV_API Variable
 	{
 	public:
-		NavVariable();
-		NavVariable(const std::string& name);
-		~NavVariable();
+		Variable();
+		Variable(const std::string& name);
+		~Variable();
 
 		inline void SetValue(double value) { *(m_pdata) = value; }
 		inline double GetValue() { return *(m_pdata); }
