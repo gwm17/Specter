@@ -252,8 +252,8 @@ namespace Navigator {
                     ImGui::TreePop();
                 }
             }
-            ImGui::End();
         }
+        ImGui::End();
         
         if(ImGui::Begin(ICON_FA_CUT " Cuts"))
         {
@@ -267,8 +267,8 @@ namespace Navigator {
                     ImGui::TreePop();
                 }
             }
-            ImGui::End();
         }
+        ImGui::End();
 
         ImGui::End();
     }

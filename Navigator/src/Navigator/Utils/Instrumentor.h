@@ -109,13 +109,13 @@ namespace Navigator {
 		}
 
 	private:
-		Instrumentor::Instrumentor() :
+		Instrumentor() :
 			m_session(nullptr)
 		{
 
 		}
 
-		Instrumentor::~Instrumentor()
+		~Instrumentor()
 		{
 			EndSession();
 		}

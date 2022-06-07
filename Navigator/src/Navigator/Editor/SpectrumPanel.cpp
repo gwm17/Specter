@@ -163,8 +163,8 @@ namespace Navigator {
                     }
                 }
             }
-            ImGui::End();
         }
+        ImGui::End();
         return m_result;
 	}
 

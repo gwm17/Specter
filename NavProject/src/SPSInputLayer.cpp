@@ -68,8 +68,8 @@ namespace Navigator {
 			ImGui::Text(m_rxnEqn.c_str());
 			ImGui::Text("X1 Weight: %f", x1_weight.GetValue());
 			ImGui::Text("X2 Weight: %f", x2_weight.GetValue());
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	void SPSInputLayer::UpdateWeights()
