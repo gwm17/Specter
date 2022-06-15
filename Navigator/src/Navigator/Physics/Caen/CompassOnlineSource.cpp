@@ -25,8 +25,8 @@
 
 namespace Navigator {
 
-	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header) :
-		DataSource(), m_bufferIter(nullptr), m_bufferEnd(nullptr), m_header(header)
+	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header, int channels_per_board) :
+		DataSource(), m_bufferIter(nullptr), m_bufferEnd(nullptr), m_header(header), m_nchannels_per_board(channels_per_board)
 	{
 		InitConnection(hostname, port);
 	}

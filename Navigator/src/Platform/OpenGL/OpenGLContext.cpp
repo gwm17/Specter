@@ -20,6 +20,7 @@ namespace Navigator {
 
 	void OpenGLContext::Init()
 	{
+		NAV_PROFILE_FUNCTION();
 		glfwMakeContextCurrent(m_windowHandle);
 
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

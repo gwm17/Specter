@@ -36,7 +36,7 @@ namespace Navigator {
 	
 	public:
 		CompassRun();
-		CompassRun(const std::string& dir);
+		CompassRun(const std::string& dir, int channels_per_board=16);
 		virtual ~CompassRun();
 		virtual const NavData& GetData() override;
 		inline void SetDirectory(const std::string& dir) { m_directory = dir; CollectFiles(); }
@@ -52,7 +52,7 @@ namespace Navigator {
 
 		std::vector<CompassFile> m_datafiles;
 		unsigned int m_startIndex; //this is the file we start looking at; increases as we finish files.
-		const int m_nchannels_per_board = 16; //IMPORTANT: Used for ID'ing channels uniquely. If you use boards with 32 or 8 or 64 channels you must change this! If you mix boards with
+		int m_nchannels_per_board; //IMPORTANT: Used for ID'ing channels uniquely. If you use boards with 32 or 8 or 64 channels you must change this! If you mix boards with
 										//different numbers of channels, you will have to find a different id solution.
 		ShiftMap m_smap;
 

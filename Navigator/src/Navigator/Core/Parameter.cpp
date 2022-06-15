@@ -61,4 +61,36 @@ namespace Navigator {
 	}
 
 	Variable::~Variable() {}
+
+	void Variable::SetName(const std::string& name)
+	{
+		if (m_name != "")
+		{
+			NAV_ERROR("Attempting to change the name of an already bound Variable! Set name: {0} New name: {1}", m_name, name);
+			return;
+		}
+		m_name = name;
+	}
+
+	Scaler::Scaler() :
+		m_pdata(nullptr), m_name("")
+	{
+	}
+
+	Scaler::Scaler(const std::string& name) :
+		m_pdata(nullptr), m_name(name)
+	{
+	}
+
+	Scaler::~Scaler() {}
+
+	void Scaler::SetName(const std::string& name)
+	{
+		if (m_name != "")
+		{
+			NAV_ERROR("Attempting to change the name of an already bound Scaler! Set name: {0} New name: {1}", m_name, name);
+			return;
+		}
+		m_name = name;
+	}
 }

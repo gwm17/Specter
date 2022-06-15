@@ -21,15 +21,18 @@ namespace Navigator {
 	{
 	public:
 		//Bitflags is a final option for random crap needed for a source. Currently used for compass online to indicate header state.
-		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", bool sortFlag=false, uint16_t bitflags = 0) :
-			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_sortFlag(sortFlag), m_bitflags(bitflags)
+		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", bool sortFlag=false, uint16_t bitflags = 0,
+						  int channels_per_board=16) :
+			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_sortFlag(sortFlag), m_bitflags(bitflags), m_channels_per_board(channels_per_board)
 		{}
 
-		inline std::string GetSourceLocation() { return m_sourceLocation; }
-        inline std::string GetSourcePort() { return m_port; }
-		inline DataSource::SourceType GetSourceType() { return m_sourceType; }
-		inline uint64_t GetCoincidenceWindow() { return m_coincidenceWindow; }
-		inline bool GetSortFlag() { return m_sortFlag; }
+		inline const std::string GetSourceLocation() const { return m_sourceLocation; }
+        inline const std::string GetSourcePort() const { return m_port; }
+		inline const DataSource::SourceType GetSourceType() const { return m_sourceType; }
+		inline const uint64_t GetCoincidenceWindow() const { return m_coincidenceWindow; }
+		inline const bool GetSortFlag() const { return m_sortFlag; }
+		inline const int GetChannelsPerBoard() const { return m_channels_per_board; }
+		inline const uint16_t GetBitFlags() const { return m_bitflags; }
 
 		std::string ToString() const override
 		{
@@ -46,6 +49,7 @@ namespace Navigator {
 		uint64_t m_coincidenceWindow;
 		bool m_sortFlag;
 		uint16_t m_bitflags;
+		int m_channels_per_board;
 	};
 
 	class NAV_API PhysicsStopEvent : public Event

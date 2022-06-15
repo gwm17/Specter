@@ -3,7 +3,7 @@
 	An example of what a user created layer might look like. This is how one would extend the base editor to have more
 	functionality, specific to their experiment/setup. In this case, we provide inputs for reaction information so that
 	the kinematic shift of the SE-SPS focal plane can be calculated, and weights for tracing particle trajectories are
-	produced for use in analysis (as NavVariables).
+	produced for use in analysis (as Variables).
 
 	A reminder that these layers should not be that intense. The more work that is shoved into the UI, the less responsive
 	and more sluggish overall the UI will become. The vast bulk of the analysis work should be left to the PhysicsLayer which has its own

@@ -13,12 +13,12 @@
 namespace Navigator {
 
 	//loc=either an ip address or a file location, port=address port, or unused in case of file
-	DataSource* CreateDataSource(const std::string& loc, const std::string& port, DataSource::SourceType type, uint16_t bitflags)
+	DataSource* CreateDataSource(const std::string& location, const std::string& port, uint16_t header, int channels_per_board, DataSource::SourceType type)
 	{
 		switch(type)
 		{
-			case DataSource::SourceType::CompassOffline : return new CompassRun(loc);
-			case DataSource::SourceType::CompassOnline : return new CompassOnlineSource(loc, port, bitflags);
+			case DataSource::SourceType::CompassOffline : return new CompassRun(location, channels_per_board);
+			case DataSource::SourceType::CompassOnline : return new CompassOnlineSource(location, port, header, channels_per_board);
 			case DataSource::SourceType::None : return nullptr;
 		}
 		NAV_WARN("Invalid DataSourceType at CreateDataSource!");

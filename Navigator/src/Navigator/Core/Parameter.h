@@ -74,10 +74,30 @@ namespace Navigator {
 		inline void SetValue(double value) { *(m_pdata) = value; }
 		inline double GetValue() { return *(m_pdata); }
 		inline const std::string& GetName() { return m_name; }
+		void SetName(const std::string& name);
 
 		friend class SpectrumManager;
 	private:
 		std::shared_ptr<std::atomic<double>> m_pdata;
+		std::string m_name;
+	};
+
+	class Scaler
+	{
+	public:
+		Scaler();
+		Scaler(const std::string& name);
+		~Scaler();
+
+		inline void Increment() { ++(*m_pdata); }
+
+		inline const std::string& GetName() { return m_name; }
+		inline uint64_t GetCounts() { return *m_pdata; }
+		void SetName(const std::string& name);
+
+		friend class SpectrumManager;
+	private:
+		std::shared_ptr<std::atomic<uint64_t>> m_pdata;
 		std::string m_name;
 	};
 

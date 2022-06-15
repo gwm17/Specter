@@ -35,6 +35,7 @@ namespace Navigator {
 
 	void OpenGLWindow::Init(const WindowProperties& props)
 	{
+		NAV_PROFILE_FUNCTION();
 		m_data.width = props.width;
 		m_data.height = props.height;
 		m_data.name = props.name;

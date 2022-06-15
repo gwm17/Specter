@@ -39,7 +39,7 @@ namespace Navigator {
 	class CompassOnlineSource : public DataSource
 	{
 	public:
-		CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header);
+		CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header, int channels_per_board=16);
 		virtual ~CompassOnlineSource() override;
 
 		virtual const NavData& GetData() override;

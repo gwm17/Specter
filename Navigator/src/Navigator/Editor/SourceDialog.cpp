@@ -43,6 +43,7 @@ namespace Navigator {
 			m_chosenPort = "51489";
 			m_chosenWindow = 3000000;
 			m_bitflags = 0;
+			m_channels_per_board = 16;
 			ImGui::OpenPopup(ICON_FA_LINK " Attach Source");
 		}
 		if (ImGui::BeginPopupModal(ICON_FA_LINK " Attach Source"))
@@ -77,6 +78,7 @@ namespace Navigator {
 				{
 					m_bitflags = m_bitflags ^ CompassHeaders::EnergyCalibrated;
 				}
+				ImGui::InputInt("Channels Per Digitizer Board", &m_channels_per_board);
 			}
 			else if (m_chosenType == DataSource::SourceType::CompassOffline)
 			{
@@ -88,6 +90,7 @@ namespace Navigator {
 				auto temp = m_fileDialog.RenderFileDialog();
 				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
 					m_chosenLocation = temp.first;
+				ImGui::InputInt("Channels Per Digitizer Board", &m_channels_per_board);
 			}
 			ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
 
@@ -96,12 +99,12 @@ namespace Navigator {
 			{
 				if (m_chosenType == DataSource::SourceType::CompassOffline)
 				{
-					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort);
+					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, false, 0U, m_channels_per_board);
 					Application::Get().OnEvent(event);
 				}
 				else if (m_chosenType == DataSource::SourceType::CompassOnline)
 				{
-					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, true, m_bitflags);
+					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, true, m_bitflags, m_channels_per_board);
 					Application::Get().OnEvent(event);
 				}
 				ImGui::CloseCurrentPopup();

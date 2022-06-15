@@ -23,12 +23,12 @@
 namespace Navigator {
 	
 	CompassRun::CompassRun() :
-		DataSource(), m_directory(""), m_startIndex(0)
+		DataSource(), m_directory(""), m_startIndex(0), m_nchannels_per_board(16)
 	{
 	}
 	
-	CompassRun::CompassRun(const std::string& dir) :
-		DataSource(), m_directory(dir), m_startIndex(0)
+	CompassRun::CompassRun(const std::string& dir, int channels_per_board) :
+		DataSource(), m_directory(dir), m_startIndex(0), m_nchannels_per_board(channels_per_board)
 	{
 		CollectFiles();
 	}
