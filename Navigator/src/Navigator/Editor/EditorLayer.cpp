@@ -38,7 +38,7 @@ namespace Navigator {
     {
     }
 
-    void EditorLayer::OnUpdate()
+    void EditorLayer::OnUpdate(Timestep& step)
     {
     }
 

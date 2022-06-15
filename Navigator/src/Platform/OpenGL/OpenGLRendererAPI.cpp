@@ -8,6 +8,7 @@
 #include "OpenGLRendererAPI.h"
 
 #include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
 namespace Navigator {
 
@@ -19,5 +20,10 @@ namespace Navigator {
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color_array)
 	{
 		glClearColor(color_array[0], color_array[1], color_array[2], color_array[3]);
+	}
+
+	float OpenGLRendererAPI::GetFrameTime()
+	{
+		return (float)glfwGetTime();
 	}
 }

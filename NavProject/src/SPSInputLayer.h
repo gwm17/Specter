@@ -27,7 +27,7 @@ namespace Navigator {
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnUpdate() override;
+		virtual void OnUpdate(Timestep& step) override;
 		virtual void OnEvent(Event& event) override; //If you want to respond to events
 		virtual void OnImGuiRender() override; //"Main" function
 

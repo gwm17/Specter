@@ -18,6 +18,7 @@ namespace Navigator {
 	public:
 		virtual void Clear() override;
 		virtual void SetClearColor(const glm::vec4& color_array) override;
+		virtual float GetFrameTime() override;
 	};
 
 }

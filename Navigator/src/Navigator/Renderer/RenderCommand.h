@@ -18,6 +18,7 @@ namespace Navigator {
 	public:
 		inline static void SetClearColor(const glm::vec4& color_array) { s_api->SetClearColor(color_array); }
 		inline static void Clear() { s_api->Clear(); }
+		inline static float GetFrameTime() { return s_api->GetFrameTime(); }
 
 	private:
 		static RendererAPI* s_api;

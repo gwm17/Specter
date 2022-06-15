@@ -87,7 +87,7 @@ namespace Navigator {
 		m_physStack.PushStage(stage);
 	}
 
-	void PhysicsLayer::OnUpdate() {}
+	void PhysicsLayer::OnUpdate(Timestep& step) {}
 
 	/*Threaded functions*/
 

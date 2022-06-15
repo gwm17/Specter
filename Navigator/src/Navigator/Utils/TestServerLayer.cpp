@@ -314,7 +314,7 @@ namespace Navigator {
 	}
 
 	//Tell to write, then poll actions
-	void TestServerLayer::OnUpdate()
+	void TestServerLayer::OnUpdate(Timestep& step)
 	{
 		m_connection->Start();
 		m_context.poll();

@@ -9,6 +9,7 @@
 
 #include "NavCore.h"
 #include "Navigator/Events/Event.h"
+#include "Timestep.h"
 
 namespace Navigator {
 
@@ -21,7 +22,7 @@ namespace Navigator {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnImGuiRender() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep& step) {}
 		virtual void OnEvent(Event& event) {}
 
 		inline const std::string& GetName() { return m_name; }

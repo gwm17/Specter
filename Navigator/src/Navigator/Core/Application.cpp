@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "Navigator/Renderer/RenderCommand.h"
 #include "Navigator/Editor/EditorLayer.h"
+#include "Timestep.h"
 
 namespace Navigator {
 
@@ -77,13 +78,22 @@ namespace Navigator {
 	void Application::Run()
 	{
 		NAV_PROFILE_FUNCTION();
+
+		float lastFrameTime = 0;
+		float time;
+		Timestep step;
+
 		while(m_runFlag)
 		{
 			RenderCommand::SetClearColor(m_bckgnd_color);
 			RenderCommand::Clear();
 
+			time = RenderCommand::GetFrameTime();
+			step.SetTime(time - lastFrameTime);
+			lastFrameTime = time;
+
 			for(auto layer : m_stack)
-				layer->OnUpdate();
+				layer->OnUpdate(step);
 
 			m_imgui_layer->Begin();
 			for(auto layer : m_stack)

@@ -39,7 +39,7 @@ namespace Navigator {
 
 	void SPSInputLayer::OnDetach() {}
 
-	void SPSInputLayer::OnUpdate() {}
+	void SPSInputLayer::OnUpdate(Timestep& step) {}
 
 	void SPSInputLayer::OnEvent(Event& event) {}
 

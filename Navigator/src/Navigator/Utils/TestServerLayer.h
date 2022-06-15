@@ -66,7 +66,7 @@ namespace Navigator {
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnUpdate() override;
+		virtual void OnUpdate(Timestep& step) override;
 
 	private:
 		asio::io_context m_context;
