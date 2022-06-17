@@ -332,6 +332,38 @@ namespace Navigator {
 
 	/*************Variable Functions End*************/
 
+	void SpectrumManager::BindScaler(Scaler& scaler)
+	{
+		NAV_PROFILE_FUNCTION();
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		auto iter = m_scalerMap.find(scaler.GetName());
+		if (iter == m_scalerMap.end())
+		{
+			m_scalerMap[scaler.GetName()].reset(new std::atomic<uint64_t>(0));
+		}
+		scaler.m_pdata = m_scalerMap[scaler.GetName()];
+	}
+
+	void SpectrumManager::ResetScalers()
+	{
+		NAV_PROFILE_FUNCTION();
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		for (auto& scaler : m_scalerMap)
+		{
+			*(scaler.second) = 0;
+		}
+	}
+
+	std::vector<std::string> SpectrumManager::GetListOfScalers()
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		std::vector<std::string> list;
+		list.reserve(m_scalerMap.size());
+		for (auto& iter : m_scalerMap)
+			list.push_back(iter.first);
+		return list;
+	}
+
 	/*************Cut Functions Begin*************/
 
 	void SpectrumManager::RemoveCut(const std::string& name)

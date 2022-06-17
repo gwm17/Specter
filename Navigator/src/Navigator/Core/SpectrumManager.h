@@ -67,6 +67,12 @@ namespace Navigator {
 		std::vector<std::string> GetListOfVariables();
 		/********************/
 
+		/*Scaler Functions*/
+		void BindScaler(Scaler& scaler);
+		void ResetScalers();
+		std::vector<std::string> GetListOfScalers();
+		/******************/
+
 		/*Cut Functions*/
 		inline void AddCut(const CutArgs& params, double min, double max)
 		{
@@ -105,6 +111,7 @@ namespace Navigator {
 		std::unordered_map<std::string, std::shared_ptr<Cut>> m_cutMap;
 		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_paramMap;
 		std::unordered_map<std::string, std::shared_ptr<std::atomic<double>>> m_varMap;
+		std::unordered_map<std::string, std::shared_ptr<std::atomic<uint64_t>>> m_scalerMap;
 
 		HistogramArgs m_nullHistoResult; //For handling bad query
 
