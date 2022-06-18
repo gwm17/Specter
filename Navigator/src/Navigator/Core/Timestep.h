@@ -13,7 +13,7 @@ namespace Navigator {
 
 		void SetTime(float time) { m_time = time; }
 
-		operator float() { return m_time; }
+		operator float() const { return m_time; }
 
 		float GetElapsedSeconds() const { return m_time; }
 		float GetElapsedMilliseconds() const { return m_time * 1000.0f; }

@@ -14,6 +14,8 @@
 #include "Histogram.h"
 #include "Cut.h"
 #include "Parameter.h"
+#include "Graph.h"
+#include "Timestep.h"
 
 #include <thread>
 
@@ -55,6 +57,17 @@ namespace Navigator {
 		std::vector<HistogramArgs> GetListOfHistograms();
 		/********************/
 
+		/*ScalerGraph Functions*/
+		void AddGraph(const GraphArgs& args);
+		void RemoveGraph(const std::string& name);
+		void UpdateGraphs(const Timestep& step);
+		void ClearGraphs();
+		void ClearGraph(const std::string& name);
+		void DrawGraph(const std::string& name);
+		const GraphArgs& GetGraphArgs(const std::string& name);
+		std::vector<GraphArgs> GetListOfGraphs();
+		/********************/
+
 		/*Parameter Functions*/
 		void BindParameter(Parameter& param);
 		void BindParameter(Parameter& param, int nbins, double maxVal, double minVal);
@@ -74,21 +87,9 @@ namespace Navigator {
 		/******************/
 
 		/*Cut Functions*/
-		inline void AddCut(const CutArgs& params, double min, double max)
-		{
-			std::scoped_lock<std::mutex> guard(m_managerMutex);
-			m_cutMap[params.name].reset(new Cut1D(params, min, max));
-		}
-		inline void AddCut(const CutArgs& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
-		{
-			std::scoped_lock<std::mutex> guard(m_managerMutex);
-			m_cutMap[params.name].reset(new Cut2D(params, xpoints, ypoints));
-		}
-		inline void AddCut(const CutArgs& params, const std::vector<std::string>& subhistos, double min, double max)
-		{
-			std::scoped_lock<std::mutex> guard(m_managerMutex);
-			m_cutMap[params.name].reset(new CutSummary(params, subhistos, min, max));
-		}
+		void AddCut(const CutArgs& params, double min, double max);
+		void AddCut(const CutArgs& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints);
+		void AddCut(const CutArgs& params, const std::vector<std::string>& subhistos, double min, double max);
 		void RemoveCut(const std::string& name);
 		std::vector<double> GetCutXPoints(const std::string& name);
 		std::vector<double> GetCutYPoints(const std::string& name);
@@ -112,8 +113,10 @@ namespace Navigator {
 		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_paramMap;
 		std::unordered_map<std::string, std::shared_ptr<std::atomic<double>>> m_varMap;
 		std::unordered_map<std::string, std::shared_ptr<std::atomic<uint64_t>>> m_scalerMap;
+		std::unordered_map<std::string, std::shared_ptr<ScalerGraph>> m_graphMap;
 
 		HistogramArgs m_nullHistoResult; //For handling bad query
+		GraphArgs m_nullGraphResult; //For handling bad query
 
 		std::mutex m_managerMutex; //synchronization
 	};

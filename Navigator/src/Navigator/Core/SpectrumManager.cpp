@@ -239,6 +239,78 @@ namespace Navigator {
 
 	/*************Histogram Functions End*************/
 
+	/*************Graph Functions Begin*************/
+
+	void SpectrumManager::AddGraph(const GraphArgs& args)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		m_graphMap[args.name].reset(new ScalerGraph(args));
+	}
+
+	void SpectrumManager::RemoveGraph(const std::string& name)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		m_graphMap.erase(name);
+	}
+
+	void SpectrumManager::UpdateGraphs(const Timestep& step)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		uint64_t scalerVal;
+		for (auto& graph : m_graphMap)
+		{
+			auto& scalerIter = m_scalerMap.find(graph.second->GetScaler());
+			if (scalerIter != m_scalerMap.end())
+			{
+				scalerVal = *(scalerIter->second);
+				graph.second->UpdatePoints(step, scalerVal);
+			}
+		}
+	}
+
+	void SpectrumManager::ClearGraphs()
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		for (auto& graph : m_graphMap)
+			graph.second->Clear();
+	}
+
+	void SpectrumManager::ClearGraph(const std::string& name)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		auto& iter = m_graphMap.find(name);
+		if (iter != m_graphMap.end())
+			iter->second->Clear();
+	}
+
+	void SpectrumManager::DrawGraph(const std::string& name)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		auto& iter = m_graphMap.find(name);
+		if (iter != m_graphMap.end())
+			iter->second->Draw();
+	}
+
+	const GraphArgs& SpectrumManager::GetGraphArgs(const std::string& name)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		auto& iter = m_graphMap.find(name);
+		if (iter != m_graphMap.end())
+			return iter->second->GetArgs();
+		return m_nullGraphResult;
+	}
+
+	std::vector<GraphArgs> SpectrumManager::GetListOfGraphs()
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		std::vector<GraphArgs> list;
+		list.reserve(m_graphMap.size());
+		for (auto& graph : m_graphMap)
+			list.push_back(graph.second->GetArgs());
+		return list;
+	}
+
+	/*************Graph Functions End*************/
 
 	/*************Parameter Functions Begin*************/
 
@@ -365,6 +437,24 @@ namespace Navigator {
 	}
 
 	/*************Cut Functions Begin*************/
+
+	void SpectrumManager::AddCut(const CutArgs& params, double min, double max)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		m_cutMap[params.name].reset(new Cut1D(params, min, max));
+	}
+
+	void SpectrumManager::AddCut(const CutArgs& params, const std::vector<double>& xpoints, const std::vector<double>& ypoints)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		m_cutMap[params.name].reset(new Cut2D(params, xpoints, ypoints));
+	}
+
+	void SpectrumManager::AddCut(const CutArgs& params, const std::vector<std::string>& subhistos, double min, double max)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		m_cutMap[params.name].reset(new CutSummary(params, subhistos, min, max));
+	}
 
 	void SpectrumManager::RemoveCut(const std::string& name)
 	{
