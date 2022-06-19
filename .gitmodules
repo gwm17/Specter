@@ -18,3 +18,6 @@
 [submodule "Specter/vendor/glm"]
 	path = Specter/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "Specter/vendor/spdlog"]
+	path = Specter/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
