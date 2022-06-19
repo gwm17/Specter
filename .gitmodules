@@ -1,0 +1,23 @@
+[submodule "Specter/vendor/glfw"]
+	path = Specter/vendor/glfw
+	url = https://github.com/gwm17/glfw.git
+[submodule "Specter/vendor/imgui"]
+	path = Specter/vendor/imgui
+	url = https://github.com/gwm17/imgui.git
+	branch = docking
+[submodule "Specter/vendor/implot"]
+	path = Specter/vendor/implot
+	url = https://github.com/gwm17/implot.git
+	branch = backends
+[submodule "Specter/vendor/asio"]
+	path = Specter/vendor/asio
+	url = https://github.com/chriskohlhoff/asio.git
+[submodule "Specter/vendor/IconFontCppHeaders"]
+	path = Specter/vendor/IconFontCppHeaders
+	url = https://github.com/juliettef/IconFontCppHeaders.git
+[submodule "Specter/vendor/glm"]
+	path = Specter/vendor/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "Spectre/vendor/spdlog"]
+	path = Spectre/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
