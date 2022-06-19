@@ -1,29 +1,29 @@
-workspace "Navigator"
+workspace "Specter"
 	architecture "x64"
 	configurations {
 		"Debug",
 		"Release"
 	}
-	startproject "NavProject"
+	startproject "SpecProject"
 
 
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- External directories to be included
 IncludeDirs ={}
-IncludeDirs["glfw"] = "Navigator/vendor/glfw/include"
-IncludeDirs["ImGui"] = "Navigator/vendor/imgui"
-IncludeDirs["glad"] = "Navigator/vendor/glad/include"
-IncludeDirs["ImPlot"] = "Navigator/vendor/implot"
-IncludeDirs["glm"] = "Navigator/vendor/glm"
-IncludeDirs["asio"] = "Navigator/vendor/asio/asio/include"
-IncludeDirs["IconFonts"] = "Navigator/vendor/IconFontCppHeaders"
+IncludeDirs["glfw"] = "Specter/vendor/glfw/include"
+IncludeDirs["ImGui"] = "Specter/vendor/imgui"
+IncludeDirs["glad"] = "Specter/vendor/glad/include"
+IncludeDirs["ImPlot"] = "Specter/vendor/implot"
+IncludeDirs["glm"] = "Specter/vendor/glm"
+IncludeDirs["asio"] = "Specter/vendor/asio/asio/include"
+IncludeDirs["IconFonts"] = "Specter/vendor/IconFontCppHeaders"
 
-include "Navigator/vendor/glfw"
-include "Navigator/vendor/imgui"
-include "Navigator/vendor/glad"
-project "Navigator"
-	location "Navigator"
+include "Specter/vendor/glfw"
+include "Specter/vendor/imgui"
+include "Specter/vendor/glad"
+project "Specter"
+	location "Specter"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
@@ -31,15 +31,14 @@ project "Navigator"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	filter "system:windows"
-		defines "NAV_WINDOWS"
-		pchheader "navpch.h"
-		pchsource "Navigator/src/navpch.cpp"
-		forceincludes {"navpch.h"}
+		defines "SPEC_WINDOWS"
+		pchheader "specpch.h"
+		pchsource "Specter/src/specpch.cpp"
+		forceincludes {"specpch.h"}
 		
 	filter "system:linux or macosx"
-		pchheader "%{prj.name}/src/navpch.h"
+		pchheader "%{prj.name}/src/specpch.h"
 	filter "system:macosx"
-		pchheader "src/navpch.h"
 		sysincludedirs {
 			"%{prj.name}/vendor/spdlog/include/",
 			"%{IncludeDirs.glfw}",
@@ -91,7 +90,7 @@ project "Navigator"
 
 
 	filter "system:linux"
-		defines "NAV_LINUX"
+		defines "SPEC_LINUX"
 		links {
 			"GL",
 			"X11",
@@ -101,7 +100,7 @@ project "Navigator"
 			"-pthread"
 		}
 	filter "system:macosx"
-		defines "NAV_APPLE"
+		defines "SPEC_APPLE"
 		links {
 			"Cocoa.framework",
 			"CoreVideo.framework",
@@ -120,17 +119,17 @@ project "Navigator"
 		}
 
 	filter "configurations:Debug"
-		defines "NAV_DEBUG"
+		defines "SPEC_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "NAV_RELEASE"
+		defines "SPEC_RELEASE"
 		runtime "Release"
 		optimize "on"
 
-project "NavProject"
-	location "NavProject"
+project "SpecProject"
+	location "SpecProject"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -138,14 +137,14 @@ project "NavProject"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
-		"NavProject/src/*.h",
-		"NavProject/src/*.cpp"
+		"SpecProject/src/*.h",
+		"SpecProject/src/*.cpp"
 	}
 
 	includedirs {
-		"Navigator/src",
-		"Navigator/src/Navigator",
-		"Navigator/vendor/spdlog/include/",
+		"Specter/src",
+		"Specter/src/Specter",
+		"Specter/vendor/spdlog/include/",
 		"%{IncludeDirs.ImPlot}",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.glad}",
@@ -156,15 +155,15 @@ project "NavProject"
 	}
 
 	links {
-		"Navigator"
+		"Specter"
 	}
 
 	systemversion "latest"
 
 	filter "system:macosx"
-		defines "NAV_APPLE"
+		defines "SPEC_APPLE"
 		sysincludedirs {
-			"Navigator/vendor/spdlog/include/",
+			"Specter/vendor/spdlog/include/",
 			"%{IncludeDirs.glfw}",
 			"%{IncludeDirs.ImGui}",
 			"%{IncludeDirs.glad}",
@@ -191,12 +190,12 @@ project "NavProject"
 			(" {COPYDIR} Assets %{cfg.targetdir} ")
 		}
 	filter "system:windows"
-		defines "NAV_WINDOWS"
+		defines "SPEC_WINDOWS"
 		postbuildcommands {
 			(" {COPYDIR} Assets %{cfg.targetdir}/Assets ")
 		}
 	filter "system:linux"
-		defines "NAV_LINUX"
+		defines "SPEC_LINUX"
 		links {
 			"GL",
 			"X11",
@@ -215,16 +214,16 @@ project "NavProject"
 	
 
 	filter "configurations:Debug"
-		defines "NAV_DEBUG"
+		defines "SPEC_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "NAV_RELEASE"
+		defines "SPEC_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "NAV_DIST"
+		defines "SPEC_DIST"
 		runtime "Release"
 		optimize "on"
