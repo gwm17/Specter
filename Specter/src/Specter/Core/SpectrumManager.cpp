@@ -259,7 +259,7 @@ namespace Specter {
 		uint64_t scalerVal;
 		for (auto& graph : m_graphMap)
 		{
-			auto& scalerIter = m_scalerMap.find(graph.second->GetScaler());
+			auto scalerIter = m_scalerMap.find(graph.second->GetScaler());
 			if (scalerIter != m_scalerMap.end())
 			{
 				scalerVal = *(scalerIter->second);
@@ -278,7 +278,7 @@ namespace Specter {
 	void SpectrumManager::ClearGraph(const std::string& name)
 	{
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
-		auto& iter = m_graphMap.find(name);
+		auto iter = m_graphMap.find(name);
 		if (iter != m_graphMap.end())
 			iter->second->Clear();
 	}
@@ -286,7 +286,7 @@ namespace Specter {
 	void SpectrumManager::DrawGraph(const std::string& name)
 	{
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
-		auto& iter = m_graphMap.find(name);
+		auto iter = m_graphMap.find(name);
 		if (iter != m_graphMap.end())
 			iter->second->Draw();
 	}
@@ -294,7 +294,7 @@ namespace Specter {
 	const GraphArgs& SpectrumManager::GetGraphArgs(const std::string& name)
 	{
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
-		auto& iter = m_graphMap.find(name);
+		auto iter = m_graphMap.find(name);
 		if (iter != m_graphMap.end())
 			return iter->second->GetArgs();
 		return m_nullGraphResult;
