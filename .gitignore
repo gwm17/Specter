@@ -19,5 +19,7 @@ bin-int/
 bin/
 lib/
 *.xcworkspace/
+.vscode/
+build/
 
 !.gitignore
