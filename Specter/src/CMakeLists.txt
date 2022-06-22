@@ -84,6 +84,8 @@ target_sources(Specter PRIVATE
     Specter/Editor/SpectrumDialog.h
     Specter/Editor/SpectrumPanel.cpp
     Specter/Editor/SpectrumPanel.h
+    Specter/Editor/ScalerPanel.h
+    Specter/Editor/ScalerPanel.cpp
     Specter/Utils/Instrumentor.h
     Specter/Utils/TCPClient.cpp
     Specter/Utils/TCPClient.h

@@ -36,6 +36,9 @@ namespace Specter {
 		//Create a few variables
 		Variable x1_weight;
 		Variable x2_weight;
+
+		//Create a scaler
+		Scaler beamIntegrator;
 	};
 
 }

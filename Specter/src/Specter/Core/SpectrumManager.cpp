@@ -414,6 +414,13 @@ namespace Specter {
 			m_scalerMap[scaler.GetName()].reset(new std::atomic<uint64_t>(0));
 		}
 		scaler.m_pdata = m_scalerMap[scaler.GetName()];
+
+		GraphArgs args;
+		args.name = scaler.GetName() + "_graph";
+		args.maxPoints = 10;
+		args.scalerName = scaler.GetName();
+
+		m_graphMap[args.name].reset(new ScalerGraph(args));
 	}
 
 	void SpectrumManager::ResetScalers()

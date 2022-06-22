@@ -6,6 +6,8 @@ namespace Specter {
 	ScalerGraph::ScalerGraph(const GraphArgs& args) :
 		m_args(args), m_lastScalerVal(0)
 	{
+		if (m_args.maxPoints < 2) //saftey check guaranteeing we have enough points to make a graph
+			m_args.maxPoints = 2;
 		m_xPoints.reserve(m_args.maxPoints);
 		m_xPoints.reserve(m_args.maxPoints);
 	}
@@ -27,7 +29,7 @@ namespace Specter {
 				m_xPoints[i] = m_xPoints[i + 1];
 				m_yPoints[i] = m_yPoints[i + 1];
 			}
-			m_xPoints[m_args.maxPoints - 1] = timeStep;
+			m_xPoints[m_args.maxPoints - 1] = m_xPoints[m_args.maxPoints - 2] + timeStep;
 			m_yPoints[m_args.maxPoints - 1] = rate;
 		}
 

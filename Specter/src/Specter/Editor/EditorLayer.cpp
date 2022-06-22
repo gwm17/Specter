@@ -40,6 +40,7 @@ namespace Specter {
 
     void EditorLayer::OnUpdate(Timestep& step)
     {
+        SpectrumManager::GetInstance().UpdateGraphs(step);
     }
 
     void EditorLayer::OnEvent(Event& e)
@@ -65,6 +66,18 @@ namespace Specter {
         std::sort(m_paramList.begin(), m_paramList.end(), SortByString);
     }
 
+    void EditorLayer::UpdateScalerList()
+    {
+        m_scalerList = SpectrumManager::GetInstance().GetListOfScalers();
+        std::sort(m_scalerList.begin(), m_scalerList.end(), SortByString);
+    }
+
+    void EditorLayer::UpdateGraphList()
+    {
+        m_graphList = SpectrumManager::GetInstance().GetListOfGraphs();
+        std::sort(m_graphList.begin(), m_graphList.end(), SortByName<GraphArgs>);
+    }
+
     //The main function
     void EditorLayer::OnImGuiRender()
     {
@@ -75,6 +88,8 @@ namespace Specter {
             UpdateParameterList();
             UpdateHistogramList();
             UpdateCutList();
+            UpdateScalerList();
+            UpdateGraphList();
             startFlag = false;
         }
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
@@ -209,6 +224,8 @@ namespace Specter {
         
         if(m_spectrumDialog.ImGuiRenderSpectrumDialog(m_histoList, m_cutList, m_paramList))
             UpdateHistogramList();
+
+        m_scalerPanel.OnImGuiRender(m_scalerList, m_graphList);
 
         m_sourceDialog.ImGuiRenderSourceDialog();
 

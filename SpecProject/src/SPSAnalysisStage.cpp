@@ -11,7 +11,8 @@ namespace Specter {
 	//Construct each NavParameter with their unique name. Then bind them to the SpectrumManager.
 	SPSAnalysisStage::SPSAnalysisStage() :
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
-		scintLeft("scintLeft"), anodeBack("anodeBack"), anodeFront("anodeFront"), cathode("cathode"), xavg_sabreCoinc("xavg_sabreCoinc"), x1_weight("x1_weight"), x2_weight("x2_weight")
+		scintLeft("scintLeft"), anodeBack("anodeBack"), anodeFront("anodeFront"), cathode("cathode"), xavg_sabreCoinc("xavg_sabreCoinc"), x1_weight("x1_weight"), x2_weight("x2_weight"),
+		beamIntegrator("beamIntegrator")
 	{
 		SPEC_PROFILE_FUNCTION();
 		SpectrumManager& manager = SpectrumManager::GetInstance();
@@ -43,6 +44,8 @@ namespace Specter {
 
 		manager.BindVariable(x1_weight);
 		manager.BindVariable(x2_weight);
+
+		manager.BindScaler(beamIntegrator);
 	}
 
 	SPSAnalysisStage::~SPSAnalysisStage() {}
@@ -70,6 +73,11 @@ namespace Specter {
 				{
 					if (hit.longEnergy > scintLeft.GetValue())
 						scintLeft.SetValue(hit.longEnergy);
+					break;
+				}
+				case 133:
+				{
+					beamIntegrator.Increment();
 					break;
 				}
 				case 135:
