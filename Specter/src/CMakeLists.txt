@@ -9,6 +9,7 @@ target_include_directories(Specter
     ../vendor/glm
     ../vendor/IconFontCppHeaders
     ../vendor/spdlog/include
+    ../vendor/yaml-cpp/inlcude/yaml-cpp/
     ./
 )
 
@@ -113,7 +114,7 @@ target_sources(Specter PRIVATE
 )
 
 #Link our accompanying dependencies
-target_link_libraries(Specter PUBLIC imgui glfw glad)
+target_link_libraries(Specter PRIVATE imgui glfw glad yaml-cpp)
 
 #Link OS graphics implementations
 set(THREADS_PREFER_PTHREAD_FLAG On)
@@ -136,6 +137,6 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 #Some extra defs
-target_compile_definitions(Specter PRIVATE GLFW_INCLUDE_NONE IMGUI_IMPL_OPENGL_LOADER_GLAD IMPLOT_BACKEND_ENABLE_OPENGL3)
+target_compile_definitions(Specter PRIVATE GLFW_INCLUDE_NONE YAML_CPP_STATIC_DEFINE IMGUI_IMPL_OPENGL_LOADER_GLAD IMPLOT_BACKEND_ENABLE_OPENGL3)
 
 set_target_properties(Specter PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${SPECTER_LIBRARY_DIR})

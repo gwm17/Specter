@@ -21,3 +21,6 @@
 [submodule "Specter/vendor/spdlog"]
 	path = Specter/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Specter/vendor/yaml-cpp"]
+	path = Specter/vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

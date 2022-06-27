@@ -37,7 +37,7 @@ namespace Specter {
 	};
 
 	std::string ConvertSpectrumTypeToString(SpectrumType type);
-
+	SpectrumType ConvertStringToSpectrumType(const std::string& keyword);
 
 	struct StatResults
 	{

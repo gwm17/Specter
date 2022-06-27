@@ -44,6 +44,18 @@ namespace Specter {
 		return "None";
 	}
 
+	SpectrumType ConvertStringToSpectrumType(const std::string& keyword)
+	{
+		if (keyword == "Histogram1D")
+			return SpectrumType::Histo1D;
+		else if (keyword == "Histogram2D")
+			return SpectrumType::Histo2D;
+		else if (keyword == "Summary")
+			return SpectrumType::Summary;
+		else
+			return SpectrumType::None;
+	}
+
 	/*
 		1D Histogram class
 	*/

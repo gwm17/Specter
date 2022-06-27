@@ -15,8 +15,65 @@
 #include "SpectrumManager.h"
 
 #include <fstream>
+#include "yaml-cpp/yaml.h"
 
 namespace Specter {
+
+	static void SerializeCut(YAML::Emitter& output, const CutArgs& args)
+	{
+		SpectrumManager& manager = SpectrumManager::GetInstance();
+		output << YAML::BeginMap;
+		output << YAML::Key << "Cut" << YAML::Value << args.name;
+		output << YAML::Key << "Type" << YAML::Value << ConvertCutTypeToString(args.type);
+		output << YAML::Key << "XParameter" << YAML::Value << args.x_par;
+		output << YAML::Key << "YParameter" << YAML::Value << args.y_par;
+		if (args.type == CutType::Cut1D)
+		{
+			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
+			output << YAML::Key << "XMin" << YAML::Value << xpoints[0];
+			output << YAML::Key << "XMax" << YAML::Value << xpoints[1];
+		}
+		else if (args.type == CutType::Cut2D)
+		{
+			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
+			std::vector<double> ypoints = manager.GetCutYPoints(args.name);
+			output << YAML::Key << "XPoints" << YAML::Value << YAML::BeginSeq << xpoints << YAML::EndSeq;
+			output << YAML::Key << "YPoints" << YAML::Value << YAML::BeginSeq << ypoints << YAML::EndSeq;
+		}
+		else if (args.type == CutType::CutSummaryAll || args.type == CutType::CutSummaryAny)
+		{
+			std::vector<std::string> subhistos = manager.GetCutSubHistograms(args.name);
+			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
+			output << YAML::Key << "XMin" << YAML::Value << xpoints[0];
+			output << YAML::Key << "XMax" << YAML::Value << xpoints[1];
+			output << YAML::Key << "SubHistos" << YAML::Value << YAML::BeginSeq << subhistos << YAML::EndSeq;
+		}
+		output << YAML::EndMap;
+	}
+
+	static void SerializeHistogram(YAML::Emitter& output, const HistogramArgs& args)
+	{
+		output << YAML::BeginMap;
+		output << YAML::Key << "Histogram" << YAML::Value << args.name;
+		output << YAML::Key << "Type" << YAML::Value << ConvertSpectrumTypeToString(args.type);
+		output << YAML::Key << "XParameter" << YAML::Value << args.x_par;
+		output << YAML::Key << "XMin" << YAML::Value << args.min_x;
+		output << YAML::Key << "XMax" << YAML::Value << args.max_x;
+		output << YAML::Key << "XBins" << YAML::Value << args.nbins_x;
+		output << YAML::Key << "YParameter" << YAML::Key << args.y_par;
+		output << YAML::Key << "YMin" << YAML::Value << args.min_y;
+		output << YAML::Key << "YMax" << YAML::Value << args.max_y;
+		output << YAML::Key << "YBins" << YAML::Value << args.nbins_y;
+		if (args.type == SpectrumType::Summary)
+		{
+			std::vector<std::string> subhistos = SpectrumManager::GetInstance().GetSubHistograms(args.name);
+			output << YAML::Key << "SubHistos" << YAML::Value << YAML::BeginSeq << subhistos << YAML::EndSeq;
+		}
+		output << YAML::Key << "CutsDrawn" << YAML::Value << YAML::BeginSeq << args.cutsDrawnUpon << YAML::EndSeq;
+		output << YAML::Key << "CutsApplied" << YAML::Value << YAML::BeginSeq << args.cutsAppliedTo << YAML::EndSeq;
+		output << YAML::EndMap;
+
+	}
 
 	SpectrumSerializer::SpectrumSerializer(const std::string& filepath) :
 		m_filename(filepath)
@@ -27,8 +84,6 @@ namespace Specter {
 
 	void SpectrumSerializer::SerializeData(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList)
 	{
-		SpectrumManager& manager = SpectrumManager::GetInstance();
-
 		std::ofstream output(m_filename);
 		if (!output.is_open())
 		{
@@ -36,158 +91,22 @@ namespace Specter {
 			return;
 		}
 
-		output << "begin_cuts" << std::endl;
+		YAML::Emitter yamlStream;
+		yamlStream << YAML::BeginMap;
+		yamlStream << YAML::Key << "Cuts" << YAML::Value << YAML::BeginSeq;
 		for (auto& cut : cutList)
 		{
-			if (cut.type == CutType::Cut1D)
-			{
-				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
-				output << "\tbegin_cut1D" << std::endl;
-				output << "\t\tname: " << cut.name << std::endl;
-				output << "\t\txparam: " << cut.x_par << std::endl;
-				output << "\t\tminValue: " << xpoints[0] << std::endl;
-				output << "\t\tmaxValue: " << xpoints[1] << std::endl;
-				output << "\tend_cut1D" << std::endl;
-			}
-			else if (cut.type == CutType::Cut2D)
-			{
-				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
-				std::vector<double> ypoints = manager.GetCutYPoints(cut.name);
-				output << "\tbegin_cut2D" << std::endl;
-				output << "\t\tname: " << cut.name << std::endl;
-				output << "\t\txparam: " << cut.x_par << std::endl;
-				output << "\t\typaram: " << cut.y_par << std::endl;
-				output << "\t\tbegin_xvalues" << std::endl;
-				for (const auto& value : xpoints)
-				{
-					output << "\t\t\t" << value << std::endl;
-				}
-				output << "\t\tend_xvalues" << std::endl;
-				output << "\t\tbegin_yvalues" << std::endl;
-				for (const auto& value : ypoints)
-				{
-					output << "\t\t\t" << value << std::endl;
-				}
-				output << "\t\tend_yvalues" << std::endl;
-				output << "\tend_cut2D" << std::endl;
-			}
-			else if (cut.type == CutType::CutSummaryAll)
-			{
-				std::vector<std::string> subhistos = manager.GetCutSubHistograms(cut.name);
-				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
-				output << "\tbegin_cutSummaryAll" << std::endl;
-				output << "\t\tname: " << cut.name << std::endl;
-				output << "\t\tminValue: " << xpoints[0] << std::endl;
-				output << "\t\tmaxValue: " << xpoints[1] << std::endl;
-				output << "\t\tbegin_parameters" << std::endl;
-				for (auto& par : subhistos)
-				{
-					output << "\t\t\t" << par << std::endl;
-				}
-				output << "\t\tend_parameters" << std::endl;
-				output << "\tend_cutSummaryAll" << std::endl;
-			}
-			else if (cut.type == CutType::CutSummaryAny)
-			{
-				std::vector<std::string> subhistos = manager.GetCutSubHistograms(cut.name);
-				std::vector<double> xpoints = manager.GetCutXPoints(cut.name);
-				output << "\tbegin_cutSummaryAny" << std::endl;
-				output << "\t\tname: " << cut.name << std::endl;
-				output << "\t\tminValue: " << xpoints[0] << std::endl;
-				output << "\t\tmaxValue: " << xpoints[1] << std::endl;
-				output << "\t\tbegin_parameters" << std::endl;
-				for (auto& par : subhistos)
-				{
-					output << "\t\t\t" << par << std::endl;
-				}
-				output << "\t\tend_parameters" << std::endl;
-				output << "\tend_cutSummaryAny" << std::endl;
-			}
+			SerializeCut(yamlStream, cut);
 		}
-		output << "end_cuts" << std::endl;
-
-		output << "begin_histograms" << std::endl;
-		for (auto& params : histoList)
+		yamlStream << YAML::EndSeq;
+		yamlStream << YAML::Key << "Histograms" << YAML::Value << YAML::BeginSeq;
+		for (auto& histo : histoList)
 		{
-			if (params.type == SpectrumType::Histo1D)
-			{
-				output << "\tbegin_histogram1D" << std::endl;
-				output << "\t\tname: " << params.name << std::endl;
-				output << "\t\txparam: " << params.x_par << std::endl;
-				output << "\t\tNxbins: " << params.nbins_x << std::endl;
-				output << "\t\tXMin: " << params.min_x << std::endl;
-				output << "\t\tXMax: " << params.max_x << std::endl;
-				output << "\t\tbegin_cutsdrawn" << std::endl;
-				for (const auto& name : params.cutsDrawnUpon)
-				{
-					output << "\t\t\t" << name << std::endl;
-				}
-				output << "\t\tend_cutsdrawn" << std::endl;
-				output << "\t\tbegin_cutsapplied" << std::endl;
-				for (const auto& name : params.cutsAppliedTo)
-				{
-					output << "\t\t\t" << name << std::endl;
-				}
-				output << "\t\tend_cutsapplied" << std::endl;
-				output << "\tend_histogram1D" << std::endl;
-			}
-			else if (params.type == SpectrumType::Histo2D)
-			{
-				output << "\tbegin_histogram2D" << std::endl;
-				output << "\t\tname: " << params.name << std::endl;
-				output << "\t\txparam: " << params.x_par << std::endl;
-				output << "\t\typaram: " << params.y_par << std::endl;
-				output << "\t\tNxbins: " << params.nbins_x << std::endl;
-				output << "\t\tXMin: " << params.min_x << std::endl;
-				output << "\t\tXMax: " << params.max_x << std::endl;
-				output << "\t\tNybins: " << params.nbins_y << std::endl;
-				output << "\t\tYMin: " << params.min_y << std::endl;
-				output << "\t\tYMax: " << params.max_y << std::endl;
-				output << "\t\tbegin_cutsdrawn" << std::endl;
-				for (const auto& name : params.cutsDrawnUpon)
-				{
-					output << "\t\t\t" << name << std::endl;
-				}
-				output << "\t\tend_cutsdrawn" << std::endl;
-				output << "\t\tbegin_cutsapplied" << std::endl;
-				for (const auto& name : params.cutsAppliedTo)
-				{
-					output << "\t\t\t" << name << std::endl;
-				}
-				output << "\t\tend_cutsapplied" << std::endl;
-				output << "\tend_histogram2D" << std::endl;
-			}
-			else if (params.type == SpectrumType::Summary)
-			{
-				output << "\tbegin_histogramSummary" << std::endl;
-				output << "\t\tname: " << params.name << std::endl;
-				output << "\t\tNxbins: " << params.nbins_x << std::endl;
-				output << "\t\tXMin: " << params.min_x << std::endl;
-				output << "\t\tXMax: " << params.max_x << std::endl;
-				output << "\t\tbegin_subhistos" << std::endl;
-				std::vector<std::string> subhistos = manager.GetSubHistograms(params.name);
-				for (auto& name : subhistos)
-				{
-					output << "\t\t\t" << name << std::endl;
-				}
-				output << "\t\tend_subhistos" << std::endl;
-				output << "\t\tbegin_cutsdrawn" << std::endl;
-				for (const auto& name : params.cutsDrawnUpon)
-				{
-					output << "\t\t\t" << name << std::endl;
-				}
-				output << "\t\tend_cutsdrawn" << std::endl;
-				output << "\t\tbegin_cutsapplied" << std::endl;
-				for (const auto& name : params.cutsAppliedTo)
-				{
-					output << "\t\t\t" << name << std::endl;
-				}
-				output << "\t\tend_cutsapplied" << std::endl;
-				output << "\tend_histogram1D" << std::endl;
-			}
+			SerializeHistogram(yamlStream, histo);
 		}
-		output << "end_histograms" << std::endl;
+		yamlStream << YAML::EndSeq << YAML::EndMap;
 
+		output << yamlStream.c_str();
 		SPEC_INFO("Successfully saved data to {0}", m_filename);
 		output.close();
 	}
@@ -197,259 +116,72 @@ namespace Specter {
 		SpectrumManager& manager = SpectrumManager::GetInstance();
 		manager.RemoveAllSpectra(); //When loading in, we remove all extant data, to avoid any potential collisions.
 
-		std::ifstream input(m_filename);
-		if (!input.is_open())
+		YAML::Node data;
+		try
 		{
-			SPEC_ERROR("Unable to open {0} to read data!", m_filename);
+			data = YAML::LoadFile(m_filename);
+		}
+		catch (YAML::ParserException& execp)
+		{
+			SPEC_ERROR("Unable to open {0} to read data.", m_filename);
 			return;
 		}
 
-		std::string check;
-		double value_doub;
-		CutArgs cut_data, reset_cut;
-		std::vector<double> cut_xdata;
-		std::vector<double> cut_ydata;
-		std::vector<std::string> subhistos;
-		HistogramArgs hist_data, reset_hist;
-
-		while (input >> check)
+		auto cuts = data["Cuts"];
+		if (cuts)
 		{
-			if (check == "begin_cuts")
+			CutArgs tempArgs;
+			for (auto& cut : cuts)
 			{
-				while (input >> check)
+				tempArgs.name = cut["Cut"].as<std::string>();
+				tempArgs.type = ConvertStringToCutType(cut["Type"].as<std::string>());
+				tempArgs.x_par = cut["XParameter"].as<std::string>();
+				tempArgs.y_par = cut["YParameter"].as<std::string>();
+				if (tempArgs.type == CutType::Cut1D)
 				{
-					cut_data = reset_cut;
-					cut_xdata.clear();
-					cut_ydata.clear();
-					subhistos.clear();
-					if (check == "begin_cut1D")
-					{
-						cut_data.type = CutType::Cut1D;
-						input >> check >> cut_data.name;
-						input >> check >> cut_data.x_par;
-						input >> check >> value_doub;
-						cut_xdata.push_back(value_doub);
-						input >> check >> value_doub;
-						cut_xdata.push_back(value_doub);
-						input >> check;
-						manager.AddCut(cut_data, cut_xdata[0], cut_xdata[1]);
-					}
-					else if (check == "begin_cut2D")
-					{
-						cut_data.type = CutType::Cut2D;
-						input >> check >> cut_data.name;
-						input >> check >> cut_data.x_par;
-						input >> check >> cut_data.y_par;
-						while (input >> check)
-						{
-							if (check == "begin_xvalues")
-								continue;
-							else if (check == "end_xvalues")
-								break;
-							else
-								cut_xdata.push_back(std::stod(check));
-						}
-						while (input >> check)
-						{
-							if (check == "begin_yvalues")
-								continue;
-							else if (check == "end_yvalues")
-								break;
-							else
-								cut_ydata.push_back(std::stod(check));
-						}
-						input >> check;
-						manager.AddCut(cut_data, cut_xdata, cut_ydata);
-					}
-					else if (check == "begin_cutSummaryAll")
-					{
-						cut_data.type = CutType::CutSummaryAll;
-						input >> check >> cut_data.name;
-						input >> check >> value_doub;
-						cut_xdata.push_back(value_doub);
-						input >> check >> value_doub;
-						cut_xdata.push_back(value_doub);
-						while (input >> check)
-						{
-							if (check == "begin_parameters")
-								continue;
-							else if (check == "end_parameters")
-								break;
-							else
-								subhistos.push_back(check);
-						}
-						input >> check;
-						manager.AddCut(cut_data, subhistos, cut_xdata[0], cut_xdata[1]);
-					}
-					else if (check == "begin_cutSummaryAny")
-					{
-						cut_data.type = CutType::CutSummaryAny;
-						input >> check >> cut_data.name;
-						input >> check >> value_doub;
-						cut_xdata.push_back(value_doub);
-						input >> check >> value_doub;
-						cut_xdata.push_back(value_doub);
-						while (input >> check)
-						{
-							if (check == "begin_parameters")
-								continue;
-							else if (check == "end_parameters")
-								break;
-							else
-								subhistos.push_back(check);
-						}
-						input >> check;
-						manager.AddCut(cut_data, subhistos, cut_xdata[0], cut_xdata[1]);
-					}
-					else if (check == "end_cuts")
-						break;
-					else
-					{
-						SPEC_ERROR("Deserialization error; unexpected check condition while parsing cut data! Current value: {0}", check);
-						input.close();
-						return;
-					}
+					manager.AddCut(tempArgs, cut["XMin"].as<double>(), cut["XMax"].as<double>());
+				}
+				else if (tempArgs.type == CutType::Cut2D)
+				{
+					manager.AddCut(tempArgs, cut["XPoints"][0].as<std::vector<double>>(), cut["YPoints"][0].as<std::vector<double>>());
+				}
+				else if (tempArgs.type == CutType::CutSummaryAll || tempArgs.type == CutType::CutSummaryAny)
+				{
+					manager.AddCut(tempArgs, cut["SubHistos"][0].as<std::vector<std::string>>(), cut["XMin"].as<double>(), cut["XMax"].as<double>());
 				}
 			}
-			else if (check == "begin_histograms")
+		}
+		auto histos = data["Histograms"];
+		if (histos)
+		{
+			HistogramArgs tempArgs;
+			std::vector<std::string> tempSubHistos;
+			for (auto& histo : histos)
 			{
-				while (input >> check)
+				tempArgs.name = histo["Histogram"].as<std::string>();
+				tempArgs.type = ConvertStringToSpectrumType(histo["Type"].as<std::string>());
+				tempArgs.x_par = histo["XParameter"].as<std::string>();
+				tempArgs.y_par = histo["YParameter"].as<std::string>();
+				tempArgs.min_x = histo["XMin"].as<double>();
+				tempArgs.max_x = histo["XMax"].as<double>();
+				tempArgs.nbins_x = histo["XBins"].as<int>();
+				tempArgs.min_y = histo["YMin"].as<double>();
+				tempArgs.max_y = histo["YMax"].as<double>();
+				tempArgs.nbins_y = histo["YBins"].as<int>();
+				tempArgs.cutsDrawnUpon = histo["CutsDrawn"][0].as<std::vector<std::string>>();
+				tempArgs.cutsAppliedTo = histo["CutsApplied"][0].as<std::vector<std::string>>();
+				if (tempArgs.type == SpectrumType::Summary)
 				{
-					hist_data = reset_hist;
-					if (check == "begin_histogram1D")
-					{
-						hist_data.type = SpectrumType::Histo1D;
-						input >> check >> hist_data.name;
-						input >> check >> hist_data.x_par;
-						input >> check >> hist_data.nbins_x;
-						input >> check >> hist_data.min_x;
-						input >> check >> hist_data.max_x;
-						while (input >> check)
-						{
-							if (check == "begin_cutsdrawn")
-								continue;
-							else if (check == "end_cutsdrawn")
-								break;
-							else
-							{
-								hist_data.cutsDrawnUpon.push_back(check);
-							}
-						}
-						while (input >> check)
-						{
-							if (check == "begin_cutsapplied")
-								continue;
-							else if (check == "end_cutsapplied")
-								break;
-							else
-							{
-								hist_data.cutsAppliedTo.push_back(check);
-							}
-						}
-						input >> check;
-						manager.AddHistogram(hist_data);
-					}
-					else if (check == "begin_histogram2D")
-					{
-						hist_data.type = SpectrumType::Histo2D;
-						input >> check >> hist_data.name;
-						input >> check >> hist_data.x_par;
-						input >> check >> hist_data.y_par;
-						input >> check >> hist_data.nbins_x;
-						input >> check >> hist_data.min_x;
-						input >> check >> hist_data.max_x;
-						input >> check >> hist_data.nbins_y;
-						input >> check >> hist_data.min_y;
-						input >> check >> hist_data.max_y;
-						while (input >> check)
-						{
-							if (check == "begin_cutsdrawn")
-								continue;
-							else if (check == "end_cutsdrawn")
-								break;
-							else
-							{
-								hist_data.cutsDrawnUpon.push_back(check);
-							}
-						}
-						while (input >> check)
-						{
-							if (check == "begin_cutsapplied")
-								continue;
-							else if (check == "end_cutsapplied")
-								break;
-							else
-							{
-								hist_data.cutsAppliedTo.push_back(check);
-							}
-						}
-						input >> check;
-						manager.AddHistogram(hist_data);
-					}
-					else if (check == "begin_histogramSummary")
-					{
-						subhistos.clear();
-						hist_data.type = SpectrumType::Summary;
-						input >> check >> hist_data.name;
-						input >> check >> hist_data.nbins_x;
-						input >> check >> hist_data.min_x;
-						input >> check >> hist_data.max_x;
-						while (input >> check)
-						{
-							if (check == "begin_subhistos")
-								continue;
-							else if (check == "end_subhistos")
-								break;
-							else
-							{
-								subhistos.push_back(check);
-							}
-						}
-						while (input >> check)
-						{
-							if (check == "begin_cutsdrawn")
-								continue;
-							else if (check == "end_cutsdrawn")
-								break;
-							else
-							{
-								hist_data.cutsDrawnUpon.push_back(check);
-							}
-						}
-						while (input >> check)
-						{
-							if (check == "begin_cutsapplied")
-								continue;
-							else if (check == "end_cutsapplied")
-								break;
-							else
-							{
-								hist_data.cutsAppliedTo.push_back(check);
-							}
-						}
-						input >> check;
-						manager.AddHistogramSummary(hist_data, subhistos);
-					}
-					else if (check == "end_histograms")
-						break;
-					else
-					{
-						SPEC_ERROR("Deserialization error; unexpected check condition while parsing histogram data! Current value: {0}", check);
-						input.close();
-						return;
-					}
+					manager.AddHistogramSummary(tempArgs, histo["SubHistos"][0].as<std::vector<std::string>>());
 				}
-			}
-			else
-			{
-				SPEC_ERROR("Deserialization error; unexpected check condition at top level! Current value: {0}", check);
-				input.close();
-				return;
+				else
+				{
+					manager.AddHistogram(tempArgs);
+				}
 			}
 		}
 
 		SPEC_INFO("Successfully loaded data from {0}", m_filename);
-		input.close();
 	}
 
 }

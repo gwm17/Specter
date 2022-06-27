@@ -33,6 +33,22 @@ namespace Specter {
 		return "None";
 	}
 
+	CutType ConvertStringToCutType(const std::string& keyword)
+	{
+		SPEC_PROFILE_FUNCTION();
+		if (keyword == "Cut1D")
+			return CutType::Cut1D;
+		else if (keyword == "Cut2D")
+			return CutType::Cut2D;
+		else if (keyword == "CutSummaryAll")
+			return CutType::CutSummaryAll;
+		else if (keyword == "CutSummaryAny")
+			return CutType::CutSummaryAny;
+		else
+			return CutType::None;
+	}
+
+
 	/*1D Cuts -- Can be made on and applied to either 1D or 2D histograms*/
 	Cut1D::Cut1D(const CutArgs& params, double min, double max) :
 		Cut(params), m_minVal(min), m_maxVal(max)

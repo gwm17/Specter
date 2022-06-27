@@ -32,6 +32,7 @@ namespace Specter {
 	};
 
 	std::string ConvertCutTypeToString(CutType type);
+	CutType ConvertStringToCutType(const std::string& keyword);
 
 	struct CutArgs
 	{
