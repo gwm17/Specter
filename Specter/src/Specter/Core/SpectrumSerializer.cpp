@@ -37,8 +37,8 @@ namespace Specter {
 		{
 			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
 			std::vector<double> ypoints = manager.GetCutYPoints(args.name);
-			output << YAML::Key << "XPoints" << YAML::Value << YAML::BeginSeq << xpoints << YAML::EndSeq;
-			output << YAML::Key << "YPoints" << YAML::Value << YAML::BeginSeq << ypoints << YAML::EndSeq;
+			output << YAML::Key << "XPoints" << YAML::Value << xpoints;
+			output << YAML::Key << "YPoints" << YAML::Value << ypoints;
 		}
 		else if (args.type == CutType::CutSummaryAll || args.type == CutType::CutSummaryAny)
 		{
@@ -46,7 +46,7 @@ namespace Specter {
 			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
 			output << YAML::Key << "XMin" << YAML::Value << xpoints[0];
 			output << YAML::Key << "XMax" << YAML::Value << xpoints[1];
-			output << YAML::Key << "SubHistos" << YAML::Value << YAML::BeginSeq << subhistos << YAML::EndSeq;
+			output << YAML::Key << "SubHistos" << YAML::Value << subhistos;
 		}
 		output << YAML::EndMap;
 	}
@@ -67,10 +67,10 @@ namespace Specter {
 		if (args.type == SpectrumType::Summary)
 		{
 			std::vector<std::string> subhistos = SpectrumManager::GetInstance().GetSubHistograms(args.name);
-			output << YAML::Key << "SubHistos" << YAML::Value << YAML::BeginSeq << subhistos << YAML::EndSeq;
+			output << YAML::Key << "SubHistos" << YAML::Value << subhistos;
 		}
-		output << YAML::Key << "CutsDrawn" << YAML::Value << YAML::BeginSeq << args.cutsDrawnUpon << YAML::EndSeq;
-		output << YAML::Key << "CutsApplied" << YAML::Value << YAML::BeginSeq << args.cutsAppliedTo << YAML::EndSeq;
+		output << YAML::Key << "CutsDrawn" << YAML::Value << args.cutsDrawnUpon;
+		output << YAML::Key << "CutsApplied" << YAML::Value << args.cutsAppliedTo;
 		output << YAML::EndMap;
 
 	}
@@ -143,11 +143,11 @@ namespace Specter {
 				}
 				else if (tempArgs.type == CutType::Cut2D)
 				{
-					manager.AddCut(tempArgs, cut["XPoints"][0].as<std::vector<double>>(), cut["YPoints"][0].as<std::vector<double>>());
+					manager.AddCut(tempArgs, cut["XPoints"].as<std::vector<double>>(), cut["YPoints"].as<std::vector<double>>());
 				}
 				else if (tempArgs.type == CutType::CutSummaryAll || tempArgs.type == CutType::CutSummaryAny)
 				{
-					manager.AddCut(tempArgs, cut["SubHistos"][0].as<std::vector<std::string>>(), cut["XMin"].as<double>(), cut["XMax"].as<double>());
+					manager.AddCut(tempArgs, cut["SubHistos"].as<std::vector<std::string>>(), cut["XMin"].as<double>(), cut["XMax"].as<double>());
 				}
 			}
 		}
@@ -168,11 +168,11 @@ namespace Specter {
 				tempArgs.min_y = histo["YMin"].as<double>();
 				tempArgs.max_y = histo["YMax"].as<double>();
 				tempArgs.nbins_y = histo["YBins"].as<int>();
-				tempArgs.cutsDrawnUpon = histo["CutsDrawn"][0].as<std::vector<std::string>>();
-				tempArgs.cutsAppliedTo = histo["CutsApplied"][0].as<std::vector<std::string>>();
+				tempArgs.cutsDrawnUpon = histo["CutsDrawn"].as<std::vector<std::string>>();
+				tempArgs.cutsAppliedTo = histo["CutsApplied"].as<std::vector<std::string>>();
 				if (tempArgs.type == SpectrumType::Summary)
 				{
-					manager.AddHistogramSummary(tempArgs, histo["SubHistos"][0].as<std::vector<std::string>>());
+					manager.AddHistogramSummary(tempArgs, histo["SubHistos"].as<std::vector<std::string>>());
 				}
 				else
 				{
