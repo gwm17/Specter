@@ -24,10 +24,16 @@
 
 namespace Specter {
 
+	struct ApplicationArgs
+	{
+		std::string name = "";
+		std::string runtimePath = "";
+	};
+
 	class Application
 	{
 	public:
-		Application();
+		Application(const ApplicationArgs& args);
 		virtual ~Application();
 
 		void Run();
@@ -42,8 +48,12 @@ namespace Specter {
 
 		inline Window& GetWindow() { return *m_window; }
 
+		inline const ApplicationArgs& GetArgs() { return m_args; }
+
 	private:
 		bool OnWindowCloseEvent(WindowCloseEvent& event);
+
+		ApplicationArgs m_args;
 
 		LayerStack m_stack;
 		std::unique_ptr<Window> m_window;
@@ -62,7 +72,7 @@ namespace Specter {
 		This function is left to be defined by the user. In principle we don't need to do this, as the Specter library doesn't handle creation of the application,
 		but I like it and might be useful for changing to a system with a pre-defined entry point.
 	*/
-	Application* CreateApplication();
+	Application* CreateApplication(const ApplicationArgs& args);
 }
 
 #endif

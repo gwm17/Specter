@@ -18,14 +18,20 @@ namespace Specter {
 
 	Application* Application::s_instance = nullptr;
 
-	Application::Application() :
-		m_runFlag(true)
+	Application::Application(const ApplicationArgs& args) :
+		m_args(args), m_runFlag(true)
 	{
 		SPEC_PROFILE_FUNCTION();
 
 		s_instance = this;
 
-		m_window = std::unique_ptr<Window>(Window::Create());
+		//Set the runtime path so that we can find our assets
+		if(!m_args.runtimePath.empty())
+			std::filesystem::current_path(m_args.runtimePath);
+
+		SPEC_INFO("Runtime Directory: {0}", std::filesystem::current_path().string());
+
+		m_window = std::unique_ptr<Window>(Window::Create({m_args.name, 1280, 720}));
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent)); //Allow window to pass events back
 
 		m_physicsLayer = new PhysicsLayer();

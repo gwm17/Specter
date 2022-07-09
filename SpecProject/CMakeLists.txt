@@ -46,4 +46,5 @@ endif()
 
 set_target_properties(SpecProject PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SPECTER_BINARY_DIR})
 
-add_custom_command(TARGET SpecProject POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Assets ${SPECTER_BINARY_DIR}/Assets)
+#No longer needed, but maybe come back if I don't like the programatic solution
+#add_custom_command(TARGET SpecProject POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Assets ${SPECTER_BINARY_DIR}/Assets)
