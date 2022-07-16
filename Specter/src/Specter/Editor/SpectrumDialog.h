@@ -9,6 +9,7 @@
 
 #include "Specter/Core/Histogram.h"
 #include "Specter/Core/Cut.h"
+#include "Specter/Core/SpectrumManager.h"
 
 #include "imgui.h"
 
@@ -21,7 +22,7 @@ namespace Specter {
 		SpectrumDialog();
 		~SpectrumDialog();
 
-		bool ImGuiRenderSpectrumDialog(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList);
+		bool ImGuiRenderSpectrumDialog(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList);
 
 		inline void SetSpectrumDialog() { m_openFlag = true; }
 	private:

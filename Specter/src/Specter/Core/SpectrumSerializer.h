@@ -16,6 +16,7 @@
 
 #include "Histogram.h"
 #include "Cut.h"
+#include "SpectrumManager.h"
 
 namespace Specter {
 
@@ -25,8 +26,8 @@ namespace Specter {
 		SpectrumSerializer(const std::string& filepath);
 		~SpectrumSerializer();
 
-		void SerializeData(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList);
-		void DeserializeData();
+		void SerializeData(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList);
+		void DeserializeData(const SpectrumManager::Ref& manager);
 
 		inline const std::string& GetFilename() { return m_filename; }
 

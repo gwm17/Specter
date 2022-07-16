@@ -16,7 +16,7 @@
 
 namespace Specter {
 
-	SPSInputLayer::SPSInputLayer() :
+	SPSInputLayer::SPSInputLayer(const SpectrumManager::Ref& manager) :
 		Layer("SPSInputLayer"), x1_weight("x1_weight"), x2_weight("x2_weight"), m_bfield(0.0), m_theta(0.0), m_beamKE(0.0),
 		m_rxnEqn("")
 	{
@@ -28,9 +28,8 @@ namespace Specter {
 			m_residNums[i] = 0;
 		}
 
-		SpectrumManager& manager = SpectrumManager::GetInstance();
-		manager.BindVariable(x1_weight);
-		manager.BindVariable(x2_weight);
+		manager->BindVariable(x1_weight);
+		manager->BindVariable(x2_weight);
 	}
 
 	SPSInputLayer::~SPSInputLayer() {}

@@ -33,8 +33,8 @@ namespace Specter {
 	enum CompassHeaders
 	{
 		Energy = 0x0001,
-		EnergyShort = 0x0002,
-		EnergyCalibrated = 0x0004,
+		EnergyShort = 0x0004,
+		EnergyCalibrated = 0x0002,
 		Waves = 0x0008
 	};
 

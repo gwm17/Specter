@@ -1,5 +1,4 @@
 #include "ScalerPanel.h"
-#include "Specter/Core/SpectrumManager.h"
 
 #include "imgui.h"
 #include "implot.h"
@@ -10,9 +9,8 @@ namespace Specter {
 
 	ScalerPanel::~ScalerPanel() {}
 
-	void ScalerPanel::OnImGuiRender(const std::vector<std::string>& scalerList, const std::vector<GraphArgs>& graphList)
+	void ScalerPanel::OnImGuiRender(const SpectrumManager::Ref& manager, const std::vector<std::string>& scalerList, const std::vector<GraphArgs>& graphList)
 	{
-		SpectrumManager& manager = SpectrumManager::GetInstance();
 		if (ImGui::Begin("ScalerPanel"))
 		{
 			if (ImGui::TreeNode("Scalers"))
@@ -34,7 +32,7 @@ namespace Specter {
 			}
 			if (ImPlot::BeginPlot("Scaler Graphs"))
 			{
-				manager.DrawGraph(m_selectedGraph.name);
+				manager->DrawGraph(m_selectedGraph.name);
 				ImPlot::EndPlot();
 			}
 		}

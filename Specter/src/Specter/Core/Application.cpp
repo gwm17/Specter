@@ -34,9 +34,12 @@ namespace Specter {
 		m_window = std::unique_ptr<Window>(Window::Create({m_args.name, 1280, 720}));
 		m_window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent)); //Allow window to pass events back
 
-		m_physicsLayer = new PhysicsLayer();
+		//Create the manager
+		m_manager = std::make_shared<SpectrumManager>();
+
+		m_physicsLayer = new PhysicsLayer(m_manager);
 		PushLayer(m_physicsLayer);
-		EditorLayer* editor = new EditorLayer(); //memory handled by layer stack
+		EditorLayer* editor = new EditorLayer(m_manager); //memory handled by layer stack
 		editor->SetEventCallbackFunc(BIND_EVENT_FUNCTION(Application::OnEvent)); //Allow editor to pass events back
 		PushLayer(editor);
 		m_imgui_layer = new ImGuiLayer();

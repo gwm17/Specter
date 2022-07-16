@@ -1,12 +1,16 @@
 /*
 	SpectrumManager.h
-	SpectrumManager is the global resource management class. Controls everything related to spectra (histograms, cuts, parameters). Since 
+	SpectrumManager is the application resource management class. Controls everything related to spectra (histograms, cuts, parameters). Since 
 	the manager must traverse threads, explicit synchronoization is handled through a mutex. To this end, excessive calls to the manager should be
 	avoided if possible, as this will increase the lock deadtime in the application, which is especially bad for online data sources.
 
 	Note that SpectrumManager is a singleton. There should only ever be one SpectrumManager with a given application.
 
 	GWM -- Feb 2022
+
+	Modified to be non-singleton. Singleton implementation was going to hold us back from some future development.
+
+	GWM -- July 2022
 */
 #ifndef SPECTRUM_MANAGER_H
 #define SPECTRUM_MANAGER_H
@@ -26,10 +30,10 @@ namespace Specter {
 	class SpectrumManager
 	{
 	public:
+		using Ref = std::shared_ptr<SpectrumManager>;
+
 		SpectrumManager();
 		~SpectrumManager();
-
-		inline static SpectrumManager& GetInstance() { return *s_instance;  }
 
 		//To clear all managed spectra. Note that Parameters are left untouched.
 		inline void RemoveAllSpectra()
@@ -104,8 +108,6 @@ namespace Specter {
 		void CheckCuts();
 		bool IsCutValid(const std::string& name);
 		void ResetCutValidities();
-
-		static SpectrumManager* s_instance;
 
 		//Actual data
 		std::unordered_map<std::string, std::shared_ptr<Histogram>> m_histoMap;

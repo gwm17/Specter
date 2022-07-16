@@ -2,6 +2,7 @@
 #define SCALER_PANEL_H
 
 #include "Specter/Core/Graph.h"
+#include "Specter/Core/SpectrumManager.h"
 
 namespace Specter {
 
@@ -11,7 +12,7 @@ namespace Specter {
 		ScalerPanel();
 		~ScalerPanel();
 
-		void OnImGuiRender(const std::vector<std::string>& scalerList, const std::vector<GraphArgs>& graphList);
+		void OnImGuiRender(const SpectrumManager::Ref& manager, const std::vector<std::string>& scalerList, const std::vector<GraphArgs>& graphList);
 
 	private:
 		GraphArgs m_selectedGraph;

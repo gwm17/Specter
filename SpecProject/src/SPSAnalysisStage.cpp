@@ -9,43 +9,42 @@
 namespace Specter {
 
 	//Construct each NavParameter with their unique name. Then bind them to the SpectrumManager.
-	SPSAnalysisStage::SPSAnalysisStage() :
+	SPSAnalysisStage::SPSAnalysisStage(const SpectrumManager::Ref& manager) :
 		AnalysisStage("SPSAnalysis"), delayFLTime("delayFLTime"), delayFRTime("delayFRTime"), delayBLTime("delayBLTime"), delayBRTime("delayBRTime"), x1("x1"), x2("x2"), xavg("xavg"),
 		scintLeft("scintLeft"), anodeBack("anodeBack"), anodeFront("anodeFront"), cathode("cathode"), xavg_sabreCoinc("xavg_sabreCoinc"), x1_weight("x1_weight"), x2_weight("x2_weight"),
 		beamIntegrator("beamIntegrator")
 	{
 		SPEC_PROFILE_FUNCTION();
-		SpectrumManager& manager = SpectrumManager::GetInstance();
-		manager.BindParameter(delayFLTime);
-		manager.BindParameter(delayFRTime);
-		manager.BindParameter(delayBLTime);
-		manager.BindParameter(delayBRTime);
+		manager->BindParameter(delayFLTime);
+		manager->BindParameter(delayFRTime);
+		manager->BindParameter(delayBLTime);
+		manager->BindParameter(delayBRTime);
 		//Bind parameters with some default histograms. Saves us the effort of making them in the UI.
-		manager.BindParameter(x1, 600, -300.0, 300.0);
-		manager.BindParameter(x2, 600, -300.0, 300.0);
-		manager.BindParameter(xavg, 600, -300.0, 300.0);
-		manager.BindParameter(scintLeft, 4096, 0.0, 4096.0);
-		manager.BindParameter(anodeBack, 4096, 0.0, 4096.0);
-		manager.BindParameter(anodeFront, 4096, 0.0, 4096.0);
-		manager.BindParameter(cathode, 4096, 0.0, 4096);
-		manager.BindParameter(xavg_sabreCoinc, 600, -300.0, 300.0);
+		manager->BindParameter(x1, 600, -300.0, 300.0);
+		manager->BindParameter(x2, 600, -300.0, 300.0);
+		manager->BindParameter(xavg, 600, -300.0, 300.0);
+		manager->BindParameter(scintLeft, 4096, 0.0, 4096.0);
+		manager->BindParameter(anodeBack, 4096, 0.0, 4096.0);
+		manager->BindParameter(anodeFront, 4096, 0.0, 4096.0);
+		manager->BindParameter(cathode, 4096, 0.0, 4096);
+		manager->BindParameter(xavg_sabreCoinc, 600, -300.0, 300.0);
 
 		std::vector<std::string> sabre_list;
 		for (int i = 0; i < 127; i++)
 		{
 			sabre_list.push_back("sabre_" + std::to_string(i));
 			sabre.emplace_back(sabre_list[i]);
-			manager.BindParameter(sabre[i]);
+			manager->BindParameter(sabre[i]);
 		}
 
 		//If you want to make a histogram default available, you can add one like this.
-		manager.AddHistogramSummary(HistogramArgs("sabre_summary", "", 512, 0.0, 16384), sabre_list);
+		manager->AddHistogramSummary(HistogramArgs("sabre_summary", "", 512, 0.0, 16384), sabre_list);
 		//Note that if you save a config, the config rep of this histogram will supercede this version.
 
-		manager.BindVariable(x1_weight);
-		manager.BindVariable(x2_weight);
+		manager->BindVariable(x1_weight);
+		manager->BindVariable(x2_weight);
 
-		manager.BindScaler(beamIntegrator);
+		manager->BindScaler(beamIntegrator);
 	}
 
 	SPSAnalysisStage::~SPSAnalysisStage() {}

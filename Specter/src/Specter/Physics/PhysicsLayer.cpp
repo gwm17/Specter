@@ -8,13 +8,12 @@
 	GWM -- Feb 2022
 */
 #include "PhysicsLayer.h"
-#include "Specter/Core/SpectrumManager.h"
 #include "SpecData.h"
 
 namespace Specter {
 
-	PhysicsLayer::PhysicsLayer() :
-		m_activeFlag(false), m_source(nullptr), m_eventBuilder(0), m_physThread(nullptr)
+	PhysicsLayer::PhysicsLayer(const SpectrumManager::Ref& manager) :
+		m_manager(manager), m_activeFlag(false), m_source(nullptr), m_eventBuilder(0), m_physThread(nullptr)
 	{
 	}
 
@@ -89,6 +88,7 @@ namespace Specter {
 
 	void PhysicsLayer::OnUpdate(Timestep& step) {}
 
+
 	/*Threaded functions*/
 
 	void PhysicsLayer::DestroyPhysThread()
@@ -143,7 +143,6 @@ namespace Specter {
 	void PhysicsLayer::RunSource()
 	{
 		SPEC_PROFILE_FUNCTION();
-		SpectrumManager& manager = SpectrumManager::GetInstance();
 
 		std::vector<SpecEvent> events;
 		SpecData datum;
@@ -178,9 +177,9 @@ namespace Specter {
 						stage->AnalyzePhysicsEvent(event);
 
 					//Now that the analysis stack has filled all our NavParameters with data, update the histogram counts
-					manager.UpdateHistograms();
+					m_manager->UpdateHistograms();
 					//Invalidate all parameters to get ready for next event
-					manager.InvalidateParameters();
+					m_manager->InvalidateParameters();
 				}
 			}
 		}

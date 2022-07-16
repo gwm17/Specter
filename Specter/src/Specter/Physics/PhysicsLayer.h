@@ -17,6 +17,7 @@
 #include "AnalysisStage.h"
 #include "DataSource.h"
 #include "PhysicsEventBuilder.h"
+#include "Specter/Core/SpectrumManager.h"
 
 #include <thread>
 #include <mutex>
@@ -27,7 +28,7 @@ namespace Specter {
 	class PhysicsLayer : public Layer
 	{
 	public:
-		PhysicsLayer();
+		PhysicsLayer(const SpectrumManager::Ref& manager);
 		virtual ~PhysicsLayer();
 
 		virtual void OnAttach() override;
@@ -47,6 +48,7 @@ namespace Specter {
 		void DetachDataSource();
 		void RunSource();
 
+		SpectrumManager::Ref m_manager;
 		AnalysisStack m_physStack;
 		std::atomic<bool> m_activeFlag; //safe read/write across thread, but more expensive
 

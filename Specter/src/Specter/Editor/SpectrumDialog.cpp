@@ -5,7 +5,6 @@
 	GWM -- Feb 2022
 */
 #include "SpectrumDialog.h"
-#include "Specter/Core/SpectrumManager.h"
 
 #include "misc/cpp/imgui_stdlib.h"
 
@@ -24,7 +23,7 @@ namespace Specter {
 	{
 	}
 
-	bool SpectrumDialog::ImGuiRenderSpectrumDialog(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
+	bool SpectrumDialog::ImGuiRenderSpectrumDialog(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
 	{
 		SPEC_PROFILE_FUNCTION();
 		static std::string selectedCut = "";
@@ -78,9 +77,9 @@ namespace Specter {
 			{
 				switch (m_newParams.type)
 				{
-				case SpectrumType::Histo1D: SpectrumManager::GetInstance().AddHistogram(m_newParams); break;
-				case SpectrumType::Histo2D: SpectrumManager::GetInstance().AddHistogram(m_newParams); break;
-				case SpectrumType::Summary: SpectrumManager::GetInstance().AddHistogramSummary(m_newParams, m_subhistos); break;
+				case SpectrumType::Histo1D: manager->AddHistogram(m_newParams); break;
+				case SpectrumType::Histo2D: manager->AddHistogram(m_newParams); break;
+				case SpectrumType::Summary: manager->AddHistogramSummary(m_newParams, m_subhistos); break;
 				case SpectrumType::None: break;
 				}
 				ImGui::CloseCurrentPopup();

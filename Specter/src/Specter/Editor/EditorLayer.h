@@ -19,6 +19,7 @@
 #include "FileDialog.h"
 #include "SpectrumDialog.h"
 #include "SourceDialog.h"
+#include "Specter/Core/SpectrumManager.h"
 
 namespace Specter {
 
@@ -27,7 +28,7 @@ namespace Specter {
     public:
         using EventCallbackFunc = std::function<void(Event&)>;
 
-        EditorLayer();
+        EditorLayer(const SpectrumManager::Ref& manager);
         ~EditorLayer();
 
         void SetEventCallbackFunc(const EventCallbackFunc& f) { m_callbackFunc = f; }
@@ -49,6 +50,8 @@ namespace Specter {
         void UpdateScalerList(); //Currently not really used, only once. Scalers all made at construction time of PhysicsLayer
         void UpdateGraphList(); //Same
         void ExportHistogram(HistogramArgs selectedGram, const std::string& filename);
+
+        SpectrumManager::Ref m_manager;
 
         EventCallbackFunc m_callbackFunc;
 

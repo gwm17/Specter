@@ -48,7 +48,7 @@ namespace Specter {
 		bool GetHitsFromFiles();
 	
 		std::filesystem::path m_directory;
-		const std::string m_extension = ".bin";
+		const std::string m_extension = ".BIN";
 
 		std::vector<CompassFile> m_datafiles;
 		unsigned int m_startIndex; //this is the file we start looking at; increases as we finish files.

@@ -6,7 +6,6 @@
     GWM -- Feb 2022
 */
 #include "SpectrumPanel.h"
-#include "Specter/Core/SpectrumManager.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "IconsFontAwesome5.h"
 
@@ -35,7 +34,7 @@ namespace Specter {
 	SpectrumPanel::~SpectrumPanel() {}
 
     //Main render function. Handles generating subplot regions as well as the zoomed in region
-	bool SpectrumPanel::OnImGuiRender(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
+	bool SpectrumPanel::OnImGuiRender(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList)
 	{
         SPEC_PROFILE_FUNCTION();
         static bool acceptCutFlag = false;
@@ -50,20 +49,20 @@ namespace Specter {
                     ImGui::SameLine();
                     if(ImGui::Button("Clear"))
                     {
-                        SpectrumManager::GetInstance().ClearHistogram(m_zoomedGram.name);
+                        manager->ClearHistogram(m_zoomedGram.name);
                     }
                     ImGui::SameLine();
                     RenderRemoveRegionButton();
                     if (m_zoomedGram.type == SpectrumType::Histo2D || m_zoomedGram.type == SpectrumType::Summary)
                     {
-                        float* scale = SpectrumManager::GetInstance().GetColorScaleRange(m_zoomedGram.name);
+                        float* scale = manager->GetColorScaleRange(m_zoomedGram.name);
                         ImGui::DragFloatRange2("Min / Max", &(scale[0]), &(scale[1]), 0.01f);
                         ImPlot::ColormapScale("##HistogramScale", scale[0], scale[1], ImVec2(0, -1), ImPlotColormap_Viridis);
                         ImGui::SameLine();
                     }
                     if (ImPlot::BeginPlot(m_zoomedGram.name.c_str(), ImVec2(-1, -1)))
                     {
-                        SpectrumManager::GetInstance().DrawHistogram(m_zoomedGram.name);
+                        manager->DrawHistogram(m_zoomedGram.name);
                         if (!m_cutModeFlag && ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                         {
                             m_zoomedFlag = false;
@@ -88,14 +87,14 @@ namespace Specter {
                             if (m_zoomedGram.name == region.histogram_name)
                             {
                                 ImPlot::DragRect(int(i), &region.region.X.Min, &region.region.Y.Min, &region.region.X.Max, &region.region.Y.Max, ImVec4(1, 0, 1, 1), ImPlotDragToolFlags_NoFit);
-                                StatResults results = SpectrumManager::GetInstance().AnalyzeHistogramRegion(m_zoomedGram.name, region.region);
+                                StatResults results = manager->AnalyzeHistogramRegion(m_zoomedGram.name, region.region);
                                 ImPlot::PlotText(GenerateStatString(region.name, results, m_zoomedGram.y_par != "None").c_str(), (region.region.X.Max + region.region.X.Min) * 0.5, 
                                                  (region.region.Y.Min + region.region.Y.Max) * 0.5);
                             }
                         }
                         ImPlot::EndPlot();
                     }
-                    RenderAcceptCutDialog();
+                    RenderAcceptCutDialog(manager);
                 }
                 else
                 {
@@ -103,7 +102,7 @@ namespace Specter {
                     ImGui::SameLine();
                     if (ImGui::Button("Clear All"))
                     {
-                        SpectrumManager::GetInstance().ClearHistograms();
+                        manager->ClearHistograms();
                     }
                     m_totalSlots = m_tableSizes[0] * m_tableSizes[1];
                     m_selectedGrams.resize(m_totalSlots);
@@ -140,7 +139,7 @@ namespace Specter {
                         {
                             if (ImPlot::BeginPlot(spec.name.c_str()))
                             {
-                                SpectrumManager::GetInstance().DrawHistogram(spec.name);
+                                manager->DrawHistogram(spec.name);
                                 if (ImPlot::IsPlotHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                                 {
                                     m_zoomedFlag = true;
@@ -223,7 +222,7 @@ namespace Specter {
         }
     }
 
-    void SpectrumPanel::RenderAcceptCutDialog()
+    void SpectrumPanel::RenderAcceptCutDialog(const SpectrumManager::Ref& manager)
     {
         if (m_acceptCutFlag)
         {
@@ -236,36 +235,35 @@ namespace Specter {
             ImGui::Text("Save this Cut?");
             if (ImGui::Button("Yes"))
             {
-                SpectrumManager& manager = SpectrumManager::GetInstance();
                 switch (m_newCutArgs.type)
                 {
                     case CutType::Cut1D:
                     {
                         std::sort(m_newCutX.begin(), m_newCutX.end());
-                        manager.AddCut(m_newCutArgs, m_newCutX[0], m_newCutX[1]);
-                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        manager->AddCut(m_newCutArgs, m_newCutX[0], m_newCutX[1]);
+                        manager->AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
                         break;
                     }
                     case CutType::Cut2D:
                     {
-                        manager.AddCut(m_newCutArgs, m_newCutX, m_newCutY);
-                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        manager->AddCut(m_newCutArgs, m_newCutX, m_newCutY);
+                        manager->AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
                         break;
                     }
                     case CutType::CutSummaryAny:
                     {
                         std::sort(m_newCutX.begin(), m_newCutX.end());
-                        std::vector<std::string> subhistos = manager.GetSubHistograms(m_zoomedGram.name);
-                        manager.AddCut(m_newCutArgs, subhistos, m_newCutX[0], m_newCutX[1]);
-                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        std::vector<std::string> subhistos = manager->GetSubHistograms(m_zoomedGram.name);
+                        manager->AddCut(m_newCutArgs, subhistos, m_newCutX[0], m_newCutX[1]);
+                        manager->AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
                         break;
                     }
                     case CutType::CutSummaryAll:
                     {
                         std::sort(m_newCutX.begin(), m_newCutX.end());
-                        std::vector<std::string> subhistos = manager.GetSubHistograms(m_zoomedGram.name);
-                        manager.AddCut(m_newCutArgs, subhistos, m_newCutX[0], m_newCutX[1]);
-                        manager.AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
+                        std::vector<std::string> subhistos = manager->GetSubHistograms(m_zoomedGram.name);
+                        manager->AddCut(m_newCutArgs, subhistos, m_newCutX[0], m_newCutX[1]);
+                        manager->AddCutToHistogramDraw(m_newCutArgs.name, m_zoomedGram.name);
                         break;
                     }
                     case CutType::None:

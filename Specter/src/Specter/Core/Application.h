@@ -20,6 +20,7 @@
 #include "Specter/Core/Window.h"
 #include "Specter/ImGui/ImGuiLayer.h"
 #include "Specter/Physics/PhysicsLayer.h"
+#include "SpectrumManager.h"
 #include "glm/vec4.hpp"
 
 namespace Specter {
@@ -44,6 +45,7 @@ namespace Specter {
 		inline void PushAnalysisStage(AnalysisStage* stage) { m_physicsLayer->PushStage(stage); }
 		void PushOverlay(Layer* layer);
 
+
 		inline static Application& Get() { return *s_instance; }
 
 		inline Window& GetWindow() { return *m_window; }
@@ -52,6 +54,7 @@ namespace Specter {
 
 	private:
 		bool OnWindowCloseEvent(WindowCloseEvent& event);
+		bool OnManagerBindEvent(const std::shared_ptr<SpectrumManager>& manager);
 
 		ApplicationArgs m_args;
 
@@ -65,6 +68,9 @@ namespace Specter {
 		glm::vec4 m_bckgnd_color = {0.1f, 0.1f, 0.1f, 1.0f};
 		
 		static Application* s_instance;
+
+	protected:
+		SpectrumManager::Ref m_manager; //manager needs to be available to derived classes
 	};
 
 

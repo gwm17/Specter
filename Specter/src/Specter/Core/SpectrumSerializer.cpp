@@ -12,16 +12,14 @@
 	GWM -- Feb 2022
 */
 #include "SpectrumSerializer.h"
-#include "SpectrumManager.h"
 
 #include <fstream>
 #include "yaml-cpp/yaml.h"
 
 namespace Specter {
 
-	static void SerializeCut(YAML::Emitter& output, const CutArgs& args)
+	static void SerializeCut(YAML::Emitter& output, const std::shared_ptr<SpectrumManager>& manager, const CutArgs& args)
 	{
-		SpectrumManager& manager = SpectrumManager::GetInstance();
 		output << YAML::BeginMap;
 		output << YAML::Key << "Cut" << YAML::Value << args.name;
 		output << YAML::Key << "Type" << YAML::Value << ConvertCutTypeToString(args.type);
@@ -29,21 +27,21 @@ namespace Specter {
 		output << YAML::Key << "YParameter" << YAML::Value << args.y_par;
 		if (args.type == CutType::Cut1D)
 		{
-			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
+			std::vector<double> xpoints = manager->GetCutXPoints(args.name);
 			output << YAML::Key << "XMin" << YAML::Value << xpoints[0];
 			output << YAML::Key << "XMax" << YAML::Value << xpoints[1];
 		}
 		else if (args.type == CutType::Cut2D)
 		{
-			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
-			std::vector<double> ypoints = manager.GetCutYPoints(args.name);
+			std::vector<double> xpoints = manager->GetCutXPoints(args.name);
+			std::vector<double> ypoints = manager->GetCutYPoints(args.name);
 			output << YAML::Key << "XPoints" << YAML::Value << xpoints;
 			output << YAML::Key << "YPoints" << YAML::Value << ypoints;
 		}
 		else if (args.type == CutType::CutSummaryAll || args.type == CutType::CutSummaryAny)
 		{
-			std::vector<std::string> subhistos = manager.GetCutSubHistograms(args.name);
-			std::vector<double> xpoints = manager.GetCutXPoints(args.name);
+			std::vector<std::string> subhistos = manager->GetCutSubHistograms(args.name);
+			std::vector<double> xpoints = manager->GetCutXPoints(args.name);
 			output << YAML::Key << "XMin" << YAML::Value << xpoints[0];
 			output << YAML::Key << "XMax" << YAML::Value << xpoints[1];
 			output << YAML::Key << "SubHistos" << YAML::Value << subhistos;
@@ -51,7 +49,7 @@ namespace Specter {
 		output << YAML::EndMap;
 	}
 
-	static void SerializeHistogram(YAML::Emitter& output, const HistogramArgs& args)
+	static void SerializeHistogram(YAML::Emitter& output, const std::shared_ptr<SpectrumManager>& manager, const HistogramArgs& args)
 	{
 		output << YAML::BeginMap;
 		output << YAML::Key << "Histogram" << YAML::Value << args.name;
@@ -66,7 +64,7 @@ namespace Specter {
 		output << YAML::Key << "YBins" << YAML::Value << args.nbins_y;
 		if (args.type == SpectrumType::Summary)
 		{
-			std::vector<std::string> subhistos = SpectrumManager::GetInstance().GetSubHistograms(args.name);
+			std::vector<std::string> subhistos = manager->GetSubHistograms(args.name);
 			output << YAML::Key << "SubHistos" << YAML::Value << subhistos;
 		}
 		output << YAML::Key << "CutsDrawn" << YAML::Value << args.cutsDrawnUpon;
@@ -82,7 +80,7 @@ namespace Specter {
 
 	SpectrumSerializer::~SpectrumSerializer() {}
 
-	void SpectrumSerializer::SerializeData(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList)
+	void SpectrumSerializer::SerializeData(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList)
 	{
 		std::ofstream output(m_filename);
 		if (!output.is_open())
@@ -96,13 +94,13 @@ namespace Specter {
 		yamlStream << YAML::Key << "Cuts" << YAML::Value << YAML::BeginSeq;
 		for (auto& cut : cutList)
 		{
-			SerializeCut(yamlStream, cut);
+			SerializeCut(yamlStream, manager, cut);
 		}
 		yamlStream << YAML::EndSeq;
 		yamlStream << YAML::Key << "Histograms" << YAML::Value << YAML::BeginSeq;
 		for (auto& histo : histoList)
 		{
-			SerializeHistogram(yamlStream, histo);
+			SerializeHistogram(yamlStream, manager, histo);
 		}
 		yamlStream << YAML::EndSeq << YAML::EndMap;
 
@@ -111,10 +109,9 @@ namespace Specter {
 		output.close();
 	}
 
-	void SpectrumSerializer::DeserializeData()
+	void SpectrumSerializer::DeserializeData(const SpectrumManager::Ref& manager)
 	{
-		SpectrumManager& manager = SpectrumManager::GetInstance();
-		manager.RemoveAllSpectra(); //When loading in, we remove all extant data, to avoid any potential collisions.
+		manager->RemoveAllSpectra(); //When loading in, we remove all extant data, to avoid any potential collisions.
 
 		YAML::Node data;
 		try
@@ -139,15 +136,15 @@ namespace Specter {
 				tempArgs.y_par = cut["YParameter"].as<std::string>();
 				if (tempArgs.type == CutType::Cut1D)
 				{
-					manager.AddCut(tempArgs, cut["XMin"].as<double>(), cut["XMax"].as<double>());
+					manager->AddCut(tempArgs, cut["XMin"].as<double>(), cut["XMax"].as<double>());
 				}
 				else if (tempArgs.type == CutType::Cut2D)
 				{
-					manager.AddCut(tempArgs, cut["XPoints"].as<std::vector<double>>(), cut["YPoints"].as<std::vector<double>>());
+					manager->AddCut(tempArgs, cut["XPoints"].as<std::vector<double>>(), cut["YPoints"].as<std::vector<double>>());
 				}
 				else if (tempArgs.type == CutType::CutSummaryAll || tempArgs.type == CutType::CutSummaryAny)
 				{
-					manager.AddCut(tempArgs, cut["SubHistos"].as<std::vector<std::string>>(), cut["XMin"].as<double>(), cut["XMax"].as<double>());
+					manager->AddCut(tempArgs, cut["SubHistos"].as<std::vector<std::string>>(), cut["XMin"].as<double>(), cut["XMax"].as<double>());
 				}
 			}
 		}
@@ -172,11 +169,11 @@ namespace Specter {
 				tempArgs.cutsAppliedTo = histo["CutsApplied"].as<std::vector<std::string>>();
 				if (tempArgs.type == SpectrumType::Summary)
 				{
-					manager.AddHistogramSummary(tempArgs, histo["SubHistos"].as<std::vector<std::string>>());
+					manager->AddHistogramSummary(tempArgs, histo["SubHistos"].as<std::vector<std::string>>());
 				}
 				else
 				{
-					manager.AddHistogram(tempArgs);
+					manager->AddHistogram(tempArgs);
 				}
 			}
 		}

@@ -8,6 +8,7 @@
 #ifndef SPECTRUM_PANEL_H
 #define SPECTRUM_PANEL_H
 
+#include "Specter/Core/SpectrumManager.h"
 #include "Specter/Core/Histogram.h"
 #include "Specter/Core/Cut.h"
 #include "imgui.h"
@@ -33,16 +34,17 @@ namespace Specter {
 		SpectrumPanel();
 		~SpectrumPanel();
 	
-		bool OnImGuiRender(const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList);
+		bool OnImGuiRender(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList);
 		inline const std::string& GetZoomedOnHistogram() { return m_zoomedGram.name;  }
 		inline const bool IsZoomed() { return m_zoomedFlag;  }
 
 	private:
 		void HandleCutMode();
-		void RenderAcceptCutDialog();
+		void RenderAcceptCutDialog(const SpectrumManager::Ref& manager);
 		void RenderCutButton();
 		void RenderRemoveRegionButton();
 		void RemoveSelectedRegion(const std::string& region);
+
 		std::vector<HistogramArgs> m_selectedGrams;
 		std::vector<IntegrationRegion> m_integralRegions;
 		bool m_zoomedFlag;

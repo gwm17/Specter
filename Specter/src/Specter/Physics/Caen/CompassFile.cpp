@@ -53,7 +53,7 @@ namespace Specter {
 	
 		m_file->seekg(0, std::ios_base::end);
 		m_size = (unsigned int)m_file->tellg();
-		if(m_size == 0) 
+		if(m_size == 2) 
 		{
 			m_eofFlag = true;
 		} 

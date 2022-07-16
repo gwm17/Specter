@@ -12,7 +12,6 @@
 #include "FileDialog.h"
 #include "Specter/Core/Application.h"
 #include "Specter/Core/SpectrumSerializer.h"
-#include "Specter/Core/SpectrumManager.h"
 
 #include "IconsFontAwesome5.h"
 
@@ -23,8 +22,8 @@ namespace Specter {
         return p1 < p2;
     }
 
-    EditorLayer::EditorLayer() :
-        Layer("EditorLayer"), m_removeHistogram(false), m_removeCut(false), m_exportHistogram(false)
+    EditorLayer::EditorLayer(const SpectrumManager::Ref& manager) :
+        Layer("EditorLayer"), m_manager(manager), m_removeHistogram(false), m_removeCut(false), m_exportHistogram(false)
     {
     }
     
@@ -40,7 +39,7 @@ namespace Specter {
 
     void EditorLayer::OnUpdate(Timestep& step)
     {
-        SpectrumManager::GetInstance().UpdateGraphs(step);
+        m_manager->UpdateGraphs(step);
     }
 
     void EditorLayer::OnEvent(Event& e)
@@ -50,31 +49,31 @@ namespace Specter {
     //These updates are used whenever a new object is added to the manager.
     void EditorLayer::UpdateHistogramList()
     {
-        m_histoList = SpectrumManager::GetInstance().GetListOfHistograms();
+        m_histoList = m_manager->GetListOfHistograms();
         std::sort(m_histoList.begin(), m_histoList.end(), SortByName<HistogramArgs>);
     }
 
     void EditorLayer::UpdateCutList()
     {
-        m_cutList = SpectrumManager::GetInstance().GetListOfCuts();
+        m_cutList = m_manager->GetListOfCuts();
         std::sort(m_cutList.begin(), m_cutList.end(), SortByName<CutArgs>);
     }
 
     void EditorLayer::UpdateParameterList()
     {
-        m_paramList = SpectrumManager::GetInstance().GetListOfParameters();
+        m_paramList = m_manager->GetListOfParameters();
         std::sort(m_paramList.begin(), m_paramList.end(), SortByString);
     }
 
     void EditorLayer::UpdateScalerList()
     {
-        m_scalerList = SpectrumManager::GetInstance().GetListOfScalers();
+        m_scalerList = m_manager->GetListOfScalers();
         std::sort(m_scalerList.begin(), m_scalerList.end(), SortByString);
     }
 
     void EditorLayer::UpdateGraphList()
     {
-        m_graphList = SpectrumManager::GetInstance().GetListOfGraphs();
+        m_graphList = m_manager->GetListOfGraphs();
         std::sort(m_graphList.begin(), m_graphList.end(), SortByName<GraphArgs>);
     }
 
@@ -206,7 +205,7 @@ namespace Specter {
                 case FileDialog::Type::OpenFile:
                 {
                     SpectrumSerializer serializer(fd_result.first);
-                    serializer.DeserializeData();
+                    serializer.DeserializeData(m_manager);
                     UpdateHistogramList();
                     UpdateCutList();
                     break;
@@ -215,17 +214,17 @@ namespace Specter {
                 {
                     SPEC_INFO("Found a Save File! {0}", fd_result.first);
                     SpectrumSerializer serializer(fd_result.first);
-                    serializer.SerializeData(m_histoList, m_cutList);
+                    serializer.SerializeData(m_manager, m_histoList, m_cutList);
                     break;
                 }
             }
         }
         
         
-        if(m_spectrumDialog.ImGuiRenderSpectrumDialog(m_histoList, m_cutList, m_paramList))
+        if(m_spectrumDialog.ImGuiRenderSpectrumDialog(m_manager, m_histoList, m_cutList, m_paramList))
             UpdateHistogramList();
 
-        m_scalerPanel.OnImGuiRender(m_scalerList, m_graphList);
+        m_scalerPanel.OnImGuiRender(m_manager, m_scalerList, m_graphList);
 
         m_sourceDialog.ImGuiRenderSourceDialog();
 
@@ -235,7 +234,7 @@ namespace Specter {
         
         ExportHistogramDialog();
 
-        if(m_spectrumPanel.OnImGuiRender(m_histoList, m_cutList, m_paramList))
+        if(m_spectrumPanel.OnImGuiRender(m_manager, m_histoList, m_cutList, m_paramList))
         {
             UpdateCutList();
             UpdateHistogramList();
@@ -315,7 +314,7 @@ namespace Specter {
             }
             if (ImGui::Button("Ok"))
             {
-                SpectrumManager::GetInstance().RemoveHistogram(selectedGram);
+                m_manager->RemoveHistogram(selectedGram);
                 UpdateHistogramList();
                 ImGui::CloseCurrentPopup();
             }
@@ -351,7 +350,7 @@ namespace Specter {
             }
             if (ImGui::Button("Ok"))
             {
-                SpectrumManager::GetInstance().RemoveCut(selectedCut);
+                m_manager->RemoveCut(selectedCut);
                 UpdateHistogramList();
                 UpdateCutList();
                 ImGui::CloseCurrentPopup();
@@ -418,7 +417,7 @@ namespace Specter {
             return;
         }
         
-        std::vector<double> data = SpectrumManager::GetInstance().GetBinData(selectedGram.name);
+        std::vector<double> data = m_manager->GetBinData(selectedGram.name);
         
         output<<"Histogram Name,"<<selectedGram.name<<std::endl;
         output<<"Min X,"<<selectedGram.min_x<<std::endl<<"Max X,"<<selectedGram.max_x<<std::endl;

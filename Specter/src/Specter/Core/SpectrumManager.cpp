@@ -14,8 +14,6 @@
 
 namespace Specter {
 
-	SpectrumManager* SpectrumManager::s_instance = new SpectrumManager();
-
 	SpectrumManager::SpectrumManager()
 	{
 	}

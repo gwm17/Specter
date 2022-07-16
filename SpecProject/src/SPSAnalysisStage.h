@@ -11,7 +11,7 @@ namespace Specter {
 	class SPSAnalysisStage : public AnalysisStage
 	{
 	public:
-		SPSAnalysisStage();
+		SPSAnalysisStage(const SpectrumManager::Ref& manager);
 		virtual ~SPSAnalysisStage();
 
 		virtual void AnalyzePhysicsEvent(const SpecEvent& event) override;

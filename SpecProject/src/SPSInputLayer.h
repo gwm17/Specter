@@ -22,7 +22,7 @@ namespace Specter {
 	class SPSInputLayer : public Layer
 	{
 	public:
-		SPSInputLayer();
+		SPSInputLayer(const SpectrumManager::Ref& manager);
 		~SPSInputLayer();
 
 		virtual void OnAttach() override;

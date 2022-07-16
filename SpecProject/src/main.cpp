@@ -16,9 +16,9 @@ public:
 	SPSApp(const Specter::ApplicationArgs& args) :
 		Specter::Application(args)
 	{
-		PushLayer(new Specter::SPSInputLayer());
+		PushLayer(new Specter::SPSInputLayer(m_manager));
 		//PushLayer(new Navigator::TestServerLayer());
-		PushAnalysisStage(new Specter::SPSAnalysisStage());
+		PushAnalysisStage(new Specter::SPSAnalysisStage(m_manager));
 	}
 };
 
