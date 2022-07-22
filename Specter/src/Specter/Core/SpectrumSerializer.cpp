@@ -128,7 +128,7 @@ namespace Specter {
 		if (cuts)
 		{
 			CutArgs tempArgs;
-			for (auto& cut : cuts)
+			for (const auto& cut : cuts)
 			{
 				tempArgs.name = cut["Cut"].as<std::string>();
 				tempArgs.type = ConvertStringToCutType(cut["Type"].as<std::string>());
@@ -153,7 +153,7 @@ namespace Specter {
 		{
 			HistogramArgs tempArgs;
 			std::vector<std::string> tempSubHistos;
-			for (auto& histo : histos)
+			for (const auto& histo : histos)
 			{
 				tempArgs.name = histo["Histogram"].as<std::string>();
 				tempArgs.type = ConvertStringToSpectrumType(histo["Type"].as<std::string>());
