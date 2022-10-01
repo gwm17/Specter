@@ -16,16 +16,21 @@ class MassMap
 public:
     MassMap();
     ~MassMap();
-    double FindMass(int Z, int A);
-    std::string FindSymbol(int Z, int A);
+    double FindMass(uint32_t Z, uint32_t A);
+    std::string FindSymbol(uint32_t Z, uint32_t A);
 
 private:
-    std::unordered_map<std::string, double> massTable;
-    std::unordered_map<int, std::string> elementTable;
+    //As demonstrated elsewhere, using Szudzik pairing function to make unique id for two unsigned ints
+    uint32_t GenerateID(uint32_t Z, uint32_t A)
+    {
+			return Z >= A ? (Z * Z + Z + A) : (A * A + Z);
+    }
+    std::unordered_map<uint32_t, double> massTable;
+    std::unordered_map<uint32_t, std::string> elementTable;
 
     //constants
-    static constexpr double u_to_mev = 931.4940954;
-    static constexpr double electron_mass = 0.000548579909;
+    static constexpr double s_u2MeV = 931.4940954;
+    static constexpr double s_eMass = 0.000548579909;
 };
 
 #endif

@@ -18,18 +18,18 @@ MassMap::MassMap()
     std::ifstream massfile("Assets/amdc2016_mass.txt");
     if (massfile.is_open())
     {
-        std::string junk, A, element;
-        int Z;
+        std::string junk, element;
+        uint32_t Z, A, key;
         double atomicMassBig, atomicMassSmall, isotopicMass;
         getline(massfile, junk);
         getline(massfile, junk);
         while (massfile >> junk)
         {
             massfile >> Z >> A >> element >> atomicMassBig >> atomicMassSmall;
-            isotopicMass = (atomicMassBig + atomicMassSmall * 1e-6 - Z * electron_mass) * u_to_mev;
-            std::string key = "(" + std::to_string(Z) + "," + A + ")";
+            isotopicMass = (atomicMassBig + atomicMassSmall * 1e-6 - Z * s_eMass) * s_u2MeV;
+            key = GenerateID(Z, A);
             massTable[key] = isotopicMass;
-            elementTable[Z] = element;
+            elementTable[key] = std::to_string(A) + element;
         }
     }
     else
@@ -41,10 +41,10 @@ MassMap::MassMap()
 MassMap::~MassMap() {}
 
 //Returns nuclear mass in MeV
-double MassMap::FindMass(int Z, int A)
+double MassMap::FindMass(uint32_t Z, uint32_t A)
 {
     SPEC_PROFILE_FUNCTION();
-    std::string key = "(" + std::to_string(Z) + "," + std::to_string(A) + ")";
+    uint32_t key = GenerateID(Z, A);
     auto data = massTable.find(key);
     if (data == massTable.end())
     {
@@ -55,15 +55,17 @@ double MassMap::FindMass(int Z, int A)
 }
 
 //returns element symbol
-std::string MassMap::FindSymbol(int Z, int A)
+std::string MassMap::FindSymbol(uint32_t Z, uint32_t A)
 {
     SPEC_PROFILE_FUNCTION();
-    auto data = elementTable.find(Z);
+    static std::string nullResult = "";
+
+    uint32_t key = GenerateID(Z, A);
+    auto data = elementTable.find(key);
     if (data == elementTable.end())
     {
         SPEC_ERROR("Invalid nucleus at MassMap::FindSymbol()! Z: {0} A: {1}", Z, A);
-        return "";
+        return nullResult;
     }
-    std::string fullsymbol = std::to_string(A) + data->second;
-    return fullsymbol;
+    return data->second;
 }

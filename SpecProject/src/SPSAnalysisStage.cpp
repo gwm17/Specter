@@ -38,12 +38,12 @@ namespace Specter {
 		//a text file to get detector ID information, detector channel number, etc.
 		std::vector<std::string> sabre_list; //list of names will allow us to create a summary histogram.
 		uint32_t uuid;
-		for (uint32_t board = 0; board < 7; board++)
+		for (uint32_t board = 0; board < 8; board++)
 		{
 			for (uint32_t channel = 0; channel < 16; channel++)
 			{
-				//ImGui & spdlog come prepackaged with the fmt library, so make good use of it!
-				sabre_list.push_back(fmt::format("sabre_%d", board*16 + channel));
+				//spdlog comes prepackaged with the fmt library, so make good use of it!
+				sabre_list.push_back(fmt::format("sabre_{}", board*16 + channel));
 				uuid = Utilities::GetBoardChannelUUID(board, channel);
 				sabre[uuid] = Parameter(sabre_list.back());
 				manager->BindParameter(sabre[uuid]);
