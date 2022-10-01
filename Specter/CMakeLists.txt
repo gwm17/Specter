@@ -3,4 +3,7 @@ add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/imgui)
 add_subdirectory(vendor/yaml-cpp)
 
+set(GRIMOIRE_ASIO_INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vendor/asio/asio/include)
+add_subdirectory(vendor/DaqGrimoire)
+
 add_subdirectory(src)

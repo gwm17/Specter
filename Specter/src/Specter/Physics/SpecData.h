@@ -17,11 +17,11 @@ namespace Specter {
 
 	struct SpecData
 	{
-		uint32_t longEnergy;
-		uint32_t shortEnergy;
-		uint64_t calEnergy;
-		uint64_t timestamp;
-		uint32_t id;
+		uint32_t longEnergy = 0;
+		uint32_t shortEnergy = 0;
+		uint64_t calEnergy = 0;
+		uint64_t timestamp = 0;
+		uint32_t id = 0;
 	};
 
 	using SpecEvent = std::vector<SpecData>;

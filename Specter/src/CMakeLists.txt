@@ -99,6 +99,10 @@ target_sources(Specter PRIVATE
     Platform/OpenGL/OpenGLRendererAPI.h
     Platform/OpenGL/OpenGLWindow.cpp
     Platform/OpenGL/OpenGLWindow.h
+    Specter/Physics/Daqromancy/DYFileSource.h
+    Specter/Physics/Daqromancy/DYFileSource.cpp
+    Specter/Physics/Daqromancy/DYOnlineSource.h
+    Specter/Physics/Daqromancy/DYOnlineSource.cpp
 )
 
 #ImPlot sources
@@ -114,7 +118,7 @@ target_sources(Specter PRIVATE
 )
 
 #Link our accompanying dependencies
-target_link_libraries(Specter PRIVATE imgui glfw glad yaml-cpp)
+target_link_libraries(Specter PRIVATE imgui glfw glad yaml-cpp DaqGrimoire)
 
 #Link OS graphics implementations
 set(THREADS_PREFER_PTHREAD_FLAG On)

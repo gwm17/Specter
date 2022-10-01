@@ -24,3 +24,6 @@
 [submodule "Specter/vendor/yaml-cpp"]
 	path = Specter/vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "Specter/vendor/DaqGrimoire"]
+	path = Specter/vendor/DaqGrimoire
+	url = https://github.com/gwm17/DaqGrimoire.git

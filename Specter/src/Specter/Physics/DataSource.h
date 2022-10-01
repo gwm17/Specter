@@ -21,7 +21,9 @@ namespace Specter {
 		{
 			None,
 			CompassOnline,
-			CompassOffline
+			CompassOffline,
+			DaqromancyOnline,
+			DaqromancyOffline
 		};
 
 		DataSource() :

@@ -9,6 +9,8 @@
 #include "DataSource.h"
 #include "Caen/CompassRun.h"
 #include "Caen/CompassOnlineSource.h"
+#include "Daqromancy/DYFileSource.h"
+#include "Daqromancy/DYOnlineSource.h"
 
 namespace Specter {
 
@@ -19,6 +21,8 @@ namespace Specter {
 		{
 			case DataSource::SourceType::CompassOffline : return new CompassRun(location, channels_per_board);
 			case DataSource::SourceType::CompassOnline : return new CompassOnlineSource(location, port, header, channels_per_board);
+			case DataSource::SourceType::DaqromancyOffline: return new DYFileSource(location, channels_per_board);
+			case DataSource::SourceType::DaqromancyOnline: return new DYOnlineSource(location, port, channels_per_board);
 			case DataSource::SourceType::None : return nullptr;
 		}
 		SPEC_WARN("Invalid DataSourceType at CreateDataSource!");
@@ -32,6 +36,8 @@ namespace Specter {
 			case DataSource::SourceType::None: return "None";
 			case DataSource::SourceType::CompassOnline : return "CompassOnline";
 			case DataSource::SourceType::CompassOffline : return "CompassOffline";
+			case DataSource::SourceType::DaqromancyOffline: return "DaqromancyOffline";
+			case DataSource::SourceType::DaqromancyOnline: return "DaqromancyOnline";
 		}
 
 		return "None";
