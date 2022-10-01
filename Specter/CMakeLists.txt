@@ -2,7 +2,7 @@ add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/imgui)
 
-set(YAML_CPP_BUILD_TOOLS Off)
+set(YAML_CPP_BUILD_TOOLS Off CACHE BOOL "Enable parse tools")
 add_subdirectory(vendor/yaml-cpp)
 
 set(GRIMOIRE_ASIO_INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vendor/asio/asio/include)
