@@ -31,7 +31,8 @@ namespace Specter {
 		SPEC_PROFILE_FUNCTION();
 		static bool onlineFlag = false;
 		static bool offlineFlag = false;
-		static std::vector<DataSource::SourceType> availTypes = { DataSource::SourceType::CompassOnline, DataSource::SourceType::CompassOffline };
+		static std::vector<DataSource::SourceType> availTypes = { DataSource::SourceType::CompassOnline, DataSource::SourceType::CompassOffline, DataSource::SourceType::DaqromancyOnline,
+																  DataSource::SourceType::DaqromancyOffline };
 		
 		if (m_openFlag)
 		{
@@ -83,6 +84,26 @@ namespace Specter {
 			else if (m_chosenType == DataSource::SourceType::CompassOffline)
 			{
 				ImGui::InputText("Run Directory", &m_chosenLocation);
+				ImGui::SameLine();
+				if (ImGui::Button("Choose Location"))
+				{
+					m_fileDialog.OpenDialog(FileDialog::Type::OpenDir);
+				}
+				auto temp = m_fileDialog.RenderFileDialog();
+				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
+					m_chosenLocation = temp.first;
+				ImGui::InputInt("Channels Per Digitizer Board", &m_channels_per_board);
+			}
+			else if (m_chosenType == DataSource::SourceType::DaqromancyOnline)
+			{
+				ImGui::InputText("Hostname", &m_chosenLocation);
+				ImGui::InputText("Port", &m_chosenPort);
+				ImGui::InputInt("Channels Per Digitizer Board", &m_channels_per_board);
+			}
+			else if (m_chosenType == DataSource::SourceType::DaqromancyOffline)
+			{
+				ImGui::InputText("Run Directory", &m_chosenLocation);
+				ImGui::SameLine();
 				if (ImGui::Button("Choose Location"))
 				{
 					m_fileDialog.OpenDialog(FileDialog::Type::OpenDir);
@@ -97,12 +118,12 @@ namespace Specter {
 
 			if (ImGui::Button("Ok"))
 			{
-				if (m_chosenType == DataSource::SourceType::CompassOffline)
+				if (m_chosenType == DataSource::SourceType::CompassOffline || m_chosenType == DataSource::SourceType::DaqromancyOffline)
 				{
 					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, false, 0U, m_channels_per_board);
 					Application::Get().OnEvent(event);
 				}
-				else if (m_chosenType == DataSource::SourceType::CompassOnline)
+				else if (m_chosenType == DataSource::SourceType::CompassOnline || m_chosenType == DataSource::SourceType::DaqromancyOnline)
 				{
 					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, true, m_bitflags, m_channels_per_board);
 					Application::Get().OnEvent(event);
