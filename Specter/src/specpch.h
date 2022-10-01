@@ -18,5 +18,6 @@
 
 #include "Specter/Core/Logger.h"
 #include "Specter/Utils/Instrumentor.h"
+#include "Specter/Utils/Functions.h"
 
 #endif

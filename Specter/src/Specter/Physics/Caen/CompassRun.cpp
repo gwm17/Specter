@@ -147,7 +147,7 @@ namespace Specter {
 			m_datum.shortEnergy = m_hit.energyShort;
 			m_datum.calEnergy = m_hit.energyCalibrated;
 			m_datum.timestamp = m_hit.timestamp;
-			m_datum.id = m_hit.board * m_nchannels_per_board + m_hit.channel;
+			m_datum.id = Utilities::GetBoardChannelUUID(m_hit.board, m_hit.channel);
 		}
 
 		return m_datum;

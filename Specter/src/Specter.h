@@ -34,5 +34,6 @@
 #include "Specter/Events/Event.h"
 #include "Specter/Utils/TestServerLayer.h"
 #include "Specter/Utils/Instrumentor.h"
+#include "Specter/Utils/Functions.h"
 
 #endif

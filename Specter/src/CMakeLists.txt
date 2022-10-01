@@ -103,6 +103,8 @@ target_sources(Specter PRIVATE
     Specter/Physics/Daqromancy/DYFileSource.cpp
     Specter/Physics/Daqromancy/DYOnlineSource.h
     Specter/Physics/Daqromancy/DYOnlineSource.cpp
+    Specter/Utils/Functions.h
+    Specter/Utils/Functions.cpp
 )
 
 #ImPlot sources

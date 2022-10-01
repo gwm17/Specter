@@ -15,10 +15,12 @@ namespace Specter {
 		beamIntegrator("beamIntegrator")
 	{
 		SPEC_PROFILE_FUNCTION();
+		//Bind some parameters
 		manager->BindParameter(delayFLTime);
 		manager->BindParameter(delayFRTime);
 		manager->BindParameter(delayBLTime);
 		manager->BindParameter(delayBRTime);
+
 		//Bind parameters with some default histograms. Saves us the effort of making them in the UI.
 		manager->BindParameter(x1, 600, -300.0, 300.0);
 		manager->BindParameter(x2, 600, -300.0, 300.0);
@@ -29,12 +31,24 @@ namespace Specter {
 		manager->BindParameter(cathode, 4096, 0.0, 4096);
 		manager->BindParameter(xavg_sabreCoinc, 600, -300.0, 300.0);
 
-		std::vector<std::string> sabre_list;
-		for (int i = 0; i < 127; i++)
+		//Example of injecting experiment specific info. I know that SABRE is only used in 16 channel digitizers,
+		//so I can make a simple incremental id for use with the UI so that the parameter names are human readable. We map this "simple" id
+		//to the more robust and universal Specter board/channel UUID using a std::unordered_map
+		//This is kind of a really simple example of injecting a channel map; more complicated and advanced versions could involve reading
+		//a text file to get detector ID information, detector channel number, etc.
+		std::vector<std::string> sabre_list; //list of names will allow us to create a summary histogram.
+		uint32_t uuid;
+		for (uint32_t board = 0; board < 7; board++)
 		{
-			sabre_list.push_back("sabre_" + std::to_string(i));
-			sabre.emplace_back(sabre_list[i]);
-			manager->BindParameter(sabre[i]);
+			for (uint32_t channel = 0; channel < 16; channel++)
+			{
+				//ImGui & spdlog come prepackaged with the fmt library, so make good use of it!
+				sabre_list.push_back(fmt::format("sabre_%d", board*16 + channel));
+				uuid = Utilities::GetBoardChannelUUID(board, channel);
+				sabre[uuid] = Parameter(sabre_list.back());
+				manager->BindParameter(sabre[uuid]);
+			}
+			
 		}
 
 		//If you want to make a histogram default available, you can add one like this.
@@ -52,70 +66,78 @@ namespace Specter {
 	//Do some physics!
 	void SPSAnalysisStage::AnalyzePhysicsEvent(const SpecEvent& event)
 	{
-
 		SPEC_PROFILE_FUNCTION();
+		//You might want some flags for coincidence cases
+		//Use statics to avoid allocating extra memory each call (these pipeline functions are called a lot!)
+		static bool sabreFlag;
+
 		//Most analysis stages will start kinda like this. Take the raw event data and
-		//put it into NavParameters using the hit id. Switches are perfect for this. Can also
+		//put it into Specter::Parameters using the hit id. Switches are perfect for this. Can also
 		//create mapping classes to use text-file-based id association (commonly called channel maps).
-		bool sabreFlag = false;
+		sabreFlag = false;
 		for(auto& hit : event)
 		{
-			if (hit.id < 127)
+			//Check the SABRE map first; use iterators from std::unordered_map.
+			//See std::unordered_map docs for more info if this sort of idiom is unfamiliar
+			auto iter = sabre.find(hit.id);
+			if (iter != sabre.end())
 			{
 				sabreFlag = true;
-				if (hit.longEnergy > sabre[hit.id].GetValue())
-					sabre[hit.id].SetValue(hit.longEnergy);
+				if (hit.longEnergy > iter->second.GetValue())
+					iter->second.SetValue(hit.longEnergy);
+				continue;
 			}
+
 			switch (hit.id)
 			{
-				case 129:
+				case s_scintLeftID:
 				{
 					if (hit.longEnergy > scintLeft.GetValue())
 						scintLeft.SetValue(hit.longEnergy);
 					break;
 				}
-				case 133:
+				case s_beamIntID:
 				{
 					beamIntegrator.Increment();
 					break;
 				}
-				case 135:
+				case s_cathodeID:
 				{
 					if (hit.longEnergy > cathode.GetValue())
 						cathode.SetValue(hit.longEnergy);
 					break;
 				}
-				case 136:
+				case s_delayFrontLeftID:
 				{
 					if (!delayFLTime.IsValid())
 						delayFLTime.SetValue(hit.timestamp / 1.0e3);
 					break;
 				}
-				case 137:
+				case s_delayFrontRightID:
 				{
 					if (!delayFRTime.IsValid())
 						delayFRTime.SetValue(hit.timestamp / 1.0e3);
 					break;
 				}
-				case 138:
+				case s_delayBackLeftID:
 				{
 					if (!delayBLTime.IsValid())
 						delayBLTime.SetValue(hit.timestamp / 1.0e3);
 					break;
 				}
-				case 139:
+				case s_delayBackRightID:
 				{
 					if (!delayBRTime.IsValid())
 						delayBRTime.SetValue(hit.timestamp / 1.0e3);
 					break;
 				}
-				case 141:
+				case s_anodeFrontID:
 				{
 					if (hit.longEnergy > anodeFront.GetValue())
 						anodeFront.SetValue(hit.longEnergy);
 					break;
 				}
-				case 143:
+				case s_anodeBackID:
 				{
 					if (hit.longEnergy > anodeBack.GetValue())
 						anodeBack.SetValue(hit.longEnergy);
