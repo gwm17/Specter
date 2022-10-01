@@ -40,7 +40,7 @@ namespace Specter {
 		SpecData m_datum;
 	};
 
-	DataSource* CreateDataSource(const std::string& location, const std::string& port, uint16_t bitflags, int channels_per_board, DataSource::SourceType type);
+	DataSource* CreateDataSource(const std::string& location, const std::string& port, uint16_t bitflags, DataSource::SourceType type);
 
 	std::string ConvertDataSourceTypeToString(DataSource::SourceType type);
 }

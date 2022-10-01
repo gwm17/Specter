@@ -2,8 +2,8 @@
 
 namespace Specter {
 
-	DYFileSource::DYFileSource(const std::string& directory, int channels_per_board) :
-		DataSource(), m_directory(directory), m_channelsPerBoard(channels_per_board)
+	DYFileSource::DYFileSource(const std::string& directory) :
+		DataSource(), m_directory(directory)
 	{
 		CollectFiles();
 	}

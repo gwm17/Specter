@@ -8,17 +8,17 @@
 	Written by G.W. McCann Oct. 2020
 
 	Modifed and updated for use in Specter. Obviously stripped out any ROOT code. Also, now uses the very nice std::filesystem
-	library to handle filepathing. One change of great import: Specter wants a unqiue ID on each hit. To do this we use the idiom:
-	id = board_number * nchannels_per_board + channel_number
-	This requires two things: that the class variable m_nchannels_per_board be set to match your physical digitizers, and that ALL of your
-	digitizers have the SAME number of channels. By default CompassRun assumes 16 channels per board, as this is what is used with the SE-SPS setup at FoxLab.
-	If you use a different set of boards, CHANGE THIS VALUE! If you use mixed boards, you will need to invent a new id scheme altogether.
+	library to handle filepathing.
 
 	GWM -- Feb 2022
 
 	Update to reflect new CAEN binary data format with headers to indicate data contents.
 
 	GWM -- May 2022
+
+	Make it so that number of channels per board is no longer fixed. Use pairing function defined in Utils/Functions.h to generate a UUID for each board channel/pair.
+
+	GWM -- Oct 2022
 */
 #ifndef COMPASSRUN_H
 #define COMPASSRUN_H
@@ -36,7 +36,7 @@ namespace Specter {
 	
 	public:
 		CompassRun();
-		CompassRun(const std::string& dir, int channels_per_board=16);
+		CompassRun(const std::string& dir);
 		virtual ~CompassRun();
 		virtual const SpecData& GetData() override;
 		inline void SetDirectory(const std::string& dir) { m_directory = dir; CollectFiles(); }
@@ -52,8 +52,7 @@ namespace Specter {
 
 		std::vector<CompassFile> m_datafiles;
 		unsigned int m_startIndex; //this is the file we start looking at; increases as we finish files.
-		int m_nchannels_per_board; //IMPORTANT: Used for ID'ing channels uniquely. If you use boards with 32 or 8 or 64 channels you must change this! If you mix boards with
-										//different numbers of channels, you will have to find a different id solution.
+
 		ShiftMap m_smap;
 
 		CompassHit m_hit;

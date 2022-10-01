@@ -9,7 +9,7 @@ namespace Specter {
 	class DYOnlineSource : public DataSource
 	{
 	public:
-		DYOnlineSource(const std::string& hostname, const std::string& port, int channelsPerBoard = 16);
+		DYOnlineSource(const std::string& hostname, const std::string& port);
 		~DYOnlineSource();
 
 		virtual const SpecData& GetData() override;

@@ -10,25 +10,29 @@
 	Updated to also handle scaler data. -- GWM Oct. 2020
 
 	Modifed and updated for use in Specter. Obviously stripped out any ROOT code. Also, now uses the very nice std::filesystem
-	library to handle filepathing. Also, removed scalers (for now).
+	library to handle filepathing.
 
 	GWM -- Feb 2022
 
 	Update to reflect new CAEN binary data format with headers to indicate data contents.
 
 	GWM -- May 2022
+
+	Make it so that number of channels per board is no longer fixed. Use pairing function defined in Utils/Functions.h to generate a UUID for each board channel/pair.
+
+	GWM -- Oct 2022
 */
 #include "CompassRun.h"
 
 namespace Specter {
 	
 	CompassRun::CompassRun() :
-		DataSource(), m_directory(""), m_startIndex(0), m_nchannels_per_board(16)
+		DataSource(), m_directory(""), m_startIndex(0)
 	{
 	}
 	
-	CompassRun::CompassRun(const std::string& dir, int channels_per_board) :
-		DataSource(), m_directory(dir), m_startIndex(0), m_nchannels_per_board(channels_per_board)
+	CompassRun::CompassRun(const std::string& dir) :
+		DataSource(), m_directory(dir), m_startIndex(0)
 	{
 		CollectFiles();
 	}

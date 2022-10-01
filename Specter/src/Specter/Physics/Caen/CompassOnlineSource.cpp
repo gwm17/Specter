@@ -5,13 +5,6 @@
 	need to know if the buffer is/was filled, however we use non-blocking since we don't want the entire process to hang on attempting a connection or waiting
 	for data to come over the pipe. We handle the case of an un-filled buffer internally.
 
-	IMPORTANT
-	Specter wants a unqiue ID on each hit. To do this we use the idiom:
-	id = board_number * nchannels_per_board + channel_number
-	This requires two things: that the class variable m_nchannels_per_board be set to match your physical digitizers, and that ALL of your
-	digitizers have the SAME number of channels. By default CompassRun assumes 16 channels per board, as this is what is used with the SE-SPS setup at FoxLab.
-	If you use a different set of boards, CHANGE THIS VALUE! If you use mixed boards, you will need to invent a new id scheme altogether.
-
 	ADDITIONALLY
 	CoMPASS servers provide no stream side information on the state of a transfer (verified via communication w/ CAEN). That is: there are no headers or enders on the data transfers.
 	This forces us to use the size of a single CoMPASS datum (CompassHit) to determine the state of a transfer. If the read buffer size is not a whole multiple of CompassHits, the data
@@ -20,13 +13,17 @@
 	Maybe we can get them to change this? Headers reeaaally should exist for transfers like this.
 
 	GWM -- April 2022
+
+	Make it so that number of channels per board is no longer fixed. Use pairing function defined in Utils/Functions.h to generate a UUID for each board channel/pair.
+
+	GWM -- Oct 2022
 */
 #include "CompassOnlineSource.h"
 
 namespace Specter {
 
-	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header, int channels_per_board) :
-		DataSource(), m_bufferIter(nullptr), m_bufferEnd(nullptr), m_header(header), m_nchannels_per_board(channels_per_board)
+	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header) :
+		DataSource(), m_bufferIter(nullptr), m_bufferEnd(nullptr), m_header(header)
 	{
 		InitConnection(hostname, port);
 	}

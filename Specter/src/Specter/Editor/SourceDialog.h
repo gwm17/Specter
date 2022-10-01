@@ -30,7 +30,6 @@ namespace Specter {
 		FileDialog m_fileDialog;
 		uint16_t m_bitflags;
 		int m_chosenWindow;
-		int m_channels_per_board;
 	};
 
 }

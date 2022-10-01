@@ -114,7 +114,7 @@ namespace Specter {
 	{
 		SPEC_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
-		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetBitFlags(), event.GetChannelsPerBoard(), event.GetSourceType()));
+		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetBitFlags(), event.GetSourceType()));
 		m_eventBuilder.SetCoincidenceWindow(event.GetCoincidenceWindow());
 		m_eventBuilder.SetSortFlag(event.GetSortFlag());
 		m_eventBuilder.ClearAll(); //Protect against stopping mid-event

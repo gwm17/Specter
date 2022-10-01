@@ -2,8 +2,8 @@
 
 namespace Specter {
 
-	DYOnlineSource::DYOnlineSource(const std::string& hostname, const std::string& port, int channelsPerBoard) :
-		DataSource(), m_clientConnection(hostname, port), m_channelsPerBoard(channelsPerBoard)
+	DYOnlineSource::DYOnlineSource(const std::string& hostname, const std::string& port) :
+		DataSource(), m_clientConnection(hostname, port)
 	{
 		m_validFlag = m_clientConnection.IsConnected();
 	}

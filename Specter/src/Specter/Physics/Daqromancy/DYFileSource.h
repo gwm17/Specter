@@ -10,7 +10,7 @@ namespace Specter {
 	class DYFileSource : public DataSource
 	{
 	public:
-		DYFileSource(const std::string& directory, int channels_per_board = 16);
+		DYFileSource(const std::string& directory);
 		virtual ~DYFileSource();
 
 		virtual const SpecData& GetData() override;
@@ -21,7 +21,6 @@ namespace Specter {
 
 		std::filesystem::path m_directory;
 		static constexpr std::string_view s_extension = ".dybin";
-		int m_channelsPerBoard;
 
 		std::vector<DaqGrimoire::DYFileReader> m_files;
 		DaqGrimoire::DYListData m_dyHit;
