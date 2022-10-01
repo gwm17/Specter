@@ -34,6 +34,7 @@ SpecProject is an example showing what a typical implementation might look like,
 Note: As Specter is still very early in development, the default build configuration is Debug. If you are actually going to use it, you will want to make sure that you switch to building in Release configuration otherwise performance may be poor.
 
 ## Suppported data sources
-By default Specter only supports CAEN CoMPASS data sources.
+Specter supports CAEN data sources (binary data files fully supported, online is a work in progress) and Daqromancy data sources (untested as of yet)
+
 ### Status as of Aug 2022
 Unfortunately, at the time of writing, CoMPASS does not fully support the use of external data analysis. CoMPASS versions 1.3-2.0 have a data socket, which can not be accessed outside of the localhost, meaning that use with Specter generally requires an additional server broadcasting the data to the machine running Specter, which is non-trivial. CoMPASS began supporting a public data socket as of version 2.1, however, it is now by default a time-sorted data socket. The time-sorting operation is so inefficient that any significant data rate on the aquisition basically results in a soft crash of CoMPASS. Currently there is no option to turn off the time sorting on the data socket. CAEN has been alerted to this issue, so hopefully this will be rectified shortly.
