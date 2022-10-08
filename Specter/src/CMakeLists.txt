@@ -105,6 +105,7 @@ target_sources(Specter PRIVATE
     Specter/Physics/Daqromancy/DYOnlineSource.cpp
     Specter/Utils/Functions.h
     Specter/Utils/Functions.cpp
+    Specter/Utils/RandomGenerator.h
 )
 
 #ImPlot sources

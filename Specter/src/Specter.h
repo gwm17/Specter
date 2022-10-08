@@ -35,5 +35,6 @@
 #include "Specter/Utils/TestServerLayer.h"
 #include "Specter/Utils/Instrumentor.h"
 #include "Specter/Utils/Functions.h"
+#include "Specter/Utils/RandomGenerator.h"
 
 #endif

@@ -84,16 +84,20 @@ namespace Specter {
 			{
 				sabreFlag = true;
 				if (hit.longEnergy > iter->second.GetValue())
-					iter->second.SetValue(hit.longEnergy);
+					iter->second.SetValue(hit.longEnergy + RandomGenerator::GetUniformFraction());
 				continue;
 			}
 
+			//Note randomization of values. In general, we want to plot/calculate as floating point.
+			//Especially for histograms, care has to be taken to randomize the decimal to account for binning. 
+			//For timestamps from PSD, since we reduce accuracy by 3 orders of mag, no randomization needed.
+			//For timestamps from PHA, need randomization on interval from 0 to digitizer sampling period.
 			switch (hit.id)
 			{
 				case s_scintLeftID:
 				{
 					if (hit.longEnergy > scintLeft.GetValue())
-						scintLeft.SetValue(hit.longEnergy);
+						scintLeft.SetValue(hit.longEnergy + RandomGenerator::GetUniformFraction());
 					break;
 				}
 				case s_beamIntID:
@@ -104,7 +108,7 @@ namespace Specter {
 				case s_cathodeID:
 				{
 					if (hit.longEnergy > cathode.GetValue())
-						cathode.SetValue(hit.longEnergy);
+						cathode.SetValue(hit.longEnergy + RandomGenerator::GetUniformFraction());
 					break;
 				}
 				case s_delayFrontLeftID:
@@ -134,13 +138,13 @@ namespace Specter {
 				case s_anodeFrontID:
 				{
 					if (hit.longEnergy > anodeFront.GetValue())
-						anodeFront.SetValue(hit.longEnergy);
+						anodeFront.SetValue(hit.longEnergy + RandomGenerator::GetUniformFraction());
 					break;
 				}
 				case s_anodeBackID:
 				{
 					if (hit.longEnergy > anodeBack.GetValue())
-						anodeBack.SetValue(hit.longEnergy);
+						anodeBack.SetValue(hit.longEnergy + RandomGenerator::GetUniformFraction());
 					break;
 				}
 			}
@@ -148,6 +152,7 @@ namespace Specter {
 
 		//If you want to use parameters to calculate another parameter, you
 		//need to check that the parameter is valid (set in this event)!
+		//Note subsequent calculations no longer need randomization.
 		if(delayFLTime.IsValid() && delayFRTime.IsValid())
 			x1.SetValue((delayFLTime.GetValue() - delayFRTime.GetValue())*0.5*0.4762);
 
