@@ -12,6 +12,11 @@
 
 namespace Specter {
 
+	PhysicsEventBuilder::PhysicsEventBuilder() :
+		m_sortFlag(false), m_coincWindow(0), m_bufferIndex(0)
+	{
+	}
+
 	PhysicsEventBuilder::PhysicsEventBuilder(uint64_t windowSize) :
 		m_sortFlag(false), m_coincWindow(windowSize), m_bufferIndex(0)
 	{

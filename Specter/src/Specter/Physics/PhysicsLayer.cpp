@@ -13,7 +13,7 @@
 namespace Specter {
 
 	PhysicsLayer::PhysicsLayer(const SpectrumManager::Ref& manager) :
-		m_manager(manager), m_activeFlag(false), m_source(nullptr), m_eventBuilder(0), m_physThread(nullptr)
+		m_manager(manager), m_activeFlag(false), m_source(nullptr), m_physThread(nullptr)
 	{
 	}
 
@@ -29,12 +29,6 @@ namespace Specter {
 
 	void PhysicsLayer::OnAttach()
 	{
-		/* For debugging
-		NavParameter par("joseph");
-		par.SetValue(8);
-		NAV_INFO("Does the par exist? {0}", ParameterMap::GetInstance().IsParameterValid("joseph"));
-		NAV_INFO("What is its value? {0}", ParameterMap::GetInstance().GetParameterValue("joseph"));
-		*/
 	}
 
 	void PhysicsLayer::OnDetach()
@@ -114,10 +108,8 @@ namespace Specter {
 	{
 		SPEC_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
-		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetBitFlags(), event.GetSourceType()));
-		m_eventBuilder.SetCoincidenceWindow(event.GetCoincidenceWindow());
-		m_eventBuilder.SetSortFlag(event.GetSortFlag());
-		m_eventBuilder.ClearAll(); //Protect against stopping mid-event
+		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetBitFlags(), event.GetSourceType(), event.GetCoincidenceWindow()));
+		SPEC_INFO("Here");
 		if (m_source->IsValid())
 		{
 			SPEC_INFO("Attach successful. Enabling data pull...");
@@ -145,7 +137,6 @@ namespace Specter {
 		SPEC_PROFILE_FUNCTION();
 
 		std::vector<SpecEvent> events;
-		SpecData datum;
 		while(m_activeFlag)
 		{
 			//Scope to encapsulate access to the data source
@@ -153,35 +144,30 @@ namespace Specter {
 				std::scoped_lock<std::mutex> guard(m_sourceMutex);
 				if (m_source == nullptr || !m_source->IsValid())
 				{
-					return;
-				}
-				/*
-					Looks funny, but two conditions lead to !IsValid(). Either source prev. shutdown,
-					OR we reached end of source, indicated after prev. data grab
-				*/
-				datum = m_source->GetData();
-				if(!m_source->IsValid())
-				{
 					SPEC_INFO("End of data source.");
 					return;
 				}
-			}
-
-			//Pass data from source to event builder. True from AddDatum indicates events are ready
-			if (m_eventBuilder.AddDatum(datum))
-			{
-				events = m_eventBuilder.GetReadyEvents();
-				for (auto& event : events)
+				
+				m_source->ProcessData();
+				if(m_source->IsEventReady())
 				{
-					for (auto& stage : m_physStack)
-						stage->AnalyzePhysicsEvent(event);
-
-					//Now that the analysis stack has filled all our NavParameters with data, update the histogram counts
-					m_manager->UpdateHistograms();
-					//Invalidate all parameters to get ready for next event
-					m_manager->InvalidateParameters();
+					events = m_source->GetEvents();
 				}
 			}
+
+			for (auto& event : events)
+			{
+				for (auto& stage : m_physStack)
+					stage->AnalyzePhysicsEvent(event);
+
+				//Now that the analysis stack has filled all our NavParameters with data, update the histogram counts
+				m_manager->UpdateHistograms();
+				//Invalidate all parameters to get ready for next event
+				m_manager->InvalidateParameters();
+			}
+
+			if(!events.empty())
+				events.clear();
 		}
 	}
 }

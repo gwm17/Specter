@@ -22,9 +22,10 @@
 
 namespace Specter {
 
-	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header) :
-		DataSource(), m_bufferIter(nullptr), m_bufferEnd(nullptr), m_header(header)
+	CompassOnlineSource::CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header, uint64_t coincidenceWindow) :
+		DataSource(coincidenceWindow), m_bufferIter(nullptr), m_bufferEnd(nullptr), m_header(header)
 	{
+		m_eventBuilder.SetSortFlag(true);
 		InitConnection(hostname, port);
 	}
 
@@ -52,15 +53,14 @@ namespace Specter {
 		}
 	}
 
-	const SpecData& CompassOnlineSource::GetData()
+	void CompassOnlineSource::ProcessData()
 	{
 		SPEC_PROFILE_FUNCTION();
 		size_t range = m_bufferEnd - m_bufferIter; //how much buffer we have left
 		if (!IsValid())
 		{
 			SPEC_ERROR("Attempting to access invalid source at CompassOnlineSource!");
-			m_datum = SpecData();
-			return m_datum;
+			return;
 		}
 		else if (m_bufferIter == nullptr || range < m_datasize || m_bufferIter == m_bufferEnd) //If no buffer/buffer completely used/buffer fragmented fill 
 		{
@@ -71,8 +71,7 @@ namespace Specter {
 			GetHit();
 		else
 		{
-			m_datum = SpecData();
-			return m_datum;
+			return;
 		}
 
 		m_datum.longEnergy = m_currentHit.energy;
@@ -81,7 +80,10 @@ namespace Specter {
 		m_datum.timestamp = m_currentHit.timestamp;
 		m_datum.id = Utilities::GetBoardChannelUUID(m_currentHit.board, m_currentHit.channel);
 
-		return m_datum;
+		if(m_eventBuilder.AddDatum(m_datum))
+		{
+			m_isEventReady = true;
+		}
 	}
 
 	void CompassOnlineSource::FillBuffer()

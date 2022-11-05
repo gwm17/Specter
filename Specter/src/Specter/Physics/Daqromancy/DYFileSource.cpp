@@ -2,8 +2,8 @@
 
 namespace Specter {
 
-	DYFileSource::DYFileSource(const std::string& directory) :
-		DataSource(), m_directory(directory)
+	DYFileSource::DYFileSource(const std::string& directory, uint64_t coicidenceWindow) :
+		DataSource(coicidenceWindow), m_directory(directory)
 	{
 		CollectFiles();
 	}
@@ -88,28 +88,26 @@ namespace Specter {
 		return true;
 	}
 
-	const SpecData& DYFileSource::GetData()
+	void DYFileSource::ProcessData()
 	{
 		if (!IsValid())
 		{
 			SPEC_ERROR("Trying to access DYFileSource data when invalid, bug detected!");
-			m_datum = SpecData();
-			return m_datum;
+			return;
 		}
 
 		if (!GetNextHit())
 		{
 			m_validFlag = false;
-			m_datum = SpecData();
 		}
-		else
+		//Convert data from Daqromancy format to universal Specter format.
+		m_datum.longEnergy = m_dyHit.energy;
+		m_datum.shortEnergy = m_dyHit.energyShort;
+		m_datum.timestamp = m_dyHit.timestamp;
+		m_datum.id = Utilities::GetBoardChannelUUID(m_dyHit.board, m_dyHit.channel);
+		if(m_eventBuilder.AddDatum(m_datum))
 		{
-			//Convert data from Daqromancy format to universal Specter format.
-			m_datum.longEnergy = m_dyHit.energy;
-			m_datum.shortEnergy = m_dyHit.energyShort;
-			m_datum.timestamp = m_dyHit.timestamp;
-			m_datum.id = Utilities::GetBoardChannelUUID(m_dyHit.board, m_dyHit.channel);
+			m_isEventReady = true;
 		}
-		return m_datum;
 	}
 }

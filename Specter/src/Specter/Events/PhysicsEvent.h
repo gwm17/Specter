@@ -21,15 +21,14 @@ namespace Specter {
 	{
 	public:
 		//Bitflags is a final option for random crap needed for a source. Currently used for compass online to indicate header state.
-		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", bool sortFlag=false, uint16_t bitflags = 0) :
-			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_sortFlag(sortFlag), m_bitflags(bitflags)
+		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", uint16_t bitflags = 0) :
+			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_bitflags(bitflags)
 		{}
 
 		inline const std::string GetSourceLocation() const { return m_sourceLocation; }
         inline const std::string GetSourcePort() const { return m_port; }
 		inline const DataSource::SourceType GetSourceType() const { return m_sourceType; }
 		inline const uint64_t GetCoincidenceWindow() const { return m_coincidenceWindow; }
-		inline const bool GetSortFlag() const { return m_sortFlag; }
 		inline const uint16_t GetBitFlags() const { return m_bitflags; }
 
 		std::string ToString() const override
@@ -45,7 +44,6 @@ namespace Specter {
         std::string m_port;
 		DataSource::SourceType m_sourceType;
 		uint64_t m_coincidenceWindow;
-		bool m_sortFlag;
 		uint16_t m_bitflags;
 	};
 

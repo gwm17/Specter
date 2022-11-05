@@ -26,13 +26,8 @@
 
 namespace Specter {
 	
-	CompassRun::CompassRun() :
-		DataSource(), m_directory(""), m_startIndex(0)
-	{
-	}
-	
-	CompassRun::CompassRun(const std::string& dir) :
-		DataSource(), m_directory(dir), m_startIndex(0)
+	CompassRun::CompassRun(const std::string& dir, uint64_t coincidenceWindow) :
+		DataSource(coincidenceWindow), m_directory(dir), m_startIndex(0)
 	{
 		CollectFiles();
 	}
@@ -129,32 +124,32 @@ namespace Specter {
 		return true;
 	}
 
-	const SpecData& CompassRun::GetData()
+	void CompassRun::ProcessData()
 	{
 		SPEC_PROFILE_FUNCTION();
 		if(!IsValid())
 		{
 			SPEC_ERROR("Trying to access CompassRun data when invalid, bug detected!");
-			m_datum = SpecData();
-			return m_datum;
+			return;
 		}
 
 		if (!GetHitsFromFiles())
 		{
 			m_validFlag = false;
-			m_datum = SpecData();
+			return;
 		}
-		else
-		{
-			//Convert data from CoMPASS format to universal Specter format.
-			m_datum.longEnergy = m_hit.energy;
-			m_datum.shortEnergy = m_hit.energyShort;
-			m_datum.calEnergy = m_hit.energyCalibrated;
-			m_datum.timestamp = m_hit.timestamp;
-			m_datum.id = Utilities::GetBoardChannelUUID(m_hit.board, m_hit.channel);
-		}
+		
+		//Convert data from CoMPASS format to universal Specter format.
+		m_datum.longEnergy = m_hit.energy;
+		m_datum.shortEnergy = m_hit.energyShort;
+		m_datum.calEnergy = m_hit.energyCalibrated;
+		m_datum.timestamp = m_hit.timestamp;
+		m_datum.id = Utilities::GetBoardChannelUUID(m_hit.board, m_hit.channel);
 
-		return m_datum;
+		if(m_eventBuilder.AddDatum(m_datum))
+		{
+			m_isEventReady = true;
+		}
 	}
 
 }

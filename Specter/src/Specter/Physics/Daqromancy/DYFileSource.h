@@ -10,10 +10,15 @@ namespace Specter {
 	class DYFileSource : public DataSource
 	{
 	public:
-		DYFileSource(const std::string& directory);
+		DYFileSource(const std::string& directory, uint64_t coincidenceWindow);
 		virtual ~DYFileSource();
 
-		virtual const SpecData& GetData() override;
+		virtual void ProcessData() override;
+		virtual const std::vector<SpecEvent>& GetEvents() override
+		{
+			m_isEventReady = false;
+			return m_eventBuilder.GetReadyEvents();
+		}
 
 	private:
 		void CollectFiles();

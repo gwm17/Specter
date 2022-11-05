@@ -2,9 +2,10 @@
 
 namespace Specter {
 
-	DYOnlineSource::DYOnlineSource(const std::string& hostname, const std::string& port) :
-		DataSource(), m_clientConnection(hostname, port)
+	DYOnlineSource::DYOnlineSource(const std::string& hostname, const std::string& port, uint64_t coincidenceWindow) :
+		DataSource(coincidenceWindow), m_clientConnection(hostname, port)
 	{
+		m_eventBuilder.SetSortFlag(true);
 		m_validFlag = m_clientConnection.IsConnected();
 	}
 
@@ -12,13 +13,12 @@ namespace Specter {
 	{
 	}
 
-	const SpecData& DYOnlineSource::GetData()
+	void DYOnlineSource::ProcessData()
 	{
 		if (!m_clientConnection.IsConnected())
 		{
 			m_validFlag = false;
-			m_datum = SpecData();
-			return m_datum;
+			return;
 		}
 
 		if (m_clientConnection.GetNextEvent(m_dyHit))
@@ -28,12 +28,8 @@ namespace Specter {
 			m_datum.shortEnergy = m_dyHit.energyShort;
 			m_datum.timestamp = m_dyHit.timestamp;
 			m_datum.id = Utilities::GetBoardChannelUUID(m_dyHit.board, m_dyHit.channel);
+			if(m_eventBuilder.AddDatum(m_datum))
+				m_isEventReady = true;
 		}
-		else
-		{
-			m_datum = SpecData();
-		}
-
-		return m_datum;
 	}
 }

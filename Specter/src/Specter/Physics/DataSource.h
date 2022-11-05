@@ -10,6 +10,7 @@
 #define DATA_SOURCE_H
 
 #include "Specter/Core/SpecCore.h"
+#include "Specter/Physics/PhysicsEventBuilder.h"
 #include "SpecData.h"
 
 namespace Specter {
@@ -23,24 +24,29 @@ namespace Specter {
 			CompassOnline,
 			CompassOffline,
 			DaqromancyOnline,
-			DaqromancyOffline
+			DaqromancyOffline,
+			CharonOnline
 		};
 
-		DataSource() :
-			m_validFlag(false)
+		DataSource(uint64_t coincidenceWindow = 0) :
+			m_validFlag(false), m_isEventReady(false), m_eventBuilder(coincidenceWindow)
 		{
 		}
 
 		virtual ~DataSource() {};
-		virtual const SpecData& GetData() = 0;
+		virtual void ProcessData() = 0;
+		virtual const std::vector<SpecEvent>& GetEvents() = 0;
 		inline bool IsValid() { return m_validFlag; }
+		inline bool IsEventReady() { return m_isEventReady; }
 
 	protected:
 		bool m_validFlag;
+		bool m_isEventReady;
 		SpecData m_datum;
+		PhysicsEventBuilder m_eventBuilder;
 	};
 
-	DataSource* CreateDataSource(const std::string& location, const std::string& port, uint16_t bitflags, DataSource::SourceType type);
+	DataSource* CreateDataSource(const std::string& location, const std::string& port, uint16_t bitflags, DataSource::SourceType type, uint64_t coincidenceWindow);
 
 	std::string ConvertDataSourceTypeToString(DataSource::SourceType type);
 }

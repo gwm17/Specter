@@ -33,12 +33,15 @@ namespace Specter {
 	
 	class CompassRun : public DataSource
 	{
-	
 	public:
-		CompassRun();
-		CompassRun(const std::string& dir);
+		CompassRun(const std::string& dir, uint64_t coincidenceWindow);
 		virtual ~CompassRun();
-		virtual const SpecData& GetData() override;
+		virtual void ProcessData() override;
+		virtual const std::vector<SpecEvent>& GetEvents() override
+		{
+			m_isEventReady = false;
+			return m_eventBuilder.GetReadyEvents();
+		}
 		inline void SetDirectory(const std::string& dir) { m_directory = dir; CollectFiles(); }
 		inline void SetShiftMap(const std::string& filename) { m_smap.SetFile(filename); }
 	
@@ -58,6 +61,7 @@ namespace Specter {
 		CompassHit m_hit;
 	
 		unsigned int m_totalHits;
+
 	};
 
 }

@@ -32,7 +32,7 @@ namespace Specter {
 		static bool onlineFlag = false;
 		static bool offlineFlag = false;
 		static std::vector<DataSource::SourceType> availTypes = { DataSource::SourceType::CompassOnline, DataSource::SourceType::CompassOffline, DataSource::SourceType::DaqromancyOnline,
-																  DataSource::SourceType::DaqromancyOffline };
+																  DataSource::SourceType::DaqromancyOffline, DataSource::SourceType::CharonOnline };
 		
 		if (m_openFlag)
 		{
@@ -78,6 +78,7 @@ namespace Specter {
 				{
 					m_bitflags = m_bitflags ^ CompassHeaders::EnergyCalibrated;
 				}
+				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
 			}
 			else if (m_chosenType == DataSource::SourceType::CompassOffline)
 			{
@@ -90,11 +91,13 @@ namespace Specter {
 				auto temp = m_fileDialog.RenderFileDialog();
 				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
 					m_chosenLocation = temp.first;
+				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
 			}
 			else if (m_chosenType == DataSource::SourceType::DaqromancyOnline)
 			{
 				ImGui::InputText("Hostname", &m_chosenLocation);
 				ImGui::InputText("Port", &m_chosenPort);
+				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
 			}
 			else if (m_chosenType == DataSource::SourceType::DaqromancyOffline)
 			{
@@ -107,22 +110,22 @@ namespace Specter {
 				auto temp = m_fileDialog.RenderFileDialog();
 				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
 					m_chosenLocation = temp.first;
+				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
 			}
-			ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
-
+			else if (m_chosenType == DataSource::SourceType::CharonOnline)
+			{
+				ImGui::InputText("Hostname", &m_chosenLocation);
+				ImGui::InputText("Port", &m_chosenPort);
+			}
 
 			if (ImGui::Button("Ok"))
 			{
-				if (m_chosenType == DataSource::SourceType::CompassOffline || m_chosenType == DataSource::SourceType::DaqromancyOffline)
-				{
-					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, false, 0U);
-					Application::Get().OnEvent(event);
-				}
-				else if (m_chosenType == DataSource::SourceType::CompassOnline || m_chosenType == DataSource::SourceType::DaqromancyOnline)
-				{
-					PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, true, m_bitflags);
-					Application::Get().OnEvent(event);
-				}
+				SPEC_INFO("Here");
+				PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, m_bitflags);
+				SPEC_INFO("Here");
+				Application::Get().OnEvent(event);
+				SPEC_INFO("Here");
+
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();

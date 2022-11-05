@@ -75,6 +75,15 @@ target_sources(Specter PRIVATE
     Specter/Physics/Caen/CompassOnlineSource.h
     Specter/Physics/Caen/CompassRun.cpp
     Specter/Physics/Caen/CompassRun.h
+    Specter/Physics/nscldaq/CharonOnlineSource.h
+    Specter/Physics/nscldaq/CharonOnlineSource.cpp
+    Specter/Physics/nscldaq/CharonClient.h
+    Specter/Physics/nscldaq/CharonClient.cpp
+    Specter/Physics/nscldaq/Unpackers/Unpacker.h
+    Specter/Physics/nscldaq/Unpackers/CaenUnpacker.h
+    Specter/Physics/nscldaq/Unpackers/CaenUnpacker.cpp
+    Specter/Physics/nscldaq/Unpackers/MesyTecUnpacker.h
+    Specter/Physics/nscldaq/Unpackers/MesyTecUnpacker.cpp
     Specter/Editor/EditorLayer.cpp
     Specter/Editor/EditorLayer.h
     Specter/Editor/FileDialog.cpp
@@ -106,6 +115,7 @@ target_sources(Specter PRIVATE
     Specter/Utils/Functions.h
     Specter/Utils/Functions.cpp
     Specter/Utils/RandomGenerator.h
+    Specter/Utils/ThreadSafeQueue.h
 )
 
 #ImPlot sources

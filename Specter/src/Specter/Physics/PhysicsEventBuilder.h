@@ -18,6 +18,7 @@ namespace Specter {
 	class PhysicsEventBuilder
 	{
 	public:
+		PhysicsEventBuilder();
 		PhysicsEventBuilder(uint64_t windowSize);
 		~PhysicsEventBuilder();
 		inline void SetCoincidenceWindow(uint64_t windowSize) { m_coincWindow = windowSize; }

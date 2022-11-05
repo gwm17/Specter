@@ -16,7 +16,6 @@
 #include "AnalysisStack.h"
 #include "AnalysisStage.h"
 #include "DataSource.h"
-#include "PhysicsEventBuilder.h"
 #include "Specter/Core/SpectrumManager.h"
 
 #include <thread>
@@ -55,8 +54,6 @@ namespace Specter {
 		std::mutex m_sourceMutex;
 
 		std::unique_ptr<DataSource> m_source;
-		PhysicsEventBuilder m_eventBuilder;
-
 		std::thread* m_physThread;
 
 	};

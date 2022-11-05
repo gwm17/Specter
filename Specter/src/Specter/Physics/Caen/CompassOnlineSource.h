@@ -36,10 +36,15 @@ namespace Specter {
 	class CompassOnlineSource : public DataSource
 	{
 	public:
-		CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header);
+		CompassOnlineSource(const std::string& hostname, const std::string& port, uint16_t header, uint64_t coincidenceWindow);
 		virtual ~CompassOnlineSource() override;
 
-		virtual const SpecData& GetData() override;
+		virtual void ProcessData() override;
+		virtual const std::vector<SpecEvent>& GetEvents() override
+		{
+			m_isEventReady = false;
+			return m_eventBuilder.GetReadyEvents();
+		}
 
 	private:
 		void InitConnection(const std::string& hostname, const std::string& port);
