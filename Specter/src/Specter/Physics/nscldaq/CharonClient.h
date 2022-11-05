@@ -29,9 +29,11 @@ namespace Specter {
     private:
         void ReadHeader();
         void ReadBody();
+        void HandleTimeout(const asio::error_code& ec);
 
         asio::io_context m_context;
         asio::ip::tcp::socket m_socket;
+        asio::steady_timer m_deadline;
         std::thread m_ioThread;
 
         StygianMessage m_tempMessage;

@@ -3,7 +3,7 @@
 namespace Specter {
 
     CharonClient::CharonClient(const std::string& hostname, const std::string& port) :
-        m_socket(m_context)
+        m_socket(m_context), m_deadline(m_context)
     {
         Connect(hostname, port);
     }
@@ -29,18 +29,27 @@ namespace Specter {
 		{
 			asio::ip::tcp::resolver resolver(m_context);
 			auto end_points = resolver.resolve(hostname, port);
+
+			m_deadline.expires_after(std::chrono::seconds(60));
 			asio::async_connect(m_socket, end_points,
-				[this](std::error_code ec, asio::ip::tcp::endpoint endpoint)
+				[this, hostname, port](std::error_code ec, asio::ip::tcp::endpoint endpoint)
 				{
 					if (!ec)
 					{
+            			SPEC_INFO("Connected CharonClient to {0}:{1}", endpoint.address(), endpoint.port());
+						//Turn off our deadline timer
+						m_deadline.cancel();
 						ReadHeader();
+					}
+					else
+					{
+						SPEC_WARN("Unable to connect to CharonClient {0}:{1}" , hostname, port);
 					}
 				}
 			);
 
+			m_deadline.async_wait(std::bind(&CharonClient::HandleTimeout, this, std::placeholders::_1));
 			m_ioThread = std::thread([this]() { m_context.run(); });
-            SPEC_WARN("Connected CharonClient to {0}:{1}", hostname, port);
 		}
 		catch (asio::system_error& e)
 		{
@@ -93,4 +102,20 @@ namespace Specter {
 			}
 		);
     }
+
+	void CharonClient::HandleTimeout(const asio::error_code& ec)
+	{
+		//If we stop the timer, don't do anything
+		if(ec == asio::error::operation_aborted)
+		{
+			return;
+		}
+		//Check to make sure that deadline wasn't asychronously moved 
+		if(m_deadline.expiry() <= asio::steady_timer::clock_type::now())
+		{
+			SPEC_WARN("CharonClient timedout at Connect!");
+			m_socket.close();
+			m_deadline.expires_at(asio::steady_timer::time_point::max());
+		}
+	}
 }
