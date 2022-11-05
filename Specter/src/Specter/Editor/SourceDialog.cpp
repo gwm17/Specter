@@ -120,11 +120,8 @@ namespace Specter {
 
 			if (ImGui::Button("Ok"))
 			{
-				SPEC_INFO("Here");
 				PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, m_bitflags);
-				SPEC_INFO("Here");
 				Application::Get().OnEvent(event);
-				SPEC_INFO("Here");
 
 				ImGui::CloseCurrentPopup();
 			}

@@ -5,7 +5,6 @@ namespace Specter {
     CharonClient::CharonClient(const std::string& hostname, const std::string& port) :
         m_socket(m_context)
     {
-		SPEC_INFO("here");
         Connect(hostname, port);
     }
 

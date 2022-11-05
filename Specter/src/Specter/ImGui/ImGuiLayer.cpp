@@ -126,7 +126,7 @@ namespace Specter {
 	void ImGuiLayer::OnImGuiRender()
 	{
 		//Demo's used to figure out how to do things.
-		//Should not be on for actual NavProject for 
+		//Should not be on for actual SpecProject for 
 		//real use
 		//static bool show = true;
 		//ImGui::ShowDemoWindow(&show);

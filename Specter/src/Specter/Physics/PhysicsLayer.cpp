@@ -109,7 +109,6 @@ namespace Specter {
 		SPEC_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
 		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetBitFlags(), event.GetSourceType(), event.GetCoincidenceWindow()));
-		SPEC_INFO("Here");
 		if (m_source->IsValid())
 		{
 			SPEC_INFO("Attach successful. Enabling data pull...");

@@ -30,8 +30,8 @@ namespace Specter {
         void ReadHeader();
         void ReadBody();
 
-        asio::ip::tcp::socket m_socket;
         asio::io_context m_context;
+        asio::ip::tcp::socket m_socket;
         std::thread m_ioThread;
 
         StygianMessage m_tempMessage;
