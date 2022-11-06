@@ -16,15 +16,15 @@
 namespace Specter {
 
 	//loc=either an ip address or a file location, port=address port, or unused in case of file
-	DataSource* CreateDataSource(const std::string& location, const std::string& port, uint16_t header, DataSource::SourceType type, uint64_t coincidenceWindow)
+	DataSource* CreateDataSource(const SourceArgs& args)
 	{
-		switch(type)
+		switch(args.type)
 		{
-			case DataSource::SourceType::CompassOffline: return new CompassRun(location, coincidenceWindow);
-			case DataSource::SourceType::CompassOnline: return new CompassOnlineSource(location, port, header, coincidenceWindow);
-			case DataSource::SourceType::DaqromancyOffline: return new DYFileSource(location, coincidenceWindow);
-			case DataSource::SourceType::DaqromancyOnline: return new DYOnlineSource(location, port, coincidenceWindow);
-			case DataSource::SourceType::CharonOnline: return new CharonOnlineSource(location, port);
+			case DataSource::SourceType::CompassOffline: return new CompassRun(args.location, args.coincidenceWindow);
+			case DataSource::SourceType::CompassOnline: return new CompassOnlineSource(args.location, args.port, args.bitflags, args.coincidenceWindow);
+			case DataSource::SourceType::DaqromancyOffline: return new DYFileSource(args.location, args.coincidenceWindow);
+			case DataSource::SourceType::DaqromancyOnline: return new DYOnlineSource(args.location, args.port, args.coincidenceWindow);
+			case DataSource::SourceType::CharonOnline: return new CharonOnlineSource(args.location, args.port);
 			case DataSource::SourceType::None: return nullptr;
 		}
 		SPEC_WARN("Invalid DataSourceType at CreateDataSource!");

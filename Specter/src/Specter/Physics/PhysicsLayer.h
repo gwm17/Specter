@@ -42,8 +42,7 @@ namespace Specter {
 		void PushStage(AnalysisStage* stage);
 
 	private:
-		void DestroyPhysThread();
-		void AttachDataSource(PhysicsStartEvent& event);
+		void AttachDataSource(const SourceArgs& args);
 		void DetachDataSource();
 		void RunSource();
 

@@ -19,17 +19,15 @@ namespace Specter {
 		SourceDialog();
 		~SourceDialog();
 
-		void ImGuiRenderSourceDialog();
+		bool ImGuiRenderSourceDialog();
+
+		inline const SourceArgs& GetArgs() const { return m_args; }
 
 		inline void OpenSourceDialog() { m_openFlag = true; }
 	private:
 		bool m_openFlag;
-		DataSource::SourceType m_chosenType;
-		std::string m_chosenLocation;
-		std::string m_chosenPort;
+		SourceArgs m_args;
 		FileDialog m_fileDialog;
-		uint16_t m_bitflags;
-		int m_chosenWindow;
 	};
 
 }

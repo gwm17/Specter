@@ -226,7 +226,11 @@ namespace Specter {
 
         m_scalerPanel.OnImGuiRender(m_manager, m_scalerList, m_graphList);
 
-        m_sourceDialog.ImGuiRenderSourceDialog();
+        if (m_sourceDialog.ImGuiRenderSourceDialog())
+        {
+            PhysicsStartEvent event(m_sourceDialog.GetArgs());
+            m_callbackFunc(event);
+        }
 
         RemoveHistogramDialog();
 

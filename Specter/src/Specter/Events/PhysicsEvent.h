@@ -21,30 +21,22 @@ namespace Specter {
 	{
 	public:
 		//Bitflags is a final option for random crap needed for a source. Currently used for compass online to indicate header state.
-		PhysicsStartEvent(const std::string& loc, DataSource::SourceType type, uint64_t window, const std::string& port = "51489", uint16_t bitflags = 0) :
-			m_sourceLocation(loc), m_port(port), m_sourceType(type), m_coincidenceWindow(window), m_bitflags(bitflags)
+		PhysicsStartEvent(const SourceArgs& args) :
+			m_args(args)
 		{}
 
-		inline const std::string GetSourceLocation() const { return m_sourceLocation; }
-        inline const std::string GetSourcePort() const { return m_port; }
-		inline const DataSource::SourceType GetSourceType() const { return m_sourceType; }
-		inline const uint64_t GetCoincidenceWindow() const { return m_coincidenceWindow; }
-		inline const uint16_t GetBitFlags() const { return m_bitflags; }
+		const SourceArgs& GetSourceArgs() const { return m_args; }
 
 		std::string ToString() const override
 		{
-			return "Starting PhysicsEventBuilder with DataSource of type {0} at location {1}" + m_sourceLocation + ConvertDataSourceTypeToString(m_sourceType);
+			return "Starting PhysicsEventBuilder with DataSource of type " + ConvertDataSourceTypeToString(m_args.type) + " at location " + m_args.location;
 		}
 
 		EVENT_CATEGORY_SETUP(EventCategoryPhysics);
 		EVENT_TYPE_SETUP(PhysicsStart);
 
 	private:
-		std::string m_sourceLocation;
-        std::string m_port;
-		DataSource::SourceType m_sourceType;
-		uint64_t m_coincidenceWindow;
-		uint16_t m_bitflags;
+		SourceArgs m_args;
 	};
 
 	class PhysicsStopEvent : public Event

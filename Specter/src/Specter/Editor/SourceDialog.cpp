@@ -18,7 +18,7 @@
 namespace Specter {
 
 	SourceDialog::SourceDialog() :
-		m_openFlag(false), m_chosenPort("51489"), m_chosenWindow(2000000)
+		m_openFlag(false)
 	{
 	}
 
@@ -26,82 +26,60 @@ namespace Specter {
 	{
 	}
 
-	void SourceDialog::ImGuiRenderSourceDialog()
+	bool SourceDialog::ImGuiRenderSourceDialog()
 	{
 		SPEC_PROFILE_FUNCTION();
-		static bool onlineFlag = false;
-		static bool offlineFlag = false;
+		static bool result = false;
 		static std::vector<DataSource::SourceType> availTypes = { DataSource::SourceType::CompassOnline, DataSource::SourceType::CompassOffline, DataSource::SourceType::DaqromancyOnline,
 																  DataSource::SourceType::DaqromancyOffline, DataSource::SourceType::CharonOnline };
-		
+		result = false;
 		if (m_openFlag)
 		{
-			onlineFlag = false;
-			offlineFlag = false;
 			m_openFlag = false;
-			m_chosenType = DataSource::SourceType::None;
-			m_chosenLocation = "";
-			m_chosenPort = "51489";
-			m_chosenWindow = 3000000;
-			m_bitflags = 0;
+			m_args.type = DataSource::SourceType::None;
+			m_args.location = "";
+			m_args.port = "52324";
+			m_args.coincidenceWindow = 3000000;
+			m_args.bitflags = 0;
 			ImGui::OpenPopup(ICON_FA_LINK " Attach Source");
 		}
 		if (ImGui::BeginPopupModal(ICON_FA_LINK " Attach Source"))
 		{
-			if (ImGui::BeginCombo("Source Type", ConvertDataSourceTypeToString(m_chosenType).c_str()))
+			if (ImGui::BeginCombo("Source Type", ConvertDataSourceTypeToString(m_args.type).c_str()))
 			{
 				for (auto& type : availTypes)
 				{
-					if (ImGui::Selectable(ConvertDataSourceTypeToString(type).c_str(), type == m_chosenType, ImGuiSelectableFlags_DontClosePopups))
+					if (ImGui::Selectable(ConvertDataSourceTypeToString(type).c_str(), type == m_args.type, ImGuiSelectableFlags_DontClosePopups))
 					{
-						m_chosenType = type;
+						m_args.type = type;
 					}
 				}
 				ImGui::EndCombo();
 			}
 
-			if (m_chosenType == DataSource::SourceType::CompassOnline)
+			if (m_args.type == DataSource::SourceType::CompassOnline)
 			{
-				ImGui::InputText("Hostname", &m_chosenLocation);
-				ImGui::InputText("Port", &m_chosenPort);
-				if (ImGui::RadioButton("Energy", (m_bitflags & CompassHeaders::Energy) != 0))
+				ImGui::InputText("Hostname", &m_args.location);
+				ImGui::InputText("Port", &m_args.port);
+				if (ImGui::RadioButton("Energy", (m_args.bitflags & CompassHeaders::Energy) != 0))
 				{
-					m_bitflags = m_bitflags ^ CompassHeaders::Energy;
+					m_args.bitflags = m_args.bitflags ^ CompassHeaders::Energy;
 				}
 				ImGui::SameLine();
-				if (ImGui::RadioButton("Energy Short", (m_bitflags & CompassHeaders::EnergyShort) != 0))
+				if (ImGui::RadioButton("Energy Short", (m_args.bitflags & CompassHeaders::EnergyShort) != 0))
 				{
-					m_bitflags = m_bitflags ^ CompassHeaders::EnergyShort;
+					m_args.bitflags = m_args.bitflags ^ CompassHeaders::EnergyShort;
 				}
 				ImGui::SameLine();
-				if (ImGui::RadioButton("Energy Calibrated", (m_bitflags & CompassHeaders::EnergyCalibrated) != 0))
+				if (ImGui::RadioButton("Energy Calibrated", (m_args.bitflags & CompassHeaders::EnergyCalibrated) != 0))
 				{
-					m_bitflags = m_bitflags ^ CompassHeaders::EnergyCalibrated;
+					m_args.bitflags = m_args.bitflags ^ CompassHeaders::EnergyCalibrated;
 				}
-				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
+				ImGui::InputScalar("Coinc. Window (ps)", ImGuiDataType_U64, &m_args.coincidenceWindow);
 			}
-			else if (m_chosenType == DataSource::SourceType::CompassOffline)
+			else if (m_args.type == DataSource::SourceType::CompassOffline)
 			{
-				ImGui::InputText("Run Directory", &m_chosenLocation);
-				ImGui::SameLine();
-				if (ImGui::Button("Choose Location"))
-				{
-					m_fileDialog.OpenDialog(FileDialog::Type::OpenDir);
-				}
-				auto temp = m_fileDialog.RenderFileDialog();
-				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
-					m_chosenLocation = temp.first;
-				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
-			}
-			else if (m_chosenType == DataSource::SourceType::DaqromancyOnline)
-			{
-				ImGui::InputText("Hostname", &m_chosenLocation);
-				ImGui::InputText("Port", &m_chosenPort);
-				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
-			}
-			else if (m_chosenType == DataSource::SourceType::DaqromancyOffline)
-			{
-				ImGui::InputText("Run Directory", &m_chosenLocation);
+				ImGui::InputText("Run Directory", &m_args.location);
 				ImGui::SameLine();
 				if (ImGui::Button("Choose Location"))
 				{
@@ -109,29 +87,48 @@ namespace Specter {
 				}
 				auto temp = m_fileDialog.RenderFileDialog();
 				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
-					m_chosenLocation = temp.first;
-				ImGui::InputInt("Coinc. Window (ps)", &m_chosenWindow);
+					m_args.location = temp.first;
+				ImGui::InputScalar("Coinc. Window (ps)", ImGuiDataType_U64, &m_args.coincidenceWindow);
 			}
-			else if (m_chosenType == DataSource::SourceType::CharonOnline)
+			else if (m_args.type == DataSource::SourceType::DaqromancyOnline)
 			{
-				ImGui::InputText("Hostname", &m_chosenLocation);
-				ImGui::InputText("Port", &m_chosenPort);
+				ImGui::InputText("Hostname", &m_args.location);
+				ImGui::InputText("Port", &m_args.port);
+				ImGui::InputScalar("Coinc. Window (ps)", ImGuiDataType_U64, &m_args.coincidenceWindow);
+			}
+			else if (m_args.type == DataSource::SourceType::DaqromancyOffline)
+			{
+				ImGui::InputText("Run Directory", &m_args.location);
+				ImGui::SameLine();
+				if (ImGui::Button("Choose Location"))
+				{
+					m_fileDialog.OpenDialog(FileDialog::Type::OpenDir);
+				}
+				auto temp = m_fileDialog.RenderFileDialog();
+				if (!temp.first.empty() && temp.second == FileDialog::Type::OpenDir)
+					m_args.location = temp.first;
+				ImGui::InputScalar("Coinc. Window (ps)", ImGuiDataType_U64, &m_args.coincidenceWindow);
+			}
+			else if (m_args.type == DataSource::SourceType::CharonOnline)
+			{
+				ImGui::InputText("Hostname", &m_args.location);
+				ImGui::InputText("Port", &m_args.port);
 			}
 
 			if (ImGui::Button("Ok"))
 			{
-				PhysicsStartEvent event(m_chosenLocation, m_chosenType, m_chosenWindow, m_chosenPort, m_bitflags);
-				Application::Get().OnEvent(event);
-
+				result = true;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Cancel"))
 			{
+				result = false;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
 		}
+		return result;
 	}
 
 }

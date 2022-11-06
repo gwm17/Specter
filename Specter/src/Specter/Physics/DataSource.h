@@ -14,7 +14,7 @@
 #include "SpecData.h"
 
 namespace Specter {
-	
+
 	class DataSource
 	{
 	public:
@@ -46,7 +46,16 @@ namespace Specter {
 		PhysicsEventBuilder m_eventBuilder;
 	};
 
-	DataSource* CreateDataSource(const std::string& location, const std::string& port, uint16_t bitflags, DataSource::SourceType type, uint64_t coincidenceWindow);
+	struct SourceArgs
+	{
+		DataSource::SourceType type = DataSource::SourceType::None;
+		std::string location = "";
+		std::string port = "";
+		uint64_t coincidenceWindow = 0;
+		uint16_t bitflags = 0;
+	};
+
+	DataSource* CreateDataSource(const SourceArgs& args);
 
 	std::string ConvertDataSourceTypeToString(DataSource::SourceType type);
 }

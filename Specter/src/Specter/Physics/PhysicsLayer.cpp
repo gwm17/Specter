@@ -23,7 +23,6 @@ namespace Specter {
 		if (m_activeFlag)
 		{
 			DetachDataSource();
-			DestroyPhysThread();
 		}
 	}
 
@@ -50,17 +49,10 @@ namespace Specter {
 		if(m_activeFlag)
 		{
 			DetachDataSource();
-			DestroyPhysThread();
 		}
 
-		AttachDataSource(event);
+		AttachDataSource(event.GetSourceArgs());
 
-		//If we succesfully attached, fire up a new phys thread
-		if(m_activeFlag)
-		{
-			SPEC_INFO("Starting new analysis thread...");
-			m_physThread = new std::thread(&PhysicsLayer::RunSource, std::ref(*this));
-		}
 		return true;
 	}
 
@@ -70,7 +62,6 @@ namespace Specter {
 		if (m_activeFlag)
 		{
 			DetachDataSource();
-			DestroyPhysThread();
 		}
 		return true;
 	}
@@ -85,34 +76,17 @@ namespace Specter {
 
 	/*Threaded functions*/
 
-	void PhysicsLayer::DestroyPhysThread()
-	{
-		SPEC_PROFILE_FUNCTION();
-		SPEC_INFO("Destroying the analysis thread...");
-		//Join the thread back to the parent (finish up the thread)
-		if(m_physThread != nullptr && m_physThread->joinable())
-		{
-			m_physThread->join();
-		}
-
-		//Free the thread memory
-		if(m_physThread != nullptr)
-		{
-			delete m_physThread;
-			m_physThread = nullptr;
-		}
-		SPEC_INFO("Thread destroyed.");
-	}
-
-	void PhysicsLayer::AttachDataSource(PhysicsStartEvent& event)
+	void PhysicsLayer::AttachDataSource(const SourceArgs& args)
 	{
 		SPEC_PROFILE_FUNCTION();
 		std::scoped_lock<std::mutex> guard(m_sourceMutex); //Shouldn't matter for this, but safety first
-		m_source.reset(CreateDataSource(event.GetSourceLocation(), event.GetSourcePort(), event.GetBitFlags(), event.GetSourceType(), event.GetCoincidenceWindow()));
+		m_source.reset(CreateDataSource(args));
 		if (m_source->IsValid())
 		{
-			SPEC_INFO("Attach successful. Enabling data pull...");
+			SPEC_INFO("Source attached... Starting new analysis thread...");
 			m_activeFlag = true;
+
+			m_physThread = new std::thread(&PhysicsLayer::RunSource, std::ref(*this));
 		}
 		else
 		{
@@ -124,10 +98,18 @@ namespace Specter {
 	void PhysicsLayer::DetachDataSource()
 	{
 		SPEC_PROFILE_FUNCTION();
-		std::scoped_lock<std::mutex> guard(m_sourceMutex);
 		SPEC_INFO("Detaching physics data source...");
+
+		std::scoped_lock<std::mutex> guard(m_sourceMutex);
 		m_activeFlag = false;
 		m_source.reset(nullptr);
+		if (m_physThread != nullptr && m_physThread->joinable())
+		{
+			m_physThread->join();
+		}
+		delete m_physThread;
+		m_physThread = nullptr;
+
 		SPEC_INFO("Detach succesful.");
 	}
 

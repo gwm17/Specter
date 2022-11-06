@@ -30,7 +30,7 @@ namespace Specter {
 			asio::ip::tcp::resolver resolver(m_context);
 			auto end_points = resolver.resolve(hostname, port);
 
-			m_deadline.expires_after(std::chrono::seconds(60));
+			m_deadline.expires_after(std::chrono::seconds(30));
 			asio::async_connect(m_socket, end_points,
 				[this, hostname, port](std::error_code ec, asio::ip::tcp::endpoint endpoint)
 				{
@@ -44,6 +44,7 @@ namespace Specter {
 					else
 					{
 						SPEC_WARN("Unable to connect to CharonClient {0}:{1}" , hostname, port);
+						m_socket.close();
 					}
 				}
 			);
