@@ -64,6 +64,12 @@ namespace Specter {
 	//in the manager. To help with this, Variables are atomics. So unlike Parameters they are implicity thread safe on read and write.
 	//However, this does not mean they can be modified in the analysis! To the AnalysisStage they should be treated as constant, while the UI
 	//should view them as modifiable. These are real god damn dangerous, but I think the power they offer outweighs the risk, for now.
+	struct VariableData
+	{
+		std::atomic<double> value = 0.0;
+		bool isValid = true;
+	};
+
 	class Variable
 	{
 	public:
@@ -71,15 +77,26 @@ namespace Specter {
 		Variable(const std::string& name);
 		~Variable();
 
-		inline void SetValue(double value) { *(m_pdata) = value; }
-		inline double GetValue() { return *(m_pdata); }
+		inline void SetValue(double value) { m_pdata->value = value; }
+		inline double GetValue() { return m_pdata->value; }
 		inline const std::string& GetName() { return m_name; }
 		void SetName(const std::string& name);
 
 		friend class SpectrumManager;
 	private:
-		std::shared_ptr<std::atomic<double>> m_pdata;
+		std::shared_ptr<VariableData> m_pdata;
 		std::string m_name;
+	};
+
+
+	//Similar to parameters are scalers. Scalers are basically just counters tied to specific
+	//data channels in an experiment. They can be quite useful for checking the status of
+	//various experimental components. In our implementation, simply bind a Scaler as you would do for a
+	//Parameter, and then call the Increment() function when the appropriate data channel is present.
+	struct ScalerData
+	{
+		std::atomic<uint64_t> value;
+		bool isValid = true;
 	};
 
 	class Scaler
@@ -89,15 +106,15 @@ namespace Specter {
 		Scaler(const std::string& name);
 		~Scaler();
 
-		inline void Increment() { ++(*m_pdata); }
+		inline void Increment() { ++(m_pdata->value); }
 
 		inline const std::string& GetName() { return m_name; }
-		inline uint64_t GetCounts() { return *m_pdata; }
+		inline uint64_t GetCounts() { return m_pdata->value; }
 		void SetName(const std::string& name);
 
 		friend class SpectrumManager;
 	private:
-		std::shared_ptr<std::atomic<uint64_t>> m_pdata;
+		std::shared_ptr<ScalerData> m_pdata;
 		std::string m_name;
 	};
 

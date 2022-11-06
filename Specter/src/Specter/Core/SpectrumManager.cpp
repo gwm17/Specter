@@ -260,7 +260,7 @@ namespace Specter {
 			auto scalerIter = m_scalerMap.find(graph.second->GetScaler());
 			if (scalerIter != m_scalerMap.end())
 			{
-				scalerVal = *(scalerIter->second);
+				scalerVal = scalerIter->second->value;
 				graph.second->UpdatePoints(step, scalerVal);
 			}
 		}
@@ -385,7 +385,7 @@ namespace Specter {
 		auto iter = m_varMap.find(var.GetName());
 		if (iter == m_varMap.end())
 		{
-			m_varMap[var.GetName()].reset(new std::atomic<double>(0.0));
+			m_varMap[var.GetName()].reset(new VariableData());
 		}
 		var.m_pdata = m_varMap[var.GetName()];
 	}
@@ -409,7 +409,7 @@ namespace Specter {
 		auto iter = m_scalerMap.find(scaler.GetName());
 		if (iter == m_scalerMap.end())
 		{
-			m_scalerMap[scaler.GetName()].reset(new std::atomic<uint64_t>(0));
+			m_scalerMap[scaler.GetName()].reset(new ScalerData());
 		}
 		scaler.m_pdata = m_scalerMap[scaler.GetName()];
 
@@ -427,7 +427,7 @@ namespace Specter {
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
 		for (auto& scaler : m_scalerMap)
 		{
-			*(scaler.second) = 0;
+			scaler.second->value = 0;
 		}
 	}
 

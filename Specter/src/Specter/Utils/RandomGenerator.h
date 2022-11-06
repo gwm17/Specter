@@ -52,9 +52,9 @@ namespace Specter {
 		}
 
 	private:
-		static std::mt19937& GetGenerator()
+		static std::mt19937_64& GetGenerator()
 		{
-			static thread_local std::mt19937 generator((std::random_device())());
+			static thread_local std::mt19937_64 generator((std::random_device())());
 			return generator;
 		}
 	};

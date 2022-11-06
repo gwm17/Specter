@@ -141,7 +141,7 @@ namespace Specter {
 				for (auto& stage : m_physStack)
 					stage->AnalyzePhysicsEvent(event);
 
-				//Now that the analysis stack has filled all our NavParameters with data, update the histogram counts
+				//Now that the analysis stack has filled all our Parameters with data, update the histogram counts
 				m_manager->UpdateHistograms();
 				//Invalidate all parameters to get ready for next event
 				m_manager->InvalidateParameters();

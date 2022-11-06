@@ -113,8 +113,8 @@ namespace Specter {
 		std::unordered_map<std::string, std::shared_ptr<Histogram>> m_histoMap;
 		std::unordered_map<std::string, std::shared_ptr<Cut>> m_cutMap;
 		std::unordered_map<std::string, std::shared_ptr<ParameterData>> m_paramMap;
-		std::unordered_map<std::string, std::shared_ptr<std::atomic<double>>> m_varMap;
-		std::unordered_map<std::string, std::shared_ptr<std::atomic<uint64_t>>> m_scalerMap;
+		std::unordered_map<std::string, std::shared_ptr<VariableData>> m_varMap;
+		std::unordered_map<std::string, std::shared_ptr<ScalerData>> m_scalerMap;
 		std::unordered_map<std::string, std::shared_ptr<ScalerGraph>> m_graphMap;
 
 		HistogramArgs m_nullHistoResult; //For handling bad query

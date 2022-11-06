@@ -26,7 +26,7 @@ namespace Specter {
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
 		//Report graphics status
-		SPEC_TRACE("Loaded OpenGL with glad Init status {0}", status);
+		SPEC_INFO("Loaded OpenGL with glad Init status {0}", status);
 
 		SPEC_INFO("Loaded OpenGL renderer");
 		SPEC_INFO("Vendor: {0}", glGetString(GL_VENDOR));
