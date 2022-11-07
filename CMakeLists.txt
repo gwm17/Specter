@@ -11,8 +11,12 @@ endif()
 
 project(Specter)
 
+option(BUILD_SPECPROJECT "Build SpecProject template" Off)
+
 set(SPECTER_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(SPECTER_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 add_subdirectory(Specter)
-add_subdirectory(SpecProject)
+if(BUILD_SPECPROJECT)
+    add_subdirectory(SpecProject)
+endif()
