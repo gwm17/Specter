@@ -37,7 +37,7 @@ namespace Specter {
     void CharonOnlineSource::UnpackRawBuffer()
     {
         uint32_t* iter = (uint32_t*) m_rawBuffer.data();
-        uint32_t* end = iter + m_rawBuffer.size();
+        uint32_t* end = iter + m_rawBuffer.size() / sizeof(uint32_t);
         bool wasUnpacked = false;
 
         UnpackerResult result;
