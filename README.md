@@ -4,7 +4,8 @@ Specter is a cross-platform Dear ImGui/ImPlot based data visualization tool desi
 spectra, applying cuts and gates graphically to spectra, and has a customizable analysis system. Specter is focused on providing a clean, pretty UI with good performance required by demainding experimental setups.
 
 The only external dependencies are OpenGL development headers, as OpenGL is the rendering API, and the
-C++17 standard library. All other dependencies are included as git submodules in the vendor directory. The current state of the library is such that the only readily developed data source type is for CAEN's CoMPASS DAQ for use with their digitizer modules. There are tentative plans to extend the sources to other DAQ frameworks.
+C++20 standard library. All other dependencies are included as git submodules in the vendor directory. The current state of the library is such that the only readily developed
+data source type is for CAEN's CoMPASS DAQ for use with their digitizer modules. There are tentative plans to extend the sources to other DAQ frameworks.
 
 This project would not be possible with out the amazing online tutorials of [@TheCherno](https://github.com/TheCherno) and in particular his Hazel tutorials, which much of the application model and basically
 all of the renderer is based off of ([Hazel](https://github.com/TheCherno/Hazel)). I highly recommend checking out his work to anyone who is interested in projects like this, or just learning more about C++.
@@ -21,20 +22,28 @@ Specter uses CMake as its build system. If you are unfamiliar with CMake, buildi
 - `mkdir build`
 - `cd build && cmake .. && make -j 4 && cd ..`
 
-This will build Specter and the example SpecProject, placing the Specter library in the created `lib` directory and the SpecProject executable in the created `bin` directory.
+By default, only the static library Specter is built. If you want to build the example project (SpecProject) as well, replace the previous CMake command with:
 
-Note: On Linux distributions, typically Mesa OpenGL and X-window related header files are not installed by default. These can be installed using whatever package manager your distribution uses. For example, on Debian family distributions the necessary files can be installed using `sudo apt install libgl1 libgl1-mesa-dev libglu1-mesa libglu1-mesa-dev xorg-dev mesa-utils` which should fill out all of the dependencies. If this doesn't seem to work, check your distribution related documentation for OpenGL an X11 dependencies.
+- `cd build && cmake -DBUILD_SPECPROJECT=On .. && make -j 4 && cd ..`
 
-## Running Specter
+Note: On Linux distributions, typically Mesa OpenGL and X-window related header files are not installed by default. These can be installed using whatever package manager your distribution uses.
+For example, on Debian family distributions the necessary files can be installed using `sudo apt install libgl1 libgl1-mesa-dev libglu1-mesa libglu1-mesa-dev xorg-dev mesa-utils` which should fill out all of the
+dependencies. If this doesn't seem to work, check your distribution related documentation for OpenGL an X11 dependencies.
 
-Once Specter and SpecProject are built, simply run SpecProject either through an IDE or by moving to the `bin` directory of the repository and executing `SpecProject`. Note that the program is SpecProject. Specter is just a library/framework. Additionally, Specter depends on several resources (fonts, images, etc). These are stored in the `SpecProject` directory, and so running Specter from anywhere other than the `bin` or `SpecProject` directory will usually result in a crash. If needed this behavior can be changed by modifying the code in SpecProject.
+## Using Specter
+Specter is simply a library framework for making a GUI data analysis program. In the Specter repository there is an example of a project using Specter (SpecProject) designed around the SESPS analysis pipeline at
+Florida State University. This can be used as a template from which more complex projects can be built. Typically, one would install Specter, and then create a separate project for the actual program. To link Specter
+and all the necessary include paths and library paths, add the Specter repository as a subdirectory to your CMake project and add Specter as a library to link to your project executable.
 
-SpecProject is an example showing what a typical implementation might look like, based on the Super-Enge Split-Pole Spectrograph at Florida State University. This can be used as a launching point for a project, or you can link to Specter your self. Note that if you want to link to Specter yourself, its important that you copy the resources directory to your project, as this contains the icons and font used by Specter. The resources should be placed wherever your program will be run from (the runtime directory).
+If one wants to build the example project, set the CMake option BUILD_SPECPROJECT to On when running CMake for Specter. Otherwise, only the Specter library will be built.
 
-Note: As Specter is still very early in development, the default build configuration is Debug. If you are actually going to use it, you will want to make sure that you switch to building in Release configuration otherwise performance may be poor.
+Note that your project will need to copy the Assets folder (located in SpecProject) to the runtime location of your project executable.
 
 ## Suppported data sources
-Specter supports CAEN data sources (binary data files fully supported, online is a work in progress) and Daqromancy data sources (untested as of yet)
+Specter supports CAEN data sources (binary data files fully supported, online is a work in progress) and Daqromancy data sources (untested as of yet) and nscldaq data transmitted by the Charon server.
 
 ### Status as of Aug 2022
-Unfortunately, at the time of writing, CoMPASS does not fully support the use of external data analysis. CoMPASS versions 1.3-2.0 have a data socket, which can not be accessed outside of the localhost, meaning that use with Specter generally requires an additional server broadcasting the data to the machine running Specter, which is non-trivial. CoMPASS began supporting a public data socket as of version 2.1, however, it is now by default a time-sorted data socket. The time-sorting operation is so inefficient that any significant data rate on the aquisition basically results in a soft crash of CoMPASS. Currently there is no option to turn off the time sorting on the data socket. CAEN has been alerted to this issue, so hopefully this will be rectified shortly.
+Unfortunately, at the time of writing, CoMPASS does not fully support the use of external data analysis. CoMPASS versions 1.3-2.0 have a data socket, which can not be accessed outside of the localhost,
+meaning that use with Specter generally requires an additional server broadcasting the data to the machine running Specter, which is non-trivial. CoMPASS began supporting a public data socket as of version 2.1,
+however, it is now by default a time-sorted data socket. The time-sorting operation is so inefficient that any significant data rate on the aquisition basically results in a soft crash of CoMPASS.
+Currently there is no option to turn off the time sorting on the data socket. CAEN has been alerted to this issue, so hopefully this will be rectified shortly.
