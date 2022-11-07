@@ -22,7 +22,7 @@ namespace Specter {
 
         virtual void UnpackDatum(uint32_t* word) override;
 
-        static constexpr uint32_t s_typeMask = 0xc000000;
+        static constexpr uint32_t s_typeMask = 0xc0000000;
         static constexpr uint32_t s_typeHeader = 0x40000000;
         static constexpr uint32_t s_typeBody = 0x00000000;
         static constexpr uint32_t s_typeEnd = 0xc0000000;
