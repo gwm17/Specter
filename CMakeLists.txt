@@ -15,7 +15,8 @@ option(BUILD_SPECPROJECT "Build SpecProject template" Off)
 
 if(NOT DEFINED SPECTER_BINARY_DIR)
     set(SPECTER_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-elseif(NOT DEFINED SPECTER_LIBRARY_DIR) # optional block, can be repeated
+endif()
+if(NOT DEFINED SPECTER_LIBRARY_DIR) # optional block, can be repeated
     set(SPECTER_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 endif()
 
