@@ -1,4 +1,5 @@
 add_subdirectory(vendor/glad)
+set(GLFW_INSTALL Off CACHE BOOL "Generate installation target" )
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/imgui)
 

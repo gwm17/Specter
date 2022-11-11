@@ -4,8 +4,7 @@ Specter is a cross-platform Dear ImGui/ImPlot based data visualization tool desi
 spectra, applying cuts and gates graphically to spectra, and has a customizable analysis system. Specter is focused on providing a clean, pretty UI with good performance required by demainding experimental setups.
 
 The only external dependencies are OpenGL development headers, as OpenGL is the rendering API, and the
-C++20 standard library. All other dependencies are included as git submodules in the vendor directory. The current state of the library is such that the only readily developed
-data source type is for CAEN's CoMPASS DAQ for use with their digitizer modules. There are tentative plans to extend the sources to other DAQ frameworks.
+C++20 standard library. All other dependencies are included as git submodules in the vendor directory.
 
 This project would not be possible with out the amazing online tutorials of [@TheCherno](https://github.com/TheCherno) and in particular his Hazel tutorials, which much of the application model and basically
 all of the renderer is based off of ([Hazel](https://github.com/TheCherno/Hazel)). I highly recommend checking out his work to anyone who is interested in projects like this, or just learning more about C++.
@@ -20,11 +19,12 @@ Specter should be cloned from github using `git clone --recursive https://github
 Specter uses CMake as its build system. If you are unfamiliar with CMake, building Specter is very straightforward. From within the Specter repository run the following commands:
 
 - `mkdir build`
-- `cd build && cmake .. && make -j 4 && cd ..`
+- `cd build && cmake .. && make -j 4 && make install`
 
-By default, only the static library Specter is built. If you want to build the example project (SpecProject) as well, replace the previous CMake command with:
+This builds and installs the Specter library. By default, Specter is installed into the local repository in the lib directory. If you want to install Specter along global resource paths, you will need to modify
+the Specter CMakeLists.txt.
 
-- `cd build && cmake -DBUILD_SPECPROJECT=On .. && make -j 4 && cd ..`
+See the SpecProject README for information on how to build the example project (and link Specter to a user made project).
 
 Note: On Linux distributions, typically Mesa OpenGL and X-window related header files are not installed by default. These can be installed using whatever package manager your distribution uses.
 For example, on Debian family distributions the necessary files can be installed using `sudo apt install libgl1 libgl1-mesa-dev libglu1-mesa libglu1-mesa-dev xorg-dev mesa-utils` which should fill out all of the
@@ -32,10 +32,8 @@ dependencies. If this doesn't seem to work, check your distribution related docu
 
 ## Using Specter
 Specter is simply a library framework for making a GUI data analysis program. In the Specter repository there is an example of a project using Specter (SpecProject) designed around the SESPS analysis pipeline at
-Florida State University. This can be used as a template from which more complex projects can be built. Typically, one would install Specter, and then create a separate project for the actual program. To link Specter
-and all the necessary include paths and library paths, add the Specter repository as a subdirectory to your CMake project and add Specter as a library to link to your project executable.
-
-If one wants to build the example project, set the CMake option BUILD_SPECPROJECT to On when running CMake for Specter. Otherwise, only the Specter library will be built.
+Florida State University. This can be used as a template from which more complex projects can be built. Typically, one would install Specter, and then create a separate project for the actual program. To link Specter using
+CMake, one can use the `find_package()` command. If the standard install is run, you will also need to pass the `PATHS <your_path_to_Specter>` argument to the `find_package()` command. See SpecProject README and CMakeLists for more details.
 
 Note that your project will need to copy the Assets folder (located in SpecProject) to the runtime location of your project executable.
 

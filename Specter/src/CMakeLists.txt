@@ -1,16 +1,24 @@
 add_library(Specter STATIC)
 
 target_include_directories(Specter
-    SYSTEM PUBLIC ../vendor/asio/asio/include
-    PUBLIC ../vendor/imgui
-    ../vendor/implot
-    ../vendor/glad/include
-    ../vendor/glfw/include
-    ../vendor/glm
-    ../vendor/IconFontCppHeaders
-    ../vendor/spdlog/include
-    ../vendor/yaml-cpp/inlcude/yaml-cpp/
-    ./
+    SYSTEM PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/asio/asio/include> $<INSTALL_INTERFACE:Specter/vendor/asio/asio/include>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/imgui> $<INSTALL_INTERFACE:Specter/vendor/imgui>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/implot>
+    $<INSTALL_INTERFACE:Specter/vendor/implot>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/glad/include>
+    $<INSTALL_INTERFACE:Specter/vendor/glad/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/glfw/include>
+    $<INSTALL_INTERFACE:Specter/vendor/glfw/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/glm>
+    $<INSTALL_INTERFACE:Specter/vendor/glm>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/IconFontCppHeaders>
+    $<INSTALL_INTERFACE:Specter/vendor/IconFontCppHeaders>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/spdlog/include>
+    $<INSTALL_INTERFACE:Specter/vendor/spdlog/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../vendor/yaml-cpp/include/yaml-cpp/>
+    $<INSTALL_INTERFACE:Specter/vendor/yaml-cpp/include/yaml-cpp/>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/./>
+    $<INSTALL_INTERFACE:Specter/src/>
 )
 
 target_precompile_headers(Specter PRIVATE specpch.h)
@@ -156,4 +164,24 @@ endif()
 #Some extra defs
 target_compile_definitions(Specter PRIVATE GLFW_INCLUDE_NONE YAML_CPP_STATIC_DEFINE IMGUI_IMPL_OPENGL_LOADER_GLAD IMPLOT_BACKEND_ENABLE_OPENGL3)
 
-set_target_properties(Specter PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${SPECTER_LIBRARY_DIR})
+#set_target_properties(Specter PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${SPECTER_LIBRARY_DIR})
+
+install(TARGETS Specter imgui glfw glad yaml-cpp DaqGrimoire
+    EXPORT SpecterTargets
+    LIBRARY DESTINATION lib/
+    ARCHIVE DESTINATION lib/
+    RUNTIME DESTINATION bin/
+)
+
+install(EXPORT SpecterTargets
+    FILE SpecterTargets.cmake
+    NAMESPACE Specter::
+    DESTINATION lib/cmake/Specter
+)
+
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/SpecterConfig.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/SpecterConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Specter
+)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SpecterConfig.cmake" DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Specter)
