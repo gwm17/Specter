@@ -24,7 +24,7 @@ target_include_directories(SpecProject PUBLIC
 )
 
 target_sources(SpecProject PRIVATE
-    ./src/main.cpp
+    ./src/SPSApp.cpp
     ./src/MassMap.cpp
     ./src/MassMap.h
     ./src/SPSAnalysisStage.cpp
