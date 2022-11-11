@@ -28,7 +28,7 @@ namespace Specter {
 	struct ApplicationArgs
 	{
 		std::string name = "";
-		std::string runtimePath = "";
+		std::filesystem::path runtimePath = "";
 	};
 
 	class Application

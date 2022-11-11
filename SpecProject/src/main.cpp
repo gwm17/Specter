@@ -29,14 +29,11 @@ Specter::Application* Specter::CreateApplication(const ApplicationArgs& args) { 
 int main(int argc, const char** argv)
 {
 	Specter::Logger::Init();
-	SPEC_TRACE("Logger Initialized!");
+	SPEC_INFO("Logger Initialized");
 
 	Specter::ApplicationArgs args;
 	args.name = "SPS Specter";
-	if (std::filesystem::current_path().string().find("SpecProject") != std::string::npos)
-		args.runtimePath = ""; //Dont modify runtime path, already points to SpecProject
-	else
-		args.runtimePath = "../SpecProject"; //Assume we're attempting to run from bin dir? Technically would also work for any new subproject made by same method as SpecProject
+	args.runtimePath = std::filesystem::current_path();
 
 	SPEC_PROFILE_BEGIN_SESSION("Startup", "navprofile_startup.json");
 	auto app = Specter::CreateApplication(args);

@@ -23,28 +23,12 @@ target_sources(SpecProject PRIVATE
     ./src/SPSInputLayer.h
 )
 
-set(THREADS_PREFER_PTHREAD_FLAG On)
-find_package(Threads REQUIRED)
-target_link_libraries(SpecProject PRIVATE Specter Threads::Threads glad glfw imgui)
-
-if(APPLE)
-    target_link_libraries(SpecProject PRIVATE "-framework Cocoa" "-framework CoreVideo" "-framework IOKit" "-framework OpenGL" "-framework Carbon" ${CMAKE_DL_LIBS})
-    target_compile_definitions(SpecProject PRIVATE SPEC_APPLE)
-elseif(UNIX)
-    target_link_libraries(SpecProject PRIVATE libGL.so libX11.so ${CMAKE_DL_LIBS})
-    target_compile_definitions(SpecProject PRIVATE SPEC_LINUX)
-elseif(MSVC)
-    target_link_libraries(SpecProject PRIVATE opengl32.lib)
-    target_compile_definitions(SpecProject PRIVATE SPEC_WINDOWS)
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_definitions(SpecProject PRIVATE SPEC_RELEASE)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(SpecProject PRIVATE SPEC_DEBUG)
-endif()
+target_link_libraries(SpecProject PRIVATE Specter)
 
 set_target_properties(SpecProject PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SPECTER_BINARY_DIR})
 
-#No longer needed, but maybe come back if I don't like the programatic solution
-#add_custom_command(TARGET SpecProject POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Assets ${SPECTER_BINARY_DIR}/Assets)
+add_custom_command(TARGET SpecProject
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink
+    ${CMAKE_CURRENT_SOURCE_DIR}/Assets
+    ${SPECTER_BINARY_DIR}/Assets
+)

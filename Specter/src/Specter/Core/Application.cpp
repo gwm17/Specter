@@ -25,9 +25,12 @@ namespace Specter {
 
 		s_instance = this;
 
-		//Set the runtime path so that we can find our assets
-		if(!m_args.runtimePath.empty())
-			std::filesystem::current_path(m_args.runtimePath);
+		//Check that there is an Assets directory in our runtime
+		std::filesystem::path assetPath = args.runtimePath / "Assets";
+		if(!std::filesystem::exists(assetPath))
+		{
+			SPEC_WARN("No Assets directory detected in runtime path!");
+		}
 
 		SPEC_INFO("Runtime Directory: {0}", std::filesystem::current_path().string());
 
