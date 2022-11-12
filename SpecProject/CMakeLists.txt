@@ -12,9 +12,10 @@ endif()
 project(SpecProject)
 
 set(SPECPROJECT_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../bin)
+set(SPECTER_CONFIG_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../lib/cmake)
 
-#Use this to find Specter and its libraries. Specify the path to the Specter/lib dir after the PATHS keyword
-find_package(Specter REQUIRED PATHS ../lib)
+#Use this to find Specter and its libraries. Specify the path to the Specter/lib & Specter/lib/cmake dir after the PATHS keyword (handles windows/linux usecases)
+find_package(Specter REQUIRED PATHS ../lib ../lib/cmake)
 
 add_executable(SpecProject)
 
@@ -37,9 +38,17 @@ target_link_libraries(SpecProject PRIVATE Specter::Specter)
 set_target_properties(SpecProject PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SPECPROJECT_BINARY_DIR})
 
 if(NOT EXISTS "${SPECPROJECT_BINARY_DIR}/Assets")
-    add_custom_command(TARGET SpecProject
-        POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink
-        ${CMAKE_CURRENT_SOURCE_DIR}/Assets
-        ${SPECPROJECT_BINARY_DIR}/Assets
-    )
+    if(MSVC)
+        add_custom_command(TARGET SpecProject
+            POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_CURRENT_SOURCE_DIR}/Assets
+            ${SPECPROJECT_BINARY_DIR}/Assets
+        )
+    else()
+        add_custom_command(TARGET SpecProject
+            POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink
+            ${CMAKE_CURRENT_SOURCE_DIR}/Assets
+            ${SPECPROJECT_BINARY_DIR}/Assets
+        )
+    endif()
 endif()
