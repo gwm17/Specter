@@ -124,6 +124,7 @@ target_sources(Specter PRIVATE
     Specter/Utils/Functions.cpp
     Specter/Utils/RandomGenerator.h
     Specter/Utils/ThreadSafeQueue.h
+    Specter/Core/EntryPoint.h
 )
 
 #ImPlot sources
