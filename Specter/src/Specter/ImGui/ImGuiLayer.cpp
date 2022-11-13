@@ -17,6 +17,9 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+//Use embedded fonts
+#include "Roboto-Regular.h"
+#include "FA-Solid.h"
 #include "IconsFontAwesome5.h"
 
 namespace Specter {
@@ -69,8 +72,8 @@ namespace Specter {
 		//config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
 		config.PixelSnapH = true;
 		static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		io.Fonts->AddFontFromFileTTF("Assets/fonts/Roboto-Regular.ttf", 16.0f, &latin_config, io.Fonts->GetGlyphRangesDefault());
-		io.Fonts->AddFontFromFileTTF("Assets/fonts/fa-solid-900.ttf", 16.0f, &config, icon_ranges);
+		io.Fonts->AddFontFromMemoryTTF(Roboto_Regular_ttf, Roboto_Regular_ttf_len, 16.0f, &latin_config, io.Fonts->GetGlyphRangesDefault());
+		io.Fonts->AddFontFromMemoryTTF(fa_solid_900_ttf, fa_solid_900_ttf_len, 16.0f, &config, icon_ranges);
 
 		//ImPlot styling
 		ImPlot::GetStyle().FillAlpha = 0.75;
