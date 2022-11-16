@@ -26,8 +26,8 @@ namespace Specter {
 		SpectrumSerializer(const std::string& filepath);
 		~SpectrumSerializer();
 
-		void SerializeData(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList);
-		void DeserializeData(const SpectrumManager::Ref& manager);
+		void SerializeData(const SpectrumManager::Ref& manager);
+		void DeserializeData(SpectrumManager::Ref& manager);
 
 		inline const std::string& GetFilename() { return m_filename; }
 

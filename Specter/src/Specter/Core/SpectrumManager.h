@@ -81,6 +81,7 @@ namespace Specter {
 
 		/*Variable Functions*/
 		void BindVariable(Variable& var);
+		double GetVariableData(const std::string& variableName); //Only for use with SpectrumSerializer
 		std::vector<std::string> GetListOfVariables();
 		/********************/
 

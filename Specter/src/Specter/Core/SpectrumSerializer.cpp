@@ -18,7 +18,7 @@
 
 namespace Specter {
 
-	static void SerializeCut(YAML::Emitter& output, const std::shared_ptr<SpectrumManager>& manager, const CutArgs& args)
+	static void SerializeCut(YAML::Emitter& output, const SpectrumManager::Ref& manager, const CutArgs& args)
 	{
 		output << YAML::BeginMap;
 		output << YAML::Key << "Cut" << YAML::Value << args.name;
@@ -49,7 +49,7 @@ namespace Specter {
 		output << YAML::EndMap;
 	}
 
-	static void SerializeHistogram(YAML::Emitter& output, const std::shared_ptr<SpectrumManager>& manager, const HistogramArgs& args)
+	static void SerializeHistogram(YAML::Emitter& output, const SpectrumManager::Ref& manager, const HistogramArgs& args)
 	{
 		output << YAML::BeginMap;
 		output << YAML::Key << "Histogram" << YAML::Value << args.name;
@@ -73,6 +73,14 @@ namespace Specter {
 
 	}
 
+	static void SerializeVariable(YAML::Emitter& output, const SpectrumManager::Ref& manager, const std::string& variable)
+	{
+		output << YAML::BeginMap;
+		output << YAML::Key << "Variable" << YAML::Value << variable;
+		output << YAML::Key << "Value" << YAML::Value << manager->GetVariableData(variable);
+		output << YAML::EndMap;
+	}
+
 	SpectrumSerializer::SpectrumSerializer(const std::string& filepath) :
 		m_filename(filepath)
 	{
@@ -80,7 +88,7 @@ namespace Specter {
 
 	SpectrumSerializer::~SpectrumSerializer() {}
 
-	void SpectrumSerializer::SerializeData(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList)
+	void SpectrumSerializer::SerializeData(const SpectrumManager::Ref& manager)
 	{
 		std::ofstream output(m_filename);
 		if (!output.is_open())
@@ -89,8 +97,13 @@ namespace Specter {
 			return;
 		}
 
+		auto cutList = manager->GetListOfCuts();
+		auto histoList = manager->GetListOfHistograms();
+		auto varList = manager->GetListOfVariables();
+
 		YAML::Emitter yamlStream;
 		yamlStream << YAML::BeginMap;
+
 		yamlStream << YAML::Key << "Cuts" << YAML::Value << YAML::BeginSeq;
 		for (auto& cut : cutList)
 		{
@@ -102,6 +115,12 @@ namespace Specter {
 		{
 			SerializeHistogram(yamlStream, manager, histo);
 		}
+		yamlStream << YAML::EndSeq;
+		yamlStream << YAML::Key << "Variables" << YAML::Value << YAML::BeginSeq;
+		for (auto& var : varList)
+		{
+			SerializeVariable(yamlStream, manager, var);
+		}
 		yamlStream << YAML::EndSeq << YAML::EndMap;
 
 		output << yamlStream.c_str();
@@ -109,7 +128,7 @@ namespace Specter {
 		output.close();
 	}
 
-	void SpectrumSerializer::DeserializeData(const SpectrumManager::Ref& manager)
+	void SpectrumSerializer::DeserializeData(SpectrumManager::Ref& manager)
 	{
 		manager->RemoveAllSpectra(); //When loading in, we remove all extant data, to avoid any potential collisions.
 
@@ -175,6 +194,16 @@ namespace Specter {
 				{
 					manager->AddHistogram(tempArgs);
 				}
+			}
+		}
+		auto vars = data["Variables"];
+		if (vars)
+		{
+			for (const auto& var : vars)
+			{
+				Variable tempVar(var["Variable"].as<std::string>());
+				manager->BindVariable(tempVar);
+				tempVar.SetValue(var["Value"].as<double>());
 			}
 		}
 

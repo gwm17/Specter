@@ -197,7 +197,7 @@ namespace Specter {
         }
 
         //Render all of our sub-windows, dialogs, panels, etc
-        auto fd_result = m_fileDialog.RenderFileDialog(".spec");
+        auto fd_result = m_fileDialog.RenderFileDialog(".yaml");
         if (!fd_result.first.empty())
         {
             switch (fd_result.second)
@@ -214,7 +214,7 @@ namespace Specter {
                 {
                     SPEC_INFO("Found a Save File! {0}", fd_result.first);
                     SpectrumSerializer serializer(fd_result.first);
-                    serializer.SerializeData(m_manager, m_histoList, m_cutList);
+                    serializer.SerializeData(m_manager);
                     break;
                 }
             }

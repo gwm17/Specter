@@ -390,6 +390,18 @@ namespace Specter {
 		var.m_pdata = m_varMap[var.GetName()];
 	}
 
+	//Only for use with SpectrumSerializer
+	double SpectrumManager::GetVariableData(const std::string& variable)
+	{
+		std::scoped_lock<std::mutex> guard(m_managerMutex);
+		auto iter = m_varMap.find(variable);
+		if (iter != m_varMap.end())
+		{
+			return iter->second->value;
+		}
+		return 0.0;
+	}
+
 	std::vector<std::string> SpectrumManager::GetListOfVariables()
 	{
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
