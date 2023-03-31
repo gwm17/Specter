@@ -12,6 +12,7 @@
 #include "Daqromancy/DYFileSource.h"
 #include "Daqromancy/DYOnlineSource.h"
 #include "nscldaq/CharonOnlineSource.h"
+#include "ritual/RitualOnlineSource.h"
 
 namespace Specter {
 
@@ -25,6 +26,7 @@ namespace Specter {
 			case DataSource::SourceType::DaqromancyOffline: return new DYFileSource(args.location, args.coincidenceWindow);
 			case DataSource::SourceType::DaqromancyOnline: return new DYOnlineSource(args.location, args.port, args.coincidenceWindow);
 			case DataSource::SourceType::CharonOnline: return new CharonOnlineSource(args.location, args.port);
+			case DataSource::SourceType::RitualOnline: return new RitualOnlineSource(args.location, args.port, args.coincidenceWindow);
 			case DataSource::SourceType::None: return nullptr;
 		}
 		SPEC_WARN("Invalid DataSourceType at CreateDataSource!");
@@ -41,6 +43,7 @@ namespace Specter {
 			case DataSource::SourceType::DaqromancyOffline: return "DaqromancyOffline";
 			case DataSource::SourceType::DaqromancyOnline: return "DaqromancyOnline";
 			case DataSource::SourceType::CharonOnline: return "CharonOnline";
+			case DataSource::SourceType::RitualOnline: return "RitualOnline";
 		}
 
 		return "None";

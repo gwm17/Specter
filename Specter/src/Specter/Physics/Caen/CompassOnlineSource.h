@@ -40,11 +40,13 @@ namespace Specter {
 		virtual ~CompassOnlineSource() override;
 
 		virtual void ProcessData() override;
-		virtual const std::vector<SpecEvent>& GetEvents() override
+		virtual std::vector<SpecEvent> GetEvents() override
 		{
-			m_isEventReady = false;
-			return m_eventBuilder.GetReadyEvents();
+			auto temp = m_eventBuilder.GetReadyEvents();
+			m_eventBuilder.ClearReadyEvents();
+			return temp;
 		}
+		virtual const bool IsEventReady() const override { return m_eventBuilder.IsEventReady(); }
 
 	private:
 		void InitConnection(const std::string& hostname, const std::string& port);

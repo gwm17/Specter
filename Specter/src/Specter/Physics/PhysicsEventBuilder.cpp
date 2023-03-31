@@ -26,16 +26,16 @@ namespace Specter {
 	{
 	}
 
-	bool PhysicsEventBuilder::AddDatum(const SpecData& datum)
+	void PhysicsEventBuilder::AddDatum(const SpecData& datum)
 	{
 		SPEC_PROFILE_FUNCTION();
 		if (datum.timestamp == 0) //Ignore empty data (need a valid timestamp)
-			return false;
+			return;
 
 		m_dataBuffer[m_bufferIndex] = datum;
 		m_bufferIndex++;
 		if (m_bufferIndex < s_maxDataBuffer) //If we haven't filled the buffer keep going
-			return false;
+			return;
 		else if (m_sortFlag)
 			std::sort(m_dataBuffer.begin(), m_dataBuffer.end(), [](SpecData& i, SpecData& j) { return i.timestamp < j.timestamp; });
 		
@@ -59,10 +59,9 @@ namespace Specter {
 			}
 		}
 		m_bufferIndex = 0;
-		return true;
 	}
 
-	const std::vector<SpecEvent>& PhysicsEventBuilder::GetReadyEvents() const
+	std::vector<SpecEvent> PhysicsEventBuilder::GetReadyEvents() const
 	{
 		return m_readyEvents;
 	}

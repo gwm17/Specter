@@ -31,7 +31,7 @@ namespace Specter {
 		SPEC_PROFILE_FUNCTION();
 		static bool result = false;
 		static std::vector<DataSource::SourceType> availTypes = { DataSource::SourceType::CompassOnline, DataSource::SourceType::CompassOffline, DataSource::SourceType::DaqromancyOnline,
-																  DataSource::SourceType::DaqromancyOffline, DataSource::SourceType::CharonOnline };
+																  DataSource::SourceType::DaqromancyOffline, DataSource::SourceType::CharonOnline, DataSource::SourceType::RitualOnline };
 		result = false;
 		if (m_openFlag)
 		{
@@ -113,6 +113,12 @@ namespace Specter {
 			{
 				ImGui::InputText("Hostname", &m_args.location);
 				ImGui::InputText("Port", &m_args.port);
+			}
+			else if (m_args.type == DataSource::SourceType::RitualOnline)
+			{
+				ImGui::InputText("Hostname", &m_args.location);
+				ImGui::InputText("Port", &m_args.port);
+				ImGui::InputScalar("Coinc. Window (ps)", ImGuiDataType_U64, &m_args.coincidenceWindow);
 			}
 
 			if (ImGui::Button("Ok"))

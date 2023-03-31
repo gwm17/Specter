@@ -125,6 +125,10 @@ target_sources(Specter PRIVATE
     Specter/Utils/RandomGenerator.h
     Specter/Utils/ThreadSafeQueue.h
     Specter/Core/EntryPoint.h
+    Specter/Physics/ritual/RitualOnlineSource.h
+    Specter/Physics/ritual/RitualOnlineSource.cpp
+    Specter/Physics/ritual/RitualClient.cpp
+    Specter/Physics/ritual/RitualClient.h
 )
 
 #ImPlot sources

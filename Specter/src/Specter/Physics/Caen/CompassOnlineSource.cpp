@@ -80,10 +80,7 @@ namespace Specter {
 		m_datum.timestamp = m_currentHit.timestamp;
 		m_datum.id = Utilities::GetBoardChannelUUID(m_currentHit.board, m_currentHit.channel);
 
-		if(m_eventBuilder.AddDatum(m_datum))
-		{
-			m_isEventReady = true;
-		}
+		m_eventBuilder.AddDatum(m_datum);
 	}
 
 	void CompassOnlineSource::FillBuffer()

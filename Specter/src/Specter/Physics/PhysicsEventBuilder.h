@@ -21,15 +21,17 @@ namespace Specter {
 		PhysicsEventBuilder();
 		PhysicsEventBuilder(uint64_t windowSize);
 		~PhysicsEventBuilder();
-		inline void SetCoincidenceWindow(uint64_t windowSize) { m_coincWindow = windowSize; }
-		inline void SetSortFlag(bool flag) { m_sortFlag = flag; }
-		inline void ClearAll() // reset all internal structures
+		void SetCoincidenceWindow(uint64_t windowSize) { m_coincWindow = windowSize; }
+		void SetSortFlag(bool flag) { m_sortFlag = flag; }
+		void ClearAll() // reset all internal structures
 		{
 			m_bufferIndex = 0;
 			m_readyEvents.clear();
 		}
-		bool AddDatum(const SpecData& datum);
-		const std::vector<SpecEvent>& GetReadyEvents() const;
+		void ClearReadyEvents() { m_readyEvents.clear(); }
+		void AddDatum(const SpecData& datum);
+		bool IsEventReady() const { return !m_readyEvents.empty(); }
+		std::vector<SpecEvent> GetReadyEvents() const;
 
 	private:
 		bool m_sortFlag;

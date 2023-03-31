@@ -28,8 +28,7 @@ namespace Specter {
 			m_datum.shortEnergy = m_dyHit.energyShort;
 			m_datum.timestamp = m_dyHit.timestamp;
 			m_datum.id = Utilities::GetBoardChannelUUID(m_dyHit.board, m_dyHit.channel);
-			if(m_eventBuilder.AddDatum(m_datum))
-				m_isEventReady = true;
+			m_eventBuilder.AddDatum(m_datum);
 		}
 	}
 }

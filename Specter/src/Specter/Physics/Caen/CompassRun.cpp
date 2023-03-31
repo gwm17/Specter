@@ -146,10 +146,7 @@ namespace Specter {
 		m_datum.timestamp = m_hit.timestamp;
 		m_datum.id = Utilities::GetBoardChannelUUID(m_hit.board, m_hit.channel);
 
-		if(m_eventBuilder.AddDatum(m_datum))
-		{
-			m_isEventReady = true;
-		}
+		m_eventBuilder.AddDatum(m_datum);
 	}
 
 }

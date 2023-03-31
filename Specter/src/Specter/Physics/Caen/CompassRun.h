@@ -37,14 +37,16 @@ namespace Specter {
 		CompassRun(const std::string& dir, uint64_t coincidenceWindow);
 		virtual ~CompassRun();
 		virtual void ProcessData() override;
-		virtual const std::vector<SpecEvent>& GetEvents() override
+		virtual std::vector<SpecEvent> GetEvents() override
 		{
-			m_isEventReady = false;
-			return m_eventBuilder.GetReadyEvents();
+			auto temp = m_eventBuilder.GetReadyEvents();
+			m_eventBuilder.ClearReadyEvents();
+			return temp;
 		}
-		inline void SetDirectory(const std::string& dir) { m_directory = dir; CollectFiles(); }
-		inline void SetShiftMap(const std::string& filename) { m_smap.SetFile(filename); }
-	
+		void SetDirectory(const std::string& dir) { m_directory = dir; CollectFiles(); }
+		void SetShiftMap(const std::string& filename) { m_smap.SetFile(filename); }
+		
+		virtual const bool IsEventReady() const override { return m_eventBuilder.IsEventReady(); }
 	
 	private:
 		void CollectFiles();

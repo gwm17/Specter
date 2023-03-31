@@ -25,23 +25,23 @@ namespace Specter {
 			CompassOffline,
 			DaqromancyOnline,
 			DaqromancyOffline,
-			CharonOnline
+			CharonOnline,
+			RitualOnline
 		};
 
 		DataSource(uint64_t coincidenceWindow = 0) :
-			m_validFlag(false), m_isEventReady(false), m_eventBuilder(coincidenceWindow)
+			m_validFlag(false), m_eventBuilder(coincidenceWindow)
 		{
 		}
 
 		virtual ~DataSource() {};
 		virtual void ProcessData() = 0;
-		virtual const std::vector<SpecEvent>& GetEvents() = 0;
-		inline bool IsValid() { return m_validFlag; }
-		inline bool IsEventReady() { return m_isEventReady; }
+		virtual std::vector<SpecEvent> GetEvents() = 0;
+		virtual const bool IsEventReady() const = 0;
+		bool IsValid() { return m_validFlag; }
 
 	protected:
 		bool m_validFlag;
-		bool m_isEventReady;
 		SpecData m_datum;
 		PhysicsEventBuilder m_eventBuilder;
 	};

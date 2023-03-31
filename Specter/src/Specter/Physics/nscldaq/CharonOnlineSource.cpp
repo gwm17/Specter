@@ -5,7 +5,7 @@
 namespace Specter {
 
     CharonOnlineSource::CharonOnlineSource(const std::string& hostname, const std::string& port) :
-        DataSource(0), m_client(hostname, port)
+        DataSource(0), m_isEventReady(false), m_client(hostname, port)
     {
         m_validFlag = m_client.IsConnected();
         m_readyEvents.emplace_back();
