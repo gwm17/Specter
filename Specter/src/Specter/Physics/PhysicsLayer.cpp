@@ -100,9 +100,12 @@ namespace Specter {
 		SPEC_PROFILE_FUNCTION();
 		SPEC_INFO("Detaching physics data source...");
 
-		std::scoped_lock<std::mutex> guard(m_sourceMutex);
 		m_activeFlag = false;
-		m_source.reset(nullptr);
+		{
+			std::scoped_lock<std::mutex> guard(m_sourceMutex);
+			m_source.reset(nullptr);
+		}
+		
 		if (m_physThread != nullptr && m_physThread->joinable())
 		{
 			m_physThread->join();

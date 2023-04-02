@@ -61,14 +61,18 @@ namespace Specter {
 
 	void RitualClient::Disconnect()
 	{
+		SPEC_INFO("Disconnecting...");
 		if (IsConnected())
 		{
 			asio::post(m_context, [this]() { m_socket.close(); });
 		}
+		SPEC_INFO("Disconnected...");
 
+		SPEC_INFO("Stopping...");
 		m_context.stop();
 		if (m_ioThread.joinable())
 			m_ioThread.join();
+		SPEC_INFO("Stopped...");
 	}
 
 	void RitualClient::ReadSize()
