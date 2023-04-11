@@ -21,6 +21,10 @@
 	Credit to nscldaq and in particular NSCLSpecTcl which provided the inspiration for this parameter model.
 
 	GWM -- Feb 2022
+
+	Variables added; similar to Parameters, but intend to be an interface with UI feedback. See SpecProject for examples. -- GWM April 2023
+
+	Scalers added. In nuclear phyiscs, scalers refer to time counters of data, to track the rate of different detector components. -- GWM April 2023
 */
 #include "Parameter.h"
 

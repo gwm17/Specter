@@ -29,8 +29,8 @@ namespace Specter {
 		{
 		}
 
-		inline int GetXSize() { return m_xSize; }
-		inline int GetYSize() { return m_ySize; }
+		int GetXSize() { return m_xSize; }
+		int GetYSize() { return m_ySize; }
 		std::string ToString() const override 
 		{
 			std::stringstream ss;

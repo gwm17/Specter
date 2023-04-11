@@ -23,7 +23,7 @@ namespace Specter {
 	public:
 		static void Init();
 
-		inline static std::shared_ptr<spdlog::logger> GetLogger() { return s_logger; }
+		static std::shared_ptr<spdlog::logger> GetLogger() { return s_logger; }
 
 	private:
 		static std::shared_ptr<spdlog::logger> s_logger;

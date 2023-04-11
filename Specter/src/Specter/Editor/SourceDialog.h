@@ -21,9 +21,9 @@ namespace Specter {
 
 		bool ImGuiRenderSourceDialog();
 
-		inline const SourceArgs& GetArgs() const { return m_args; }
+		const SourceArgs& GetArgs() const { return m_args; }
 
-		inline void OpenSourceDialog() { m_openFlag = true; }
+		void OpenSourceDialog() { m_openFlag = true; }
 	private:
 		bool m_openFlag;
 		SourceArgs m_args;

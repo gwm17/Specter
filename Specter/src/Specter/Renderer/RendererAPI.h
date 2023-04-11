@@ -26,7 +26,7 @@ namespace Specter {
 		virtual void SetClearColor(const glm::vec4& color) = 0;
 		virtual float GetFrameTime() = 0;
 
-		inline static API GetAPI() { return s_api; }
+		static API GetAPI() { return s_api; }
 
 	private:
 		static API s_api;

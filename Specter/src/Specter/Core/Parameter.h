@@ -21,6 +21,10 @@
 	Credit to nscldaq and in particular NSCLSpecTcl which provided the inspiration for this parameter model.
 
 	GWM -- Feb 2022
+
+	Variables added; similar to Parameters, but intend to be an interface with UI feedback. See SpecProject for examples. -- GWM April 2023
+
+	Scalers added. In nuclear phyiscs, scalers refer to time counters of data, to track the rate of different detector components. -- GWM April 2023
 */
 #ifndef PARAMETER_H
 #define PARAMETER_H
@@ -45,11 +49,11 @@ namespace Specter {
 		Parameter(const std::string& name);
 		~Parameter();
         
-        inline bool IsValid() const { return m_pdata->validFlag; }
-        inline void Invalidate() { m_pdata->validFlag = false; }
-        inline void SetValue(double value) { m_pdata->validFlag = true; m_pdata->value = value; }
-        inline double GetValue() const { return m_pdata->value; }
-        inline const std::string& GetName() const { return m_name; }
+        bool IsValid() const { return m_pdata->validFlag; }
+        void Invalidate() { m_pdata->validFlag = false; }
+        void SetValue(double value) { m_pdata->validFlag = true; m_pdata->value = value; }
+        double GetValue() const { return m_pdata->value; }
+        const std::string& GetName() const { return m_name; }
 		void SetName(const std::string& name);
 
 		friend class SpectrumManager;
@@ -77,9 +81,9 @@ namespace Specter {
 		Variable(const std::string& name);
 		~Variable();
 
-		inline void SetValue(double value) { m_pdata->value = value; }
-		inline double GetValue() { return m_pdata->value; }
-		inline const std::string& GetName() { return m_name; }
+		void SetValue(double value) { m_pdata->value = value; }
+		double GetValue() { return m_pdata->value; }
+		const std::string& GetName() { return m_name; }
 		void SetName(const std::string& name);
 
 		friend class SpectrumManager;
@@ -106,10 +110,9 @@ namespace Specter {
 		Scaler(const std::string& name);
 		~Scaler();
 
-		inline void Increment() { ++(m_pdata->value); }
-
-		inline const std::string& GetName() { return m_name; }
-		inline uint64_t GetCounts() { return m_pdata->value; }
+		void Increment() { ++(m_pdata->value); }
+		const std::string& GetName() { return m_name; }
+		uint64_t GetCounts() { return m_pdata->value; }
 		void SetName(const std::string& name);
 
 		friend class SpectrumManager;

@@ -15,7 +15,7 @@ namespace Specter {
 	class KeyEvent : public Event
 	{
 	public:
-		inline int GetKeycode() const { return m_keycode; }
+		int GetKeycode() const { return m_keycode; }
 		EVENT_CATEGORY_SETUP(EventCategoryKey | EventCategoryInput)
 	protected:
 		KeyEvent(int code) :
@@ -37,7 +37,7 @@ namespace Specter {
 
 		EVENT_TYPE_SETUP(KeyPressed)
 
-		inline int GetRepeatCount() const { return m_repeatCount; }
+		int GetRepeatCount() const { return m_repeatCount; }
 
 		std::string ToString() const override
 		{

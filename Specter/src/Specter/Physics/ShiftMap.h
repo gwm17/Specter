@@ -24,8 +24,8 @@ namespace Specter {
 		ShiftMap(const std::string& filename);
 		~ShiftMap();
 		void SetFile(const std::string& filename);
-		inline bool IsValid() { return m_validFlag; }
-		inline std::string GetFilename() { return m_filename; }
+		bool IsValid() { return m_validFlag; }
+		std::string GetFilename() { return m_filename; }
 		uint64_t GetShift(int gchan);
 	
 	private:

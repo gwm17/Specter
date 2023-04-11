@@ -24,7 +24,7 @@ namespace Specter {
 
 		bool ImGuiRenderSpectrumDialog(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList);
 
-		inline void SetSpectrumDialog() { m_openFlag = true; }
+		void SetSpectrumDialog() { m_openFlag = true; }
 	private:
 		void RenderDialog1D(const std::vector<std::string>& paramList);
 		void RenderDialog2D(const std::vector<std::string>& paramList);

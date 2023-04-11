@@ -34,7 +34,7 @@ namespace Specter {
 		FileDialog();
 		~FileDialog();
 
-		inline void OpenDialog(Type type) { m_type = type; m_openDialogFlag = true; }
+		void OpenDialog(Type type) { m_type = type; m_openDialogFlag = true; }
 		std::pair<std::string, Type> RenderFileDialog(const std::string& ext = "");
 
 	private:

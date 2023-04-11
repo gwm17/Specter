@@ -8,9 +8,7 @@
 	HistogramArgs are the underlying data which define a histogram. This is grouped in a struct to easily pass these around for use in contexts like the Editor.
 	Every histogram has a set of histogram parameters.
 
-	Histogram is the base class of all histograms. Should not be used in practice. Every histogram contains functions to query what type of underlying histogram it is. If one has
-	the Histogram object, Is1D() or Is2D() can be called. If one only has the HistogramArgs, the values of x_par and y_par can be inspected. In particular, a 1D histogram will have
-	y_par set to "None", while a 2D histogram should have a valid parameter name for y_par.
+	Histogram is the base class of all histograms. Should not be used in practice. In the histogram args is an enum SpectrumType which indicates if it is a 1D, 2D, or Summary spectrum.
 
 	Histogram1D is a one dimensional (single parameter) histogram. Histogram2D is a two dimensional (two parameter) histogram. The only real difference between these in practice, other than
 	the obvious two vs. one parameter thing, is that a Histogram2D contains methods to set the z-axis range (color scale) which ImPlot does not provide intrinsic access to from the plot itself.
@@ -18,6 +16,8 @@
 	a nullptr.
 
 	StatResults is a struct containing statistical information about a region of a histogram.
+
+	A HistogramSummary is a 2D display of many 1D histograms. That is, a summary back-links to other Histogram1D's already created. It is important to note that the linked sub-histograms should all have the same binning.
 
 	GWM -- Feb 2022
 */
@@ -93,15 +93,16 @@ namespace Specter {
 		virtual void Draw() {}
 		virtual void ClearData() {}
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) { return StatResults();  }
-		inline virtual float* GetColorScaleRange() { return nullptr; }
-        inline virtual std::vector<double> GetBinData() { return std::vector<double>(); }
-		inline HistogramArgs& GetParameters() { return m_params; }
-		inline SpectrumType GetType() { return m_params.type; }
-		inline const std::string& GetXParam() const { return m_params.x_par; };
-		inline const std::string& GetYParam() const { return m_params.y_par; };
-		inline const std::string& GetName() const { return m_params.name; }
-        inline void AddCutToBeDrawn(const std::string& name) { m_params.cutsDrawnUpon.push_back(name); }
-        inline void AddCutToBeApplied(const std::string& name) { m_params.cutsAppliedTo.push_back(name); }
+		virtual float* GetColorScaleRange() { return nullptr; }
+        virtual std::vector<double> GetBinData() { return std::vector<double>(); }
+
+		HistogramArgs& GetParameters() { return m_params; }
+		SpectrumType GetType() { return m_params.type; }
+		const std::string& GetXParam() const { return m_params.x_par; };
+		const std::string& GetYParam() const { return m_params.y_par; };
+		const std::string& GetName() const { return m_params.name; }
+        void AddCutToBeDrawn(const std::string& name) { m_params.cutsDrawnUpon.push_back(name); }
+        void AddCutToBeApplied(const std::string& name) { m_params.cutsAppliedTo.push_back(name); }
 
 	protected:
 		HistogramArgs m_params;
@@ -117,7 +118,7 @@ namespace Specter {
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
-        inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
+        virtual std::vector<double> GetBinData() override { return m_binCounts; }
 
 	private:
 		void InitBins();
@@ -137,9 +138,9 @@ namespace Specter {
 		virtual void Draw() override;
 		virtual void ClearData() override;
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
-        inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
+        virtual std::vector<double> GetBinData() override { return m_binCounts; }
 
-		inline virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
+		virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
 
 	private:
 		void InitBins();
@@ -158,14 +159,14 @@ namespace Specter {
 		HistogramSummary(const HistogramArgs& params, const std::vector<std::string>& subhistos);
 		~HistogramSummary();
 
-		inline const std::vector<std::string>& GetSubHistograms() const { return m_subhistos;  }
+		const std::vector<std::string>& GetSubHistograms() const { return m_subhistos;  }
 
 		virtual void FillData(double x, double y) override;
 		virtual void ClearData() override;
 		virtual void Draw() override;
-		inline virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
+		virtual float* GetColorScaleRange() override { return m_colorScaleRange; }
 		virtual StatResults AnalyzeRegion(double x_min, double x_max, double y_min = 0.0, double y_max = 0.0) override;
-		inline virtual std::vector<double> GetBinData() override { return m_binCounts; }
+		virtual std::vector<double> GetBinData() override { return m_binCounts; }
 
 	private:
 		void InitBins();

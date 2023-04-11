@@ -25,7 +25,7 @@ namespace Specter {
 		virtual void OnUpdate(Timestep& step) {}
 		virtual void OnEvent(Event& event) {}
 
-		inline const std::string& GetName() { return m_name; }
+		const std::string& GetName() { return m_name; }
 
 	private:
 		std::string m_name;

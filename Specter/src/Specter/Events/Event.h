@@ -49,7 +49,7 @@ namespace Specter {
 		virtual const char* GetName() const = 0;
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
-		inline bool IsCategory(EventCategory cat) const { return GetCategoryFlags() & cat; }
+		bool IsCategory(EventCategory cat) const { return GetCategoryFlags() & cat; }
 		bool handledFlag = false;
 	};
 

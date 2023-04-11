@@ -46,8 +46,6 @@ namespace Specter {
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		//Viewports are real wonky on Linux and sometimes on MacOS
-		//Can currently cause assertion failure on checking number of monitors in ImGui sanity checks.
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 		ImGui::StyleColorsDark(); //Hacker mode
@@ -62,9 +60,7 @@ namespace Specter {
 		}
 
 		//Setup our fonts. We have Roboto for text and FontAwesome for our icons.
-		//Note the .ttf files are found in NavProject, or in the bin dir. This is because
-		//the actual program (NavProject) is launched from either the bin/ ... /NaProject or the NavProject directory
-		//io.Fonts->AddFontDefault();
+		//These fonts are embedded in the application for better resource management. Found in FA-Solid.h, Roboto-Regular.h
 		ImFontConfig latin_config;
 		latin_config.RasterizerMultiply = 1.3f;
 		ImFontConfig config;

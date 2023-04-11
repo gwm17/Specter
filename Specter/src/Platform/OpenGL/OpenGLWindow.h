@@ -25,14 +25,14 @@ namespace Specter {
 
 		void OnUpdate() override;
 
-		inline void SetEventCallback(const EventCallbackFunc& function) override { m_data.event_callback_func = function; }
-		inline unsigned int GetWidth() const override { return m_data.width; }
-		inline unsigned int GetHeight() const override { return m_data.height; }
-		inline std::string GetName() const override { return m_data.name; }
+		void SetEventCallback(const EventCallbackFunc& function) override { m_data.event_callback_func = function; }
+		unsigned int GetWidth() const override { return m_data.width; }
+		unsigned int GetHeight() const override { return m_data.height; }
+		std::string GetName() const override { return m_data.name; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
 
-		inline virtual void* GetNativeWindow() const override { return m_window; }
+		virtual void* GetNativeWindow() const override { return m_window; }
 	private:
 		virtual void Init(const WindowProperties& props);
 		virtual void Shutdown();

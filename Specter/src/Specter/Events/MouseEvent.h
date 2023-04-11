@@ -19,8 +19,8 @@ namespace Specter {
 		{
 		}
 
-		inline float GetXPosition() { return m_xPos; }
-		inline float GetYPosition() { return m_yPos; }
+		float GetXPosition() { return m_xPos; }
+		float GetYPosition() { return m_yPos; }
 		std::string ToString() const override 
 		{
 			std::stringstream ss;
@@ -43,8 +43,8 @@ namespace Specter {
 		{
 		}
 
-		inline float GetXOffset() { return m_xOffset; }
-		inline float GetYOffset() { return m_yOffset; }
+		float GetXOffset() { return m_xOffset; }
+		float GetYOffset() { return m_yOffset; }
 		std::string ToString() const override 
 		{
 			std::stringstream ss;
@@ -67,7 +67,7 @@ namespace Specter {
 		{
 		}
 
-		inline int GetButtonCode() { return m_buttonCode; }
+		int GetButtonCode() { return m_buttonCode; }
 		std::string ToString() const override 
 		{
 			std::stringstream ss;
@@ -90,7 +90,7 @@ namespace Specter {
 		{
 		}
 
-		inline int GetButtonCode() { return m_buttonCode; }
+		int GetButtonCode() { return m_buttonCode; }
 		std::string ToString() const override 
 		{
 			std::stringstream ss;

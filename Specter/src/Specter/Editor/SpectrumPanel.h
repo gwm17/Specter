@@ -35,8 +35,8 @@ namespace Specter {
 		~SpectrumPanel();
 	
 		bool OnImGuiRender(const SpectrumManager::Ref& manager, const std::vector<HistogramArgs>& histoList, const std::vector<CutArgs>& cutList, const std::vector<std::string>& paramList);
-		inline const std::string& GetZoomedOnHistogram() { return m_zoomedGram.name;  }
-		inline const bool IsZoomed() { return m_zoomedFlag;  }
+		const std::string& GetZoomedOnHistogram() { return m_zoomedGram.name;  }
+		const bool IsZoomed() { return m_zoomedFlag;  }
 
 	private:
 		void HandleCutMode();

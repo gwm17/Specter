@@ -64,13 +64,13 @@ namespace Specter {
 		virtual std::vector<double> GetXValues() const = 0;
 		virtual std::vector<double> GetYValues() const = 0;
 
-		inline const bool IsValid() const { return m_isValid; }
-		inline void ResetValidity() { m_isValid = false; }
-		inline CutType GetType() const { return m_params.type;  }
-		inline const std::string& GetName() const { return m_params.name; }
-		inline const std::string& GetXParameter() const { return m_params.x_par; }
-		inline const std::string& GetYParameter() const { return m_params.y_par;  }
-        inline const CutArgs& GetCutArgs() const { return m_params; }
+		const bool IsValid() const { return m_isValid; }
+		void ResetValidity() { m_isValid = false; }
+		CutType GetType() const { return m_params.type;  }
+		const std::string& GetName() const { return m_params.name; }
+		const std::string& GetXParameter() const { return m_params.x_par; }
+		const std::string& GetYParameter() const { return m_params.y_par;  }
+        const CutArgs& GetCutArgs() const { return m_params; }
 	protected:
 		CutArgs m_params;
 		bool m_isValid;
@@ -115,7 +115,7 @@ namespace Specter {
 		virtual std::vector<double> GetXValues() const override { return std::vector<double>({ m_minVal, m_maxVal }); }
 		virtual std::vector<double> GetYValues() const override { return std::vector<double>(); }
 
-		inline const std::vector<std::string>& GetSubHistograms() const { return m_subhistos;  }
+		const std::vector<std::string>& GetSubHistograms() const { return m_subhistos;  }
 
 	private:
 		double m_minVal, m_maxVal;

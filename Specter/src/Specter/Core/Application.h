@@ -38,23 +38,22 @@ namespace Specter {
 		virtual ~Application();
 
 		void Run();
-		inline void Close() { m_runFlag = false; }
+		void Close() { m_runFlag = false; }
 
 		void OnEvent(Event& event);
 		void PushLayer(Layer* layer);
-		inline void PushAnalysisStage(AnalysisStage* stage) { m_physicsLayer->PushStage(stage); }
+		void PushAnalysisStage(AnalysisStage* stage) { m_physicsLayer->PushStage(stage); }
 		void PushOverlay(Layer* layer);
 
 
-		inline static Application& Get() { return *s_instance; }
+		static Application& Get() { return *s_instance; }
 
-		inline Window& GetWindow() { return *m_window; }
+		Window& GetWindow() { return *m_window; }
 
-		inline const ApplicationArgs& GetArgs() { return m_args; }
+		const ApplicationArgs& GetArgs() { return m_args; }
 
 	private:
 		bool OnWindowCloseEvent(WindowCloseEvent& event);
-		bool OnManagerBindEvent(const std::shared_ptr<SpectrumManager>& manager);
 
 		ApplicationArgs m_args;
 
@@ -75,8 +74,7 @@ namespace Specter {
 
 
 	/*
-		This function is left to be defined by the user. In principle we don't need to do this, as the Specter library doesn't handle creation of the application,
-		but I like it and might be useful for changing to a system with a pre-defined entry point.
+		This function must be defined by the user. It is called in by the entry point function in EntryPoint.h
 	*/
 	Application* CreateApplication(const ApplicationArgs& args);
 }

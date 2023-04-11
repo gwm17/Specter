@@ -1,6 +1,6 @@
 /*
 	SpectrumSerializer.h
-	SpectrumSerializer class providing method to write/read spectra (histograms and cuts) to/from a .nav file. These are formated text files.
+	SpectrumSerializer class providing method to write/read spectra (histograms and cuts) to/from a .yaml file. These are YAML files.
 	Note that by virtue of the way that cuts work, they are written first.
 
 	A couple of notes:
