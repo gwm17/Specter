@@ -122,6 +122,10 @@ namespace Specter {
 		GraphArgs m_nullGraphResult; //For handling bad query
 
 		std::mutex m_managerMutex; //synchronization
+
+		//Some scaler time stuff
+		double m_graphTimeEllapsed = 0.0;
+		static constexpr double s_graphUpdateTime = 60.0; //Fixed timestep for scaler graphs (seconds), TODO: make this user inputed
 	};
 
 }

@@ -254,6 +254,12 @@ namespace Specter {
 	void SpectrumManager::UpdateGraphs(const Timestep& step)
 	{
 		std::scoped_lock<std::mutex> guard(m_managerMutex);
+
+		m_graphTimeEllapsed += step;
+		//Don't update unless enough time has passed
+		if (m_graphTimeEllapsed < s_graphUpdateTime)
+			return;
+
 		uint64_t scalerVal;
 		for (auto& graph : m_graphMap)
 		{
@@ -261,9 +267,11 @@ namespace Specter {
 			if (scalerIter != m_scalerMap.end())
 			{
 				scalerVal = scalerIter->second->value;
-				graph.second->UpdatePoints(step, scalerVal);
+				graph.second->UpdatePoints(m_graphTimeEllapsed, scalerVal);
 			}
 		}
+
+		m_graphTimeEllapsed = 0.0; //Reset ellapsed time since last update
 	}
 
 	void SpectrumManager::ClearGraphs()
