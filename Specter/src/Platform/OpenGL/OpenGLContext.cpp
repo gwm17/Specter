@@ -29,9 +29,9 @@ namespace Specter {
 		SPEC_INFO("Loaded OpenGL with glad Init status {0}", status);
 
 		SPEC_INFO("Loaded OpenGL renderer");
-		SPEC_INFO("Vendor: {0}", glGetString(GL_VENDOR));
-		SPEC_INFO("Renderer: {0}", glGetString(GL_RENDERER));
-		SPEC_INFO("Version: {0}", glGetString(GL_VERSION));
+		SPEC_INFO("Vendor: {0}", (const char*)glGetString(GL_VENDOR));
+		SPEC_INFO("Renderer: {0}", (const char*)glGetString(GL_RENDERER));
+		SPEC_INFO("Version: {0}", (const char*)glGetString(GL_VERSION));
 	}
 
 	void OpenGLContext::SwapBuffers()

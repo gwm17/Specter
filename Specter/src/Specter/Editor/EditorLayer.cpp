@@ -217,6 +217,12 @@ namespace Specter {
                     serializer.SerializeData(m_manager);
                     break;
                 }
+                case FileDialog::Type::OpenDir: 
+                {
+                    SPEC_WARN("Somehow at OpenDir in Editor..."); 
+                    return;
+                }
+                case FileDialog::Type::None: return;
             }
         }
         
